@@ -1,2 +1,32 @@
 # qupo
+
 Platform for portfolio optimization using quantum and not quantum
+
+## Getting started
+
+The application is composed of two parts which are required to be started separately.
+
+### Backend
+
+1. Create, and activate virtual environment:
+
+    ```(bash)
+    cd api
+    python3 -m venv ./venv
+    source ./venv/bin/activate
+    ```
+
+2. Install the requirements
+
+    ```(bash)
+    pip install -r requirements.txt
+    ```
+
+3. Start the backend application:
+
+    ```(bash)
+    ./start_dev.sh
+    ```
+
+To verify that the backend is running the following http request can be issues:
+<http://localhost:8000/health>
