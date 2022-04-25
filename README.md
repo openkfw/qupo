@@ -28,5 +28,4 @@ The application is composed of two parts which are required to be started separa
     ./start_dev.sh
     ```
 
-To verify that the backend is running the following http request can be issues:
-<http://localhost:8000/health>
+To verify that the backend is running, the following URL can be used: <http://localhost:8000/health>
