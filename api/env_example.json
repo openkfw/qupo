@@ -1,0 +1,6 @@
+{   "nasdaq_api_key" : "",
+    "azure_tenant_id": "",
+    "azure_client_id" : "",
+    "azure_client_secret": "",
+    "ibmq_client_secret" : ""
+}

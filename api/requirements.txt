@@ -1,4 +1,7 @@
 fastapi==0.75.1
 gunicorn==20.1.0
+PyPortfolioOpt==1.5.2
 uvicorn==0.17.6
 flake8
+yfinance
+quandl
