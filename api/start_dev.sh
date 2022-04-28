@@ -1,3 +1,3 @@
 #!/bin/bash
 
-uvicorn webserver:app --reload
+uvicorn app.main:app --reload
