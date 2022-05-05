@@ -3,9 +3,7 @@ from stocks import Stock
 from portfolios import Portfolio
 from stockdata_integrator import StockDataExtractor, StockDataTransformer
 
-
-
-if __name__ == "__main__":
+def portfolios_df_from_default_stock_data():
     # extract, transform data from external (or local) sources
     stock_data_extractor = StockDataExtractor(start_time="2018-01-01", end_time="2018-02-28")
     stocks_dict = stock_data_extractor.extract_stock_tickers()
@@ -32,3 +30,4 @@ if __name__ == "__main__":
     stock_data_transformer = StockDataTransformer()
     portfolios_model_df = stock_data_transformer.to_dataframe(portfolios_model)
     print(portfolios_model_df)
+    return portfolios_model_df
