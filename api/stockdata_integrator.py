@@ -11,7 +11,7 @@ date_format = "%Y-%m-%d"
 
 
 def read_credentials():
-    with open("env.json") as f:
+    with open("qupo/api/env.json") as f:
         data = json.load(f)
     return {"credentials": data}
 
@@ -48,14 +48,14 @@ class StockDataTransformer:
 
     def to_dataframe(self, portfolios_model: PortfoliosModel):
         expected_rate_of_return_pa = pd.DataFrame(data=portfolios_model.expected_rates_of_return_pa,
-                                                  index=portfolios_model.stock_tickers,
+                                                  index=portfolios_model.stocks_tickers,
                                                   columns=["RateOfReturn"])
         expected_esg_ratings = pd.DataFrame(data=portfolios_model.expected_esg_ratings,
-                                            index=portfolios_model.stock_tickers,
+                                            index=portfolios_model.stocks_tickers,
                                             columns=["ESGRating"])
         expected_covariance_pa = portfolios_model.expected_covariance_pa
         expected_volatility_pa = pd.DataFrame(portfolios_model.expected_volatilities_pa,
-                                              index=portfolios_model.stock_tickers,
+                                              index=portfolios_model.stocks_tickers,
                                               columns=["Volatility"])
         return pd.concat([expected_rate_of_return_pa, expected_volatility_pa, expected_esg_ratings, expected_covariance_pa],
                          axis=1)
