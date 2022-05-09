@@ -18,4 +18,8 @@ app.include_router(apiRouter)
 
 @app.get('/')
 async def root():
-    return {'message': 'Hello from qupo'}
+    return {"message": "Hello from qupo"}
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
