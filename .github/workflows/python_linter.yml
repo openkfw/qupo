@@ -17,5 +17,5 @@ jobs:
         uses: py-actions/flake8@v2
         with:
           ignore: "E741"
-          exclude: ".git, __pycache__, venv"
+          exclude: ".git,__pycache__,venv"
           max-line-length: "160"
