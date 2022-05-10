@@ -7,56 +7,56 @@ import quandl
 import yfinance as yf
 
 
-date_format = "%Y-%m-%d"
+date_format = '%Y-%m-%d'
 
 
 def read_credentials():
-    with open("qupo/api/env.json") as f:
+    with open('qupo/api/env.json') as f:
         data = json.load(f)
-    return {"credentials": data}
+    return {'credentials': data}
 
 
 class StockDataExtractor:
-    def __init__(self, start_time="2018-01-01", end_time="2018-02-28", scope="DAX", config_path=None):
+    def __init__(self, start_time='2018-01-01', end_time='2018-02-28', scope='DAX', config_path=None):
         self.start_time = datetime.strptime(start_time, date_format).date()
         self.end_time = datetime.strptime(end_time, date_format).date()
         self.scope = scope
         if config_path is not None:
             self.config = config_path
-    
-    def extract_stock_tickers(self):
-        if self.scope == "DAX":
-            return {"ADS": "Adidas"}  # ToDo: import full names from https://de.wikipedia.org/wiki/DAX
-        else:
-            print(f"Scope {self.scope} not available")
 
-    def extract_yfinance_data(self, stock_ticker="ADS"):
+    def extract_stock_tickers(self):
+        if self.scope == 'DAX':
+            return {'ADS': 'Adidas'}  # ToDo: import full names from https://de.wikipedia.org/wiki/DAX
+        else:
+            print(f'Scope {self.scope} not available')
+
+    def extract_yfinance_data(self, stock_ticker='ADS'):
         return yf.download(stock_ticker, self.start_time, self.end_time)
 
-    def extract_quandl_data(self, api_key=None, identifier="UPR/EXT"):
+    def extract_quandl_data(self, api_key=None, identifier='UPR/EXT'):
         credentials = read_credentials()
         if api_key is None:
-            print("Please provide Nasday api key in env.json")
+            print('Please provide Nasday api key in env.json')
             return
         else:
-            return quandl.get_table(identifier, api_key=credentials["credentials"]["nasdaq_api_key"], paginate=True)
+            return quandl.get_table(identifier, api_key=credentials['credentials']['nasdaq_api_key'], paginate=True)
 
 
 class StockDataTransformer:
-    def esg_data_select(self, quandl_table, stock: Stock, esg_identifier="net_impact_ratio"):
-        return quandl_table[quandl_table.company_name.isin([stock.full_name])][["date", esg_identifier]].set_index("date")
+    def esg_data_select(self, quandl_table, stock: Stock, esg_identifier='net_impact_ratio'):
+        return quandl_table[quandl_table.company_name.isin([stock.full_name])][['date', esg_identifier]].set_index('date')
 
     def to_dataframe(self, portfolios_model: PortfoliosModel):
         expected_rate_of_return_pa = pd.DataFrame(data=portfolios_model.expected_rates_of_return_pa,
                                                   index=portfolios_model.stocks_tickers,
-                                                  columns=["RateOfReturn"])
+                                                  columns=['RateOfReturn'])
         expected_esg_ratings = pd.DataFrame(data=portfolios_model.expected_esg_ratings,
                                             index=portfolios_model.stocks_tickers,
-                                            columns=["ESGRating"])
+                                            columns=['ESGRating'])
         expected_covariance_pa = portfolios_model.expected_covariance_pa
         expected_volatility_pa = pd.DataFrame(portfolios_model.expected_volatilities_pa,
                                               index=portfolios_model.stocks_tickers,
-                                              columns=["Volatility"])
+                                              columns=['Volatility'])
         return pd.concat([expected_rate_of_return_pa, expected_volatility_pa, expected_esg_ratings, expected_covariance_pa],
                          axis=1)
     pass

@@ -4,10 +4,9 @@ from portfolios import Portfolio
 from stockdata_integrator import StockDataExtractor, StockDataTransformer
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     # extract, transform data from external (or local) sources
-    stock_data_extractor = StockDataExtractor(start_time="2018-01-01", end_time="2018-02-28")
+    stock_data_extractor = StockDataExtractor(start_time='2018-01-01', end_time='2018-02-28')
     stocks_dict = stock_data_extractor.extract_stock_tickers()
     esg_data = stock_data_extractor.extract_quandl_data()
 

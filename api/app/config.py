@@ -1,5 +1,6 @@
 from pydantic import BaseSettings
 
+
 class Settings(BaseSettings):
     azure_tenant_id: str
     azure_client_id: str
@@ -8,6 +9,7 @@ class Settings(BaseSettings):
     nasdaq_api_key: str
 
     class Config:
-        env_file = ".env"
+        env_file = '.env'
+
 
 settings = Settings()
