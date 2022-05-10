@@ -19,4 +19,3 @@ jobs:
           ignore: "E741"
           exclude: ".git, __pycache__, venv"
           max-line-length: "160"
-          path: "api/"
