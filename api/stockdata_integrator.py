@@ -1,19 +1,17 @@
-from stocks import Stock
-from portfolios_model import PortfoliosModel
+# native packages
 from datetime import datetime
-import json
+
+# 3rd party packages
 import pandas as pd
 import quandl
 import yfinance as yf
 
+# custom packages
+from config import read_credentials
+from qupo_classes import Stock, PortfoliosModel
+
 
 date_format = "%Y-%m-%d"
-
-
-def read_credentials():
-    with open("qupo/api/env.json") as f:
-        data = json.load(f)
-    return {"credentials": data}
 
 
 class StockDataExtractor:
@@ -33,13 +31,11 @@ class StockDataExtractor:
     def extract_yfinance_data(self, stock_ticker="ADS"):
         return yf.download(stock_ticker, self.start_time, self.end_time)
 
-    def extract_quandl_data(self, api_key=None, identifier="UPR/EXT"):
-        credentials = read_credentials()
+    def extract_quandl_data(self, api_key=None, identifier="UPR/EXT"):  
         if api_key is None:
-            print("Please provide Nasday api key in env.json")
-            return
-        else:
-            return quandl.get_table(identifier, api_key=credentials["credentials"]["nasdaq_api_key"], paginate=True)
+            credentials = read_credentials()            
+            api_key = credentials["NASDAQ_API_KEY"]
+        return quandl.get_table(identifier, api_key=api_key, paginate=True)
 
 
 class StockDataTransformer:
