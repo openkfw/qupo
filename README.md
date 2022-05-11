@@ -16,10 +16,10 @@ The application is composed of two parts which are required to be started separa
     source ./venv/bin/activate
     ```
 
-2. Install the requirements
+2. Install the requirements for development (they include the same linter that is used in the pipeline)
 
     ```(bash)
-    pip install -r requirements.txt
+    pip install -r requirements_dev.txt
     ```
 
 3. Start the backend application:
