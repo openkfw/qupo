@@ -7,8 +7,8 @@ app = FastAPI()
 
 
 apiRouter = APIRouter(
-    prefix="/api",
-    responses={404: {"description": "Not found"}},
+    prefix='/api',
+    responses={404: {'description': 'Not found'}},
 )
 
 apiRouter.include_router(tickers.router)
@@ -16,6 +16,6 @@ apiRouter.include_router(tickers.router)
 app.include_router(apiRouter)
 
 
-@app.get("/")
+@app.get('/')
 async def root():
-    return {"message": "Hello from qupo"}
+    return {'message': 'Hello from qupo'}

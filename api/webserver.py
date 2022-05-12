@@ -6,39 +6,39 @@ from config import read_credentials
 app = FastAPI()
 
 origins = [
-    "http://localhost",
-    "http://localhost:3000",
+    'http://localhost',
+    'http://localhost:3000',
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 
 
-@app.get("/health")
+@app.get('/health')
 async def health():
-    return {"status": "ok"}
+    return {'status': 'ok'}
 
 
-@app.get("/credentials")
+@app.get('/credentials')
 def get_credentials():
     return read_credentials()
 
 
-@app.get("/experiment")
-def get_named_experiment_result(risk_weight: float = 1, esg_weight: float = 1, job_name: str = "osqp"):
-    return {"riskWeight": risk_weight, "esgWeight": esg_weight, "jobName": job_name}
+@app.get('/experiment')
+def get_named_experiment_result(risk_weight: float = 1, esg_weight: float = 1, job_name: str = 'osqp'):
+    return {'riskWeight': risk_weight, 'esgWeight': esg_weight, 'jobName': job_name}
 
 
-@app.get("/timeseries/{ticker_symbol}")
+@app.get('/timeseries/{ticker_symbol}')
 def get_time_series(ticker_symbol: str):
-    return {"tickerSymbol": ticker_symbol}
+    return {'tickerSymbol': ticker_symbol}
 
 
-@app.get("/available_tickers")
+@app.get('/available_tickers')
 def get_available_tickers():
     return 200
