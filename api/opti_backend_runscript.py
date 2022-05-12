@@ -43,3 +43,14 @@ for algorithm in ["PA"]:  # ["SA", "PT", "PA", "Tabu", "QMC", "SMC"]:
             solution_output_percent = dict(zip(job_pypo.problem.dataframe.index, job_pypo.result.variables_values.round(2)))
             print(f"Azure QIO suggested portfolio composition[%]: {solution_output_percent}")
             print(f"Azure QIO objective value: {job_pypo.result.objective_value}")
+
+# 2. Quantization: generate generic quantum problem (quadratic unconstrained binary optimization problem)
+# to run on quantum (simulator) backend
+quantum_problem = obr.Problem(P, q, A, l, u, portfolio_model_df, risk_weight, esg_weight, resolution=1)
+solver_qiskit = obr.Solver(provider_name="IBM", algorithm="QAOA")
+job_qiskit = obr.Job(quantum_problem, solver_qiskit)
+obr.run_job(job_qiskit)
+
+solution_output_percent = dict(zip(job_qiskit.problem.dataframe.index, job_qiskit.result.variables_values.round(2)))
+print(f"Qiskit on LocalSimulator suggested portfolio composition[%]: {solution_output_percent}")
+print(f"Qiskit on LocalSimulator objective value: {job_qiskit.result.objective_value}")

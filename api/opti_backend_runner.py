@@ -13,6 +13,15 @@ import numpy as np
 import osqp
 import pandas as pd
 import pypfopt as ppo
+from qiskit import QuantumCircuit, IBMQ
+from qiskit import Aer
+from qiskit.algorithms import QAOA
+from qiskit.algorithms.optimizers import COBYLA
+from qiskit.circuit.library.n_local import QAOAAnsatz
+from qiskit.utils import QuantumInstance
+from qiskit.providers.ibmq import IBMQAccountError
+from qiskit_optimization.algorithms import MinimumEigenOptimizer
+from qiskit_optimization.converters import QuadraticProgramToQubo
 from scipy import sparse
 
 # custom packages
@@ -20,18 +29,37 @@ import opti_model_converter as omc
 from config import read_credentials
 
 
-def configure_azure_provider(credentials):
+def configure_azure_provider(credentials, quantum=False):
     credential = ClientSecretCredential(tenant_id=credentials["AZURE_TENANT_ID"],
                                         client_id=credentials["AZURE_CLIENT_ID"],
                                         client_secret=credentials["AZURE_CLIENT_SECRET"])
-
-    azure_provider = Workspace(subscription_id=credentials["AZURE_SUBSCRIPTION_ID"],
-                               resource_group=credentials["AZURE_RESOURCE_GROUP"],
-                               name=credentials["AZURE_NAME"],
-                               location=credentials["AZURE_LOCATION"],
-                               credential=credential)
-    
+    if quantum:
+        azure_provider = AzureQuantumProvider(subscription_id=credentials["AZURE_SUBSCRIPTION_ID"],
+                                resource_group=credentials["AZURE_RESOURCE_GROUP"],
+                                name=credentials["AZURE_NAME"],
+                                location=credentials["AZURE_LOCATION"],
+                                credential=credential)
+    else:
+        azure_provider = Workspace(subscription_id=credentials["AZURE_SUBSCRIPTION_ID"],
+                                              resource_group=credentials["AZURE_RESOURCE_GROUP"],
+                                              name=credentials["AZURE_NAME"],
+                                              location=credentials["AZURE_LOCATION"],
+                                              credential=credential)
     return azure_provider
+
+
+def configure_qiskit_provider(credentials):
+    try:
+        IBMQ.enable_account(credentials["IBMQ_CLIENT_SECRET"])
+    except IBMQAccountError:
+        pass
+    provider = IBMQ.get_provider(
+        hub='ibm-q',
+        group='open',
+        project='main'
+    )
+    return provider
+
 
 def run_job(job, filepath=None, experiment=None):
     if job.solver.provider_name == "PyPortfolioOptimization":
@@ -41,6 +69,8 @@ def run_job(job, filepath=None, experiment=None):
         raw_result, variable_values, objective_value, time_to_solution = run_osqp_job(job)
     elif job.solver.provider_name == 'Azure':
         raw_result, variable_values, objective_value, time_to_solution = run_azure_qio_job(job)
+    elif job.solver.provider_name in ['IBM', 'IONQ']:
+        raw_result, variable_values, objective_value, time_to_solution = run_qiskit_job(job)
     else:
         warnings.warn(f"Provider {job.solver.provider_name} not available")
         return
@@ -104,6 +134,38 @@ def run_azure_qio_job(job):
         warnings.warn(f'Qio job failed. Config: {job.solver.config}')
         return None, None, None, None
 
+
+def run_qiskit_job(job):
+    credentials = read_credentials()
+    qp = job.problem.quadratic_problem
+    # Implementation according to https://qiskit.org/documentation/finance/tutorials/01_portfolio_optimization.html
+    if job.solver.provider_name == 'IBM':
+        provider = configure_qiskit_provider(credentials)
+        print([backend.name() for backend in provider.backends()])
+        simulator_backend = Aer.get_backend('aer_simulator')
+    elif job.solver.provider_name == 'IONQ':
+        provider = configure_azure_provider(credentials,quantum=True)
+        print([backend.name() for backend in provider.backends()])
+        simulator_backend_list = provider.backends('ionq.simulator')
+        simulator_backend = simulator_backend_list[0]
+
+    # define COBYLA optimizer to handle convex continuous problems.
+    seed = 42
+    repetitions = 3
+    cobyla = COBYLA()
+    cobyla.set_options(maxiter=250)
+    quantum_instance = QuantumInstance(backend=simulator_backend, seed_simulator=seed, seed_transpiler=seed)
+    qaoa_algorithm = QAOA(optimizer=cobyla, reps=repetitions, quantum_instance=quantum_instance)
+    qaoa = MinimumEigenOptimizer(qaoa_algorithm)
+    raw_result = qaoa.solve(qp)
+
+    variable_values = raw_result.x  # mc.convert_qubo_results(job.problem.converter, raw_result, job.problem.resolution)
+    objective_value = 0.5 * np.dot(variable_values, job.problem.P.dot(variable_values)) + np.dot(job.problem.q,
+                                                                                                 variable_values)
+    time_to_solution = None
+
+    return raw_result, variable_values, objective_value, time_to_solution
+
 @dataclass
 class Result:
     variables_values: np.float32 
@@ -117,10 +179,12 @@ class Result:
 
 @dataclass
 class Problem:
-    # osqp (sparse matrix) notation for quadratic constrained problems:
-    # objective: minimize 0.5*x^T*P*x + q*x
-    # constraints: subject to l <= A*x <= u
-    # with T the transpose operator
+    ''' 
+    OSQP (sparse matrix) notation for quadratic constrained problems:
+    objective:      minimize 0.5*x^T*P*x + q*x
+    constraints:    subject to l <= A*x <= u
+                    with T the transpose operator 
+    '''
     P: sparse.csc_matrix = sparse.csc_matrix((2,2))
     q: np.array = np.array([0,0])
     A: sparse.csc_matrix = sparse.csc_matrix((2, 2))
@@ -146,15 +210,6 @@ class Problem:
     def calc_objective_value(self, variable_values):
         return 0.5 * np.dot(variable_values, self.P.dot(variable_values)) + np.dot(self.q, variable_values)
 
-@dataclass
-class QuantumProblem(Problem):
-    resolution: np.int32 = 1
-    def __post_init__(self):
-        super().__init__(self)
-        self.docplex_problem = omc.convert_osqp_to_docplex_model(self.P, self.q, self.A, self.l, self.u,
-                                                                resolution=self.resolution)
-        self.quadratic_problem, self.qubo_problem, self.converter = omc.convert_docplex_to_qubo_model(
-            self.docplex_problem)
 @dataclass
 class Solver:
     provider_name: str = "not specified"
