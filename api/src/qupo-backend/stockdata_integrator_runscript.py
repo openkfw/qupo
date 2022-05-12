@@ -2,7 +2,7 @@ from qupo_classes import Stock, Portfolio, PortfoliosModel
 from stockdata_integrator import StockDataExtractor, StockDataTransformer
 
 
-if __name__ == '__main__':
+def portfolios_df_from_default_stock_data():
     # extract, transform data from external (or local) sources
     stock_data_extractor = StockDataExtractor(start_time='2018-01-01', end_time='2018-02-28')
     stocks_dict = stock_data_extractor.extract_stock_tickers()
