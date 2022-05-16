@@ -23,8 +23,8 @@ from qiskit_optimization.algorithms import MinimumEigenOptimizer
 from scipy import sparse
 
 # custom packages
-import opti_model_converter as omc
-from config import read_credentials
+import qupo_backend.opti_model_converter as omc
+from qupo_backend.config import read_credentials
 
 
 def configure_azure_provider(credentials, quantum=False):

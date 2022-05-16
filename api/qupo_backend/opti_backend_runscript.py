@@ -1,11 +1,11 @@
 import numpy as np
 
-import opti_backend_runner as obr
-import stockdata_integrator_runscript as sdi
-import finance_utilities as fu
+import qupo_backend.opti_backend_runner as obr
+import qupo_backend.stockdata_integrator_runscript as sdi
+import qupo_backend.finance_utilities as fu
 
 
-if __name__ == "__main__":
+def main():
     risk_weight = 1
     esg_weight = 1
     portfolio_model_df = sdi.portfolios_df_from_default_stock_data()
@@ -56,3 +56,7 @@ if __name__ == "__main__":
     solution_output_percent = dict(zip(job_qiskit.problem.dataframe.index, job_qiskit.result.variables_values.round(2)))
     print(f"Qiskit on LocalSimulator suggested portfolio composition[%]: {solution_output_percent}")
     print(f"Qiskit on LocalSimulator objective value: {job_qiskit.result.objective_value}")
+
+
+if __name__ == "__main__":
+    main()

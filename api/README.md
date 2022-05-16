@@ -8,23 +8,25 @@ The application is composed of two parts which are required to be started separa
 
 ### Backend
 
-1. Install and register Poetry Package Manager:
-    https://python-poetry.org/docs/#installation 
+1. [Install and register Poetry Package Manager](https://python-poetry.org/docs/#installation):
+
     ```(bash)
     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
     ```
-    Open a new terminal and register peotry
+
+    Open a new terminal and register poetry
+
     ```(bash)
     source ~/.poetry/env
     ```
 
-2. Install the requirements via poetry
+1. Install the requirements via poetry
 
     ```(bash)
     poetry install
     ```
 
-3. Run the backend python backend script:
+1. Run the backend python backend script:
 
     ```(bash)
     poetry run python src/qupo-backend/opti_backend_runscript.py

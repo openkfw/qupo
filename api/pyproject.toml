@@ -27,7 +27,8 @@ flake8 = "4.0.1"
 flake8-quotes = "3.3.1"
 
 [tool.poetry.scripts]
-main = "qupo-backend.opt_backend_runscript:main"
+main = "qupo_backend.opti_backend_runscript:main"
+server = "uvicorn app.main:app --reload"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
