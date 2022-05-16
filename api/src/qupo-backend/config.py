@@ -1,9 +1,10 @@
 import os
 from dotenv import load_dotenv
 
+
 def read_credentials(key=None):
     load_dotenv()
-    if key == None:
+    if key is None:
         return {"NASDAQ_API_KEY": os.environ.get("NASDAQ_API_KEY"),
                 "IBMQ_CLIENT_SECRET": os.environ.get("IBMQ_CLIENT_SECRET"),
                 "AZURE_SUBSCRIPTION_ID": os.environ.get("AZURE_SUBSCRIPTION_ID"),
