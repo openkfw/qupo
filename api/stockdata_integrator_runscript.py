@@ -1,6 +1,4 @@
-from portfolios_model import PortfoliosModel
-from stocks import Stock
-from portfolios import Portfolio
+from qupo_classes import Stock, Portfolio, PortfoliosModel
 from stockdata_integrator import StockDataExtractor, StockDataTransformer
 
 
@@ -31,3 +29,4 @@ if __name__ == '__main__':
     stock_data_transformer = StockDataTransformer()
     portfolios_model_df = stock_data_transformer.to_dataframe(portfolios_model)
     print(portfolios_model_df)
+    return portfolios_model_df

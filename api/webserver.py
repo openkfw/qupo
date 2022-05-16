@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from config import read_credentials
+
 app = FastAPI()
 
 origins = [
@@ -24,7 +26,7 @@ async def health():
 
 @app.get('/credentials')
 def get_credentials():
-    return 200
+    return read_credentials()
 
 
 @app.get('/experiment')
