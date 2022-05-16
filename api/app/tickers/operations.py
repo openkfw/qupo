@@ -7,14 +7,14 @@ from ..db import crud, schemas
 
 
 def save_finance_data(db: Session, stock: schemas.StockBase):
-    crud.create_stock(db, stock)
-
     # Get data from yahoo
     data = yfinance.Ticker(stock.symbol)
     yhistory = json.loads(data.history(period="max").to_json(orient="split"))
     history = []
 
-    if(history):
+    if(yhistory["data"]):
+        crud.create_stock(db, stock)
+
         for i in range(len(yhistory["index"])):
             date = datetime.date(datetime.fromtimestamp(yhistory["index"][i] / 1000.0))
             rowData = yhistory["data"][i]
