@@ -20,6 +20,7 @@ app.include_router(apiRouter)
 async def root():
     return {"message": "Hello from qupo"}
 
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}
