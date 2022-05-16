@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 
+
 def read_credentials(key=None):
     load_dotenv()
     if key == None:

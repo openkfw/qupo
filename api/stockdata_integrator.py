@@ -31,9 +31,9 @@ class StockDataExtractor:
     def extract_yfinance_data(self, stock_ticker='ADS'):
         return yf.download(stock_ticker, self.start_time, self.end_time)
 
-    def extract_quandl_data(self, api_key=None, identifier="UPR/EXT"):  
+    def extract_quandl_data(self, api_key=None, identifier="UPR/EXT"):
         if api_key is None:
-            credentials = read_credentials()            
+            credentials = read_credentials()
             api_key = credentials["NASDAQ_API_KEY"]
         return quandl.get_table(identifier, api_key=api_key, paginate=True)
 
