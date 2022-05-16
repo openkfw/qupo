@@ -29,4 +29,3 @@ if __name__ == '__main__':
     stock_data_transformer = StockDataTransformer()
     portfolios_model_df = stock_data_transformer.to_dataframe(portfolios_model)
     print(portfolios_model_df)
-    return portfolios_model_df

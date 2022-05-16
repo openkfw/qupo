@@ -13,15 +13,13 @@ import numpy as np
 import osqp
 import pandas as pd
 import pypfopt as ppo
-from qiskit import QuantumCircuit, IBMQ
+from qiskit import IBMQ
 from qiskit import Aer
 from qiskit.algorithms import QAOA
 from qiskit.algorithms.optimizers import COBYLA
-from qiskit.circuit.library.n_local import QAOAAnsatz
 from qiskit.utils import QuantumInstance
 from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
-from qiskit_optimization.converters import QuadraticProgramToQubo
 from scipy import sparse
 
 # custom packages
@@ -184,11 +182,11 @@ class Result:
 
 @dataclass
 class Problem:
-    ''' 
+    '''
     OSQP (sparse matrix) notation for quadratic constrained problems:
     objective:      minimize 0.5*x^T*P*x + q*x
     constraints:    subject to l <= A*x <= u
-                    with T the transpose operator 
+                    with T the transpose operator
     '''
     P: sparse.csc_matrix = sparse.csc_matrix((2, 2))
     q: np.array = np.array([0, 0])
@@ -206,7 +204,7 @@ class Problem:
         self.num_constraints = len(self.l)
         self.sparsity = np.round(sum([tensor.getnnz() for tensor in [self.P, self.A]]) / sum(
             [tensor.shape[0] * tensor.shape[1] for tensor in [self.P, self.A]]) * 100, 2)
-        if self.resolution != None:
+        if self.resolution is not None:
             self.docplex_problem = omc.convert_osqp_to_docplex_model(self.P, self.q, self.A, self.l, self.u,
                                                                      resolution=self.resolution)
             self.quadratic_problem, self.qubo_problem, self.converter = omc.convert_docplex_to_qubo_model(
@@ -227,7 +225,7 @@ class Solver:
 class Job:
     problem: Problem
     solver: Solver
-    datetime: datetime = datetime.now()
+    timestamp: datetime = datetime.now()
     result: Result = None
 
     def parse_job_df(self, df):
