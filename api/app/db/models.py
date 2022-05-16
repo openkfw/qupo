@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Date, Float, ForeignKey, Integer, LargeBinary, String 
+from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from .database import Base
+
 
 class Stock(Base):
     __tablename__ = "stocks"
@@ -14,17 +15,19 @@ class Stock(Base):
     info = relationship("Info", back_populates="stock")
     history = relationship("History", back_populates="stock")
 
+
 class Info(Base):
     __tablename__ = "info"
 
     id = Column(Integer, primary_key=True, index=True)
     symbol = Column(String, ForeignKey("stocks.symbol"))
     name = Column(String)
-    type=Column(String)
-    source=Column(String)
-    currency=Column(String)
+    type = Column(String)
+    country = Column(String)
+    currency = Column(String)
 
     stock = relationship("Stock", back_populates="info")
+
 
 class History(Base):
     __tablename__ = "history"

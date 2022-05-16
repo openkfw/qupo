@@ -1,6 +1,7 @@
 from datetime import date
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
+
 
 class HistoryBase(BaseModel):
     date: date
@@ -12,8 +13,10 @@ class HistoryBase(BaseModel):
     dividends: float
     splits: float
 
+
 class HistoryCreate(HistoryBase):
     pass
+
 
 class History(HistoryBase):
     id: int
@@ -22,33 +25,39 @@ class History(HistoryBase):
     class Config:
         orm_mode = True
 
+
 class InfoBase(BaseModel):
-    name: Optional[str]
-    type: Optional[str]
-    source: Optional[str]
-    currency: Optional[str]
+    name: str
+    type: str
+    country: str
+    currency: str
+
 
 class InfoCreate(InfoBase):
     pass
 
+
 class Info(InfoBase):
-    id: Optional[int]
-    symbol: Optional[str]
+    id: int
+    symbol: str
 
     class Config:
         orm_mode = True
+
 
 class StockBase(BaseModel):
     symbol: str
     start: date
     end: date
 
+
 class StockCreate(StockBase):
     pass
 
+
 class Stock(StockBase):
     id: int
-    info: Info = None
+    info: List[Info] = []
     history: List[History] = []
 
     class Config:
