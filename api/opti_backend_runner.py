@@ -12,7 +12,7 @@ from azure.quantum.optimization import SimulatedAnnealing, PopulationAnnealing, 
 import numpy as np
 import osqp
 import pandas as pd
-import pypfopt as ppo
+import pypfopt
 from qiskit import IBMQ
 from qiskit import Aer
 from qiskit.algorithms import QAOA
@@ -77,7 +77,7 @@ def run_job(job, filepath=None, experiment=None):
 
 def run_pypo_job(job):
     df = job.problem.dataframe
-    efficient_frontier = ppo.efficient_frontier.EfficientFrontier(df.RateOfReturn, df.iloc[:, -len(df.index):])
+    efficient_frontier = pypfopt.efficient_frontier.EfficientFrontier(df.RateOfReturn, df.iloc[:, -len(df.index):])
     raw_result = efficient_frontier.max_quadratic_utility(risk_aversion=1 / job.problem.risk_weight, market_neutral=False)
     variable_values = np.array(list(raw_result.values()))
     objective_value = job.problem.calc_objective_value(variable_values)

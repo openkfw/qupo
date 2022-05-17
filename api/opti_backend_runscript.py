@@ -2,14 +2,14 @@ import numpy as np
 
 import opti_backend_runner as obr
 import stockdata_integrator_runscript as sdi
-import finance_utilities as fu
+from finance_utilities import convert_business_to_osqp_model
 
 risk_weight = 1
 esg_weight = 1
 portfolio_model_df = sdi.portfolios_df_from_default_stock_data()
 
 # create abstract representation of problem (to identify and leverage hidden structure)
-P, q, A, l, u = fu.convert_business_to_osqp_model(portfolio_model_df, risk_weight=risk_weight, esg_weight=esg_weight)
+P, q, A, l, u = convert_business_to_osqp_model(portfolio_model_df, risk_weight=risk_weight, esg_weight=esg_weight)
 problem = obr.Problem(P, q, A, l, u, portfolio_model_df, risk_weight, esg_weight)
 
 # 0. Classical benchmark solution: instantiate, configure and run
