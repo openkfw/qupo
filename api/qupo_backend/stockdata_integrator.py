@@ -7,8 +7,8 @@ import quandl
 import yfinance as yf
 
 # custom packages
-from config import read_credentials
-from qupo_classes import Stock, PortfoliosModel
+from qupo_backend.config import read_credentials
+from qupo_backend.qupo_classes import Stock, PortfoliosModel
 
 
 date_format = '%Y-%m-%d'

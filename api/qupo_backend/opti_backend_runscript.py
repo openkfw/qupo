@@ -1,8 +1,8 @@
 import numpy as np
 
-import opti_backend_runner as obr
-import stockdata_integrator_runscript as sdi
-import finance_utilities as fu
+import qupo_backend.opti_backend_runner as obr
+import qupo_backend.stockdata_integrator_runscript as sdi
+import qupo_backend.finance_utilities as fu
 
 
 if __name__ == "__main__":

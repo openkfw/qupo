@@ -1,5 +1,5 @@
-from qupo_classes import Stock, Portfolio, PortfoliosModel
-from stockdata_integrator import StockDataExtractor, StockDataTransformer
+from qupo_backend.qupo_classes import Stock, Portfolio, PortfoliosModel
+from qupo_backend.stockdata_integrator import StockDataExtractor, StockDataTransformer
 
 
 def portfolios_df_from_default_stock_data():
@@ -29,3 +29,4 @@ def portfolios_df_from_default_stock_data():
     stock_data_transformer = StockDataTransformer()
     portfolios_model_df = stock_data_transformer.to_dataframe(portfolios_model)
     print(portfolios_model_df)
+    return portfolios_model_df
