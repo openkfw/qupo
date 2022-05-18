@@ -16,10 +16,10 @@ def calculate_historic_sharpe_ratio(historic_rate_of_return_pa, risk_free_return
 
 
 def calculate_expected_covariance_pa(price_time_series):
-    return pypfopt.risk_models.risk_matrix(price_time_series, method="sample_cov")
+    return pypfopt.risk_models.risk_matrix(price_time_series, method='sample_cov')
 
 
-# business = ? 
+# business = ?
 # better name for dataframe?
 # Needs explanation
 def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
@@ -32,7 +32,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     # and x, P, q, l, u?
 
     # n not needed??
-    '''
+    """
     def _make_obj_matrix(covar):
         return sparse.csc_matrix(covar)
 
@@ -42,7 +42,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     def _make_constraint_matrix(n):
         sum_one_matrix = _make_sum_one_constraint(n)
         asset_matrix = _make_asset_constraints(n)
-        return sparse.vstack([asset_matrix, sum_one_matrix], format="csc")
+        return sparse.vstack([asset_matrix, sum_one_matrix], format='csc')
 
     def _make_sum_one_constraint(n):
         return sparse.csc_matrix(np.ones((1, n)))
@@ -67,7 +67,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     A = _make_constraint_matrix(portfolio_size)
     l = _make_lower_bounds(portfolio_size, w_init)
     u = _make_upper_bounds(portfolio_size, asset_ub, w_init)
-    '''
+    """
 
     portfolio_size = len(dataframe.index)
     # asset_ub = ??
@@ -78,7 +78,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     q = dataframe.RateOfReturn.to_numpy() * 0.5 * risk_weight + dataframe.ESGRating.to_numpy() * 0.5 * esg_weight
     sum_one_matrix = sparse.csc_matrix(np.ones((1, portfolio_size)))
     asset_matrix = sparse.eye(portfolio_size)
-    A = sparse.vstack([asset_matrix, sum_one_matrix], format="csc")
+    A = sparse.vstack([asset_matrix, sum_one_matrix], format='csc')
     l = np.hstack([np.zeros(portfolio_size), 1])
     u = np.hstack([asset_ub, 1])
 
