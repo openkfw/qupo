@@ -16,7 +16,8 @@ def calc_historic_sharpe_ratio(historic_rate_of_return_pa, risk_free_return_pa, 
 
 
 def calc_expected_covariance_pa(price_time_series):
-    return ppo.risk_models.risk_matrix(price_time_series, method="sample_cov")
+    return ppo.risk_models.risk_matrix(price_time_series, method='sample_cov')
+
 
 def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     # osqp (sparse matrix) notation for quadratic constrained problems:
@@ -35,7 +36,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
         sum_one_matrix = _make_sum_one_constraint(n)
         asset_matrix = _make_asset_constraints(n)
         constraint_matrix = sparse.vstack([asset_matrix,
-                                           sum_one_matrix], format="csc")
+                                           sum_one_matrix], format='csc')
         return constraint_matrix
 
     def _make_sum_one_constraint(n):
@@ -59,8 +60,8 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     asset_ub = np.ones(n_portfolio)
 
     P = _make_obj_matrix(dataframe.iloc[:, -n_portfolio:].to_numpy(), n_portfolio)
-    q = _make_obj_vector(dataframe.RateOfReturn.to_numpy(), 0.5*risk_weight,
-                         dataframe.ESGRating.to_numpy(), 0.5*esg_weight)
+    q = _make_obj_vector(dataframe.RateOfReturn.to_numpy(), 0.5 * risk_weight,
+                         dataframe.ESGRating.to_numpy(), 0.5 * esg_weight)
     A = _make_constraint_matrix(n_portfolio)
     l = _make_lower_bounds(n_portfolio, w_init)
     u = _make_upper_bounds(n_portfolio, asset_ub, w_init)

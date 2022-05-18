@@ -29,4 +29,3 @@ def portfolios_df_from_default_stock_data():
     stock_data_transformer = StockDataTransformer()
     portfolios_model_df = stock_data_transformer.to_dataframe(portfolios_model)
     print(portfolios_model_df)
-    return portfolios_model_df

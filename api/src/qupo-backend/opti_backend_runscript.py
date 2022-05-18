@@ -6,13 +6,13 @@ import finance_utilities as fu
 
 
 if __name__ == "__main__":
-    risk_weight = 1
-    esg_weight = 1
+    RISK_WEIGHT = 1.0
+    ESG_WEIGHT = 1.0
     portfolio_model_df = sdi.portfolios_df_from_default_stock_data()
 
     # create abstract representation of problem (to identify and leverage hidden structure)
-    P, q, A, l, u = fu.convert_business_to_osqp_model(portfolio_model_df, risk_weight=risk_weight, esg_weight=esg_weight)
-    problem = obr.Problem(P, q, A, l, u, portfolio_model_df, risk_weight, esg_weight)
+    P, q, A, l, u = fu.convert_business_to_osqp_model(portfolio_model_df, risk_weight=RISK_WEIGHT, esg_weight=ESG_WEIGHT)
+    problem = obr.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT)
 
     # 0. Classical benchmark solution: instantiate, configure and run
     # 0.1 PyPortfolioOptimization (excl. sustainability measures)
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     for algorithm in ["PA"]:  # ["SA", "PT", "PA", "Tabu", "QMC", "SMC"]:
         for resolution in np.array([1]) * 1E3:
             for timeout in [60]:  # 60, 10, 1]:
-                quantum_problem = obr.Problem(P, q, A, l, u, portfolio_model_df, risk_weight, esg_weight, resolution=resolution)
+                quantum_problem = obr.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT, resolution=resolution)
                 solver_qio = obr.Solver(provider_name="Azure", algorithm=algorithm, config={"timeout": timeout, "hardware": "FPGA"})
                 job_qio = obr.Job(quantum_problem, solver_qio)
                 obr.run_job(job_qio)
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     # 2. Quantization: generate generic quantum problem (quadratic unconstrained binary optimization problem)
     # to run on quantum (simulator) backend
-    quantum_problem = obr.Problem(P, q, A, l, u, portfolio_model_df, risk_weight, esg_weight, resolution=1)
+    quantum_problem = obr.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT, resolution=1)
     solver_qiskit = obr.Solver(provider_name="IBM", algorithm="QAOA")
     job_qiskit = obr.Job(quantum_problem, solver_qiskit)
     obr.run_job(job_qiskit)
