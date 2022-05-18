@@ -46,7 +46,7 @@ def convert_qubo_to_azureqio_model(qubo):
     qubo_terms = list()
     for term in qubo_list:
         qubo_terms = qubo_terms + [aqo.Term(c=term['c'], indices=term['ids'])]
-    aqo_model = aqo.Problem(name="Supply Chain", problem_type=aqo.ProblemType.pubo, terms=qubo_terms)
+    aqo_model = aqo.Problem(name='Supply Chain', problem_type=aqo.ProblemType.pubo, terms=qubo_terms)
     return aqo_model
 
 

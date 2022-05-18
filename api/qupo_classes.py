@@ -12,8 +12,8 @@ import finance_utilities as fu
 @dataclass
 class Stock:
     price_time_series: pd.Series   # stock price time series [€]
-    ticker: str = "Ticker"
-    full_name: str = "Stock Name"
+    ticker: str = 'Ticker'
+    full_name: str = 'Stock Name'
     historic_esg_value: np.float32 = None
     risk_free_return_pa: InitVar[np.float32] = 0
 
@@ -36,7 +36,7 @@ class Portfolio:
             stock_weights = np.append(np.zeros(len(self.stock_tickers) - 1), 1)
         elif np.sum(stock_weights) > 1:
             stock_weights = stock_weights / np.sum(stock_weights)
-            print(f"Sum of stock weights >1, normalized to {stock_weights}")
+            print(f'Sum of stock weights >1, normalized to {stock_weights}')
         self.stock_weights = stock_weights
         self.price_time_series = np.dot(self.stock_weights, np.array(
             [stock.price_time_series for stock in stocks] + [stocks[0].price_time_series * 0]))  # sum of weighted stock price time series
@@ -54,8 +54,8 @@ class PortfoliosModel():
     risk_free_return_pa: InitVar = 0
 
     def __post_init__(self, stocks, risk_free_return_pa):
-        stocks_full_names = ["Bank Account"]
-        stocks_tickers = ["Acct"]
+        stocks_full_names = ['Bank Account']
+        stocks_tickers = ['Acct']
         stocks_esg_data = [0.0]
         stocks_expected_rate_of_return_pa = np.array([0.0])
         stocks_time_series = stocks[0].price_time_series * 0.0 + 1.0
@@ -69,7 +69,7 @@ class PortfoliosModel():
             stocks_esg_data = stocks_esg_data + [stock.historic_esg_value]
             stocks_expected_rate_of_return_pa = np.concatenate(
                 (stocks_expected_rate_of_return_pa, fu.calc_historic_rate_of_return_pa(stocks_time_series[stock.ticker])))
-            print(f"RoR Stocks: {stocks_expected_rate_of_return_pa}")
+            print(f'RoR Stocks: {stocks_expected_rate_of_return_pa}')
 
         self.stocks_full_names = stocks_full_names
         self.stocks_tickers = stocks_tickers
