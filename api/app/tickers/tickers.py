@@ -21,12 +21,12 @@ router = fastapi.APIRouter(
 )
 
 
-@router.get("/", tags=["tickers"])
+@router.get('/', tags=['tickers'])
 async def get_all_tickers():
-    return [{"name": "ticker1"}, {"name": "ticker2"}]
+    return [{'name': 'ticker1'}, {'name': 'ticker2'}]
 
 
-@router.post("/stock/", response_model=schemas.Stock)
+@router.post('/stock/', response_model=schemas.Stock)
 def getStock(stock: schemas.StockBase, db: Session = fastapi.Depends(get_db)):
     db_stock = crud.get_stock(db, stock)
 
