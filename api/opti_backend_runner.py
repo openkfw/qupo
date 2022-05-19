@@ -28,27 +28,27 @@ from config import read_credentials
 
 
 def configure_azure_provider(credentials, quantum=False):
-    credential = ClientSecretCredential(tenant_id=credentials["AZURE_TENANT_ID"],
-                                        client_id=credentials["AZURE_CLIENT_ID"],
-                                        client_secret=credentials["AZURE_CLIENT_SECRET"])
+    credential = ClientSecretCredential(tenant_id=credentials['AZURE_TENANT_ID'],
+                                        client_id=credentials['AZURE_CLIENT_ID'],
+                                        client_secret=credentials['AZURE_CLIENT_SECRET'])
     if quantum:
-        azure_provider = AzureQuantumProvider(subscription_id=credentials["AZURE_SUBSCRIPTION_ID"],
-                                              resource_group=credentials["AZURE_RESOURCE_GROUP"],
-                                              name=credentials["AZURE_NAME"],
-                                              location=credentials["AZURE_LOCATION"],
+        azure_provider = AzureQuantumProvider(subscription_id=credentials['AZURE_SUBSCRIPTION_ID'],
+                                              resource_group=credentials['AZURE_RESOURCE_GROUP'],
+                                              name=credentials['AZURE_NAME'],
+                                              location=credentials['AZURE_LOCATION'],
                                               credential=credential)
     else:
-        azure_provider = Workspace(subscription_id=credentials["AZURE_SUBSCRIPTION_ID"],
-                                   resource_group=credentials["AZURE_RESOURCE_GROUP"],
-                                   name=credentials["AZURE_NAME"],
-                                   location=credentials["AZURE_LOCATION"],
+        azure_provider = Workspace(subscription_id=credentials['AZURE_SUBSCRIPTION_ID'],
+                                   resource_group=credentials['AZURE_RESOURCE_GROUP'],
+                                   name=credentials['AZURE_NAME'],
+                                   location=credentials['AZURE_LOCATION'],
                                    credential=credential)
     return azure_provider
 
 
 def configure_qiskit_provider(credentials):
     try:
-        IBMQ.enable_account(credentials["IBMQ_CLIENT_SECRET"])
+        IBMQ.enable_account(credentials['IBMQ_CLIENT_SECRET'])
     except IBMQAccountError:
         pass
     provider = IBMQ.get_provider(
@@ -60,8 +60,8 @@ def configure_qiskit_provider(credentials):
 
 
 def run_job(job, filepath=None, experiment=None):
-    if job.solver.provider_name == "PyPortfolioOptimization":
-        warnings.warn(f"{job.solver.provider_name} does not include sustainability measures in optimization")
+    if job.solver.provider_name == 'PyPortfolioOptimization':
+        warnings.warn(f'{job.solver.provider_name} does not include sustainability measures in optimization')
         raw_result, variable_values, objective_value, time_to_solution = run_pypo_job(job)
     elif job.solver.provider_name == 'University of Oxford':
         raw_result, variable_values, objective_value, time_to_solution = run_osqp_job(job)
@@ -70,7 +70,7 @@ def run_job(job, filepath=None, experiment=None):
     elif job.solver.provider_name in ['IBM', 'IONQ']:
         raw_result, variable_values, objective_value, time_to_solution = run_qiskit_job(job)
     else:
-        warnings.warn(f"Provider {job.solver.provider_name} not available")
+        warnings.warn(f'Provider {job.solver.provider_name} not available')
         return
     job.result = Result(variable_values * 100, objective_value, time_to_solution)
 
@@ -182,12 +182,12 @@ class Result:
 
 @dataclass
 class Problem:
-    '''
+    """
     OSQP (sparse matrix) notation for quadratic constrained problems:
     objective:      minimize 0.5*x^T*P*x + q*x
     constraints:    subject to l <= A*x <= u
                     with T the transpose operator
-    '''
+    """
     P: sparse.csc_matrix = sparse.csc_matrix((2, 2))
     q: np.array = np.array([0, 0])
     A: sparse.csc_matrix = sparse.csc_matrix((2, 2))
@@ -216,8 +216,8 @@ class Problem:
 
 @dataclass
 class Solver:
-    provider_name: str = "not specified"
-    algorithm: str = "not specified"
+    provider_name: str = 'not specified'
+    algorithm: str = 'not specified'
     config: dict = field(default_factory=dict)
 
 

@@ -16,7 +16,7 @@ def calc_historic_sharpe_ratio(historic_rate_of_return_pa, risk_free_return_pa, 
 
 
 def calc_expected_covariance_pa(price_time_series):
-    return ppo.risk_models.risk_matrix(price_time_series, method="sample_cov")
+    return ppo.risk_models.risk_matrix(price_time_series, method='sample_cov')
 
 
 def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
@@ -36,7 +36,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
         sum_one_matrix = _make_sum_one_constraint(n)
         asset_matrix = _make_asset_constraints(n)
         constraint_matrix = sparse.vstack([asset_matrix,
-                                           sum_one_matrix], format="csc")
+                                           sum_one_matrix], format='csc')
         return constraint_matrix
 
     def _make_sum_one_constraint(n):
