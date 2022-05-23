@@ -14,7 +14,6 @@ def portfolios_df_from_default_stock_data():
     for item in stocks_dict.items():
         time_series = stock_data_extractor.extract_yfinance_data(item[0])
         print(esg_data)
-        esg_value = esg_data
         stock = Stock(time_series['Close'], ticker=item[0], full_name=item[1], historic_esg_value=1)
         print(stock)
         stocks = stocks + [stock]

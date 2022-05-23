@@ -30,27 +30,27 @@ from qupo_backend.config import read_credentials
 
 
 def configure_azure_provider(credentials, quantum=False):
-    credential = ClientSecretCredential(tenant_id=credentials["AZURE_TENANT_ID"],
-                                        client_id=credentials["AZURE_CLIENT_ID"],
-                                        client_secret=credentials["AZURE_CLIENT_SECRET"])
+    credential = ClientSecretCredential(tenant_id=credentials['AZURE_TENANT_ID'],
+                                        client_id=credentials['AZURE_CLIENT_ID'],
+                                        client_secret=credentials['AZURE_CLIENT_SECRET'])
     if quantum:
-        azure_provider = AzureQuantumProvider(subscription_id=credentials["AZURE_SUBSCRIPTION_ID"],
-                                resource_group=credentials["AZURE_RESOURCE_GROUP"],
-                                name=credentials["AZURE_NAME"],
-                                location=credentials["AZURE_LOCATION"],
-                                credential=credential)
-    else:
-        azure_provider = Workspace(subscription_id=credentials["AZURE_SUBSCRIPTION_ID"],
-                                              resource_group=credentials["AZURE_RESOURCE_GROUP"],
-                                              name=credentials["AZURE_NAME"],
-                                              location=credentials["AZURE_LOCATION"],
+        azure_provider = AzureQuantumProvider(subscription_id=credentials['AZURE_SUBSCRIPTION_ID'],
+                                              resource_group=credentials['AZURE_RESOURCE_GROUP'],
+                                              name=credentials['AZURE_NAME'],
+                                              location=credentials['AZURE_LOCATION'],
                                               credential=credential)
+    else:
+        azure_provider = Workspace(subscription_id=credentials['AZURE_SUBSCRIPTION_ID'],
+                                   resource_group=credentials['AZURE_RESOURCE_GROUP'],
+                                   name=credentials['AZURE_NAME'],
+                                   location=credentials['AZURE_LOCATION'],
+                                   credential=credential)
     return azure_provider
 
 
 def configure_qiskit_provider(credentials):
     try:
-        IBMQ.enable_account(credentials["IBMQ_CLIENT_SECRET"])
+        IBMQ.enable_account(credentials['IBMQ_CLIENT_SECRET'])
     except IBMQAccountError:
         pass
     provider = IBMQ.get_provider(
@@ -62,8 +62,8 @@ def configure_qiskit_provider(credentials):
 
 
 def run_job(job, filepath=None, experiment=None):
-    if job.solver.provider_name == "PyPortfolioOptimization":
-        warnings.warn(f"{job.solver.provider_name} does not include sustainability measures in optimization")
+    if job.solver.provider_name == 'PyPortfolioOptimization':
+        warnings.warn(f'{job.solver.provider_name} does not include sustainability measures in optimization')
         raw_result, variable_values, objective_value, time_to_solution = run_pypo_job(job)
     elif job.solver.provider_name == 'University of Oxford':
         raw_result, variable_values, objective_value, time_to_solution = run_osqp_job(job)
@@ -72,18 +72,20 @@ def run_job(job, filepath=None, experiment=None):
     elif job.solver.provider_name in ['IBM', 'IONQ']:
         raw_result, variable_values, objective_value, time_to_solution = run_qiskit_job(job)
     else:
-        warnings.warn(f"Provider {job.solver.provider_name} not available")
+        warnings.warn(f'Provider {job.solver.provider_name} not available')
         return
     job.result = Result(variable_values * 100, objective_value, time_to_solution)
+
 
 def run_pypo_job(job):
     df = job.problem.dataframe
     efficient_frontier = ppo.efficient_frontier.EfficientFrontier(df.RateOfReturn, df.iloc[:, -len(df.index):])
-    raw_result = efficient_frontier.max_quadratic_utility(risk_aversion=1/job.problem.risk_weight, market_neutral=False)
+    raw_result = efficient_frontier.max_quadratic_utility(risk_aversion=1 / job.problem.risk_weight, market_neutral=False)
     variable_values = np.array(list(raw_result.values()))
     objective_value = job.problem.calc_objective_value(variable_values)
     time_to_solution = None
     return raw_result, variable_values, objective_value, time_to_solution
+
 
 def run_osqp_job(job):
     # Create an OSQP object
@@ -98,8 +100,9 @@ def run_osqp_job(job):
     time_to_solution = raw_result.info.run_time
     return raw_result, variable_values, objective_value, time_to_solution
 
+
 def run_azure_qio_job(job):
-    credentials=read_credentials()
+    credentials = read_credentials()
     provider = configure_azure_provider(credentials)
     try:
         if job.solver.algorithm == 'SA':
@@ -144,7 +147,7 @@ def run_qiskit_job(job):
         print([backend.name() for backend in provider.backends()])
         simulator_backend = Aer.get_backend('aer_simulator')
     elif job.solver.provider_name == 'IONQ':
-        provider = configure_azure_provider(credentials,quantum=True)
+        provider = configure_azure_provider(credentials, quantum=True)
         print([backend.name() for backend in provider.backends()])
         simulator_backend_list = provider.backends('ionq.simulator')
         simulator_backend = simulator_backend_list[0]
@@ -166,16 +169,18 @@ def run_qiskit_job(job):
 
     return raw_result, variable_values, objective_value, time_to_solution
 
+
 @dataclass
 class Result:
-    variables_values: float 
-    objective_value: float 
+    variables_values: float
+    objective_value: float
     time_to_solution: float
     valid: bool = False
     rate_of_return: float = None
     variance: float = None
     esg_value: float = None
     raw_result: object = None
+
 
 @dataclass
 class Problem:
@@ -185,11 +190,11 @@ class Problem:
     constraints:    subject to l <= A*x <= u
                     with T the transpose operator 
     '''
-    P: sparse.csc_matrix = sparse.csc_matrix((2,2))
-    q: np.array = np.array([0,0])
+    P: sparse.csc_matrix = sparse.csc_matrix((2, 2))
+    q: np.array = np.array([0, 0])
     A: sparse.csc_matrix = sparse.csc_matrix((2, 2))
-    l: np.array = np.array([0,0])
-    u: np.array = np.array([1,1])
+    l: np.array = np.array([0, 0])
+    u: np.array = np.array([1, 1])
     dataframe: pd.DataFrame = pd.DataFrame()
     risk_weight: float = None
     esg_weight: float = None
@@ -203,18 +208,20 @@ class Problem:
             [tensor.shape[0] * tensor.shape[1] for tensor in [self.P, self.A]]) * 100, 2)
         if self.resolution != None:
             self.docplex_problem = omc.convert_osqp_to_docplex_model(self.P, self.q, self.A, self.l, self.u,
-                                                                 resolution=self.resolution)
+                                                                     resolution=self.resolution)
             self.quadratic_problem, self.qubo_problem, self.converter = omc.convert_docplex_to_qubo_model(
-            self.docplex_problem)
+                self.docplex_problem)
 
     def calc_objective_value(self, variable_values):
         return 0.5 * np.dot(variable_values, self.P.dot(variable_values)) + np.dot(self.q, variable_values)
 
+
 @dataclass
 class Solver:
-    provider_name: str = "not specified"
-    algorithm: str = "not specified"
+    provider_name: str = 'not specified'
+    algorithm: str = 'not specified'
     config: dict = field(default_factory=dict)
+
 
 @dataclass
 class Job:
@@ -227,5 +234,3 @@ class Job:
         df = df.loc[df['DateTime'] == self.datetime]
         df = df.iloc[:, 3:-5][df['Unnamed: 0'] == df['Unnamed: 0']]
         return df
-
-
