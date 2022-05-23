@@ -18,7 +18,7 @@ async def get_all_tickers():
     return [{'name': 'ticker1'}, {'name': 'ticker2'}]
 
 
-@router.get("/symbols/")
+@router.get('/symbols/')
 async def get_symbols(symbols_only: boolean = False):
     markets = stock_symbol.market_list
     symbols = []
@@ -29,21 +29,21 @@ async def get_symbols(symbols_only: boolean = False):
     return symbols
 
 
-@router.get("/markets")
+@router.get('/markets')
 async def get_markets():
     return stock_symbol.market_list
 
 
-@router.get("/markets/{market}")
+@router.get('/markets/{market}')
 async def get_symbols_of_market(market):
     return stock_symbol.get_symbol_list(market=market)
 
 
-@router.get("/indices")
+@router.get('/indices')
 async def get_indices():
     return stock_symbol.index_list
 
 
-@router.get("/indices/{index}")
+@router.get('/indices/{index}')
 async def get_symbols_of_index(index):
     return stock_symbol.get_symbol_list(index=index)
