@@ -24,7 +24,7 @@ async def get_symbols(symbols_only: boolean = False):
     symbols = []
 
     for market in markets:
-        symbols.append(stock_symbol.get_symbol_list(market=market["market"], symbols_only=symbols_only))
+        symbols.append(stock_symbol.get_symbol_list(market=market['market'], symbols_only=symbols_only))
 
     return symbols
 
