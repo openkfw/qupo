@@ -10,7 +10,7 @@ qiskit[optimization]
 quandl
 uvicorn==0.17.6
 yfinance
+sqlalchemy==1.4.36
 
 # development
 flake8
-
