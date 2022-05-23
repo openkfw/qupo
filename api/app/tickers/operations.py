@@ -28,4 +28,6 @@ def save_finance_data(db: Session, stock: schemas.StockBase):
                                   country=data.info['country'], currency=data.info['currency'])
         crud.create_stock_info(db, info, stock.symbol)
 
+        db.commit()
+
     return crud.get_stock(db, stock)

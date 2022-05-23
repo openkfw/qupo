@@ -27,7 +27,7 @@ async def get_all_tickers():
 
 
 @router.post('/stock/', response_model=schemas.Stock)
-def getStock(stock: schemas.StockBase, db: Session = fastapi.Depends(get_db)):
+def stock(stock: schemas.StockBase, db: Session = fastapi.Depends(get_db)):
     db_stock = crud.get_stock(db, stock)
 
     if db_stock is None:
