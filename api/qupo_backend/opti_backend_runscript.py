@@ -25,7 +25,7 @@ def main():
     print(f'PyPO objective value: {job_pypo.result.objective_value}')
 
     # 0.2 University of Oxford OSQP Solver (incl. sustainability measures)
-    solver_p = obr.Solver(provider_name='PyPortfolioOptimization', algorithm='pypo')
+    # solver_p = obr.Solver(provider_name='PyPortfolioOptimization', algorithm='pypo')
     job_pypo = obr.Job(problem, solver_pypo)
     obr.run_job(job_pypo)
 
