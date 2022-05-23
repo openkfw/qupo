@@ -1,4 +1,5 @@
 [flake8]
 ignore = E741
 max-line-length = 160
-exclude = .git, __pycache__, venv
+exclude = .git, __pycache__, venv, .venv
+docstring-quotes='''

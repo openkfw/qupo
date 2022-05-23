@@ -188,7 +188,7 @@ class Problem:
     OSQP (sparse matrix) notation for quadratic constrained problems:
     objective:      minimize 0.5*x^T*P*x + q*x
     constraints:    subject to l <= A*x <= u
-                    with T the transpose operator 
+                    with T the transpose operator
     '''
     P: sparse.csc_matrix = sparse.csc_matrix((2, 2))
     q: np.array = np.array([0, 0])
