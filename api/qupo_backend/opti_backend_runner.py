@@ -26,31 +26,31 @@ from scipy import sparse
 
 # custom packages
 import qupo_backend.opti_model_converter as omc
-from qupo_backend.config import read_credentials
+from .config import settings
 
 
-def configure_azure_provider(credentials, quantum=False):
-    credential = ClientSecretCredential(tenant_id=credentials['AZURE_TENANT_ID'],
-                                        client_id=credentials['AZURE_CLIENT_ID'],
-                                        client_secret=credentials['AZURE_CLIENT_SECRET'])
+def configure_azure_provider(quantum=False):
+    credential = ClientSecretCredential(tenant_id=settings.azure_tenant_id,
+                                        client_id=settings.azure_client_id,
+                                        client_secret=settings.azure_client_secret)
     if quantum:
-        azure_provider = AzureQuantumProvider(subscription_id=credentials['AZURE_SUBSCRIPTION_ID'],
-                                              resource_group=credentials['AZURE_RESOURCE_GROUP'],
-                                              name=credentials['AZURE_NAME'],
-                                              location=credentials['AZURE_LOCATION'],
+        azure_provider = AzureQuantumProvider(subscription_id=settings.azure_subscription_id,
+                                              resource_group=settings.azure_resource_group,
+                                              name=settings.azure_name,
+                                              location=settings.azure_location,
                                               credential=credential)
     else:
-        azure_provider = Workspace(subscription_id=credentials['AZURE_SUBSCRIPTION_ID'],
-                                   resource_group=credentials['AZURE_RESOURCE_GROUP'],
-                                   name=credentials['AZURE_NAME'],
-                                   location=credentials['AZURE_LOCATION'],
+        azure_provider = Workspace(subscription_id=settings.azure_subscription_id,
+                                   resource_group=settings.azure_resource_group,
+                                   name=settings.azure_name,
+                                   location=settings.azure_location,
                                    credential=credential)
     return azure_provider
 
 
-def configure_qiskit_provider(credentials):
+def configure_qiskit_provider():
     try:
-        IBMQ.enable_account(credentials['IBMQ_CLIENT_SECRET'])
+        IBMQ.enable_account(settings.ibmq_client_secret)
     except IBMQAccountError:
         pass
     provider = IBMQ.get_provider(
@@ -102,8 +102,7 @@ def run_osqp_job(job):
 
 
 def run_azure_qio_job(job):
-    credentials = read_credentials()
-    provider = configure_azure_provider(credentials)
+    provider = configure_azure_provider()
     try:
         if job.solver.algorithm == 'SA':
             qio_solver = SimulatedAnnealing(provider, timeout=job.solver.config['timeout'],
@@ -139,15 +138,14 @@ def run_azure_qio_job(job):
 
 
 def run_qiskit_job(job):
-    credentials = read_credentials()
     qp = job.problem.quadratic_problem
     # Implementation according to https://qiskit.org/documentation/finance/tutorials/01_portfolio_optimization.html
     if job.solver.provider_name == 'IBM':
-        provider = configure_qiskit_provider(credentials)
+        provider = configure_qiskit_provider()
         print([backend.name() for backend in provider.backends()])
         simulator_backend = Aer.get_backend('aer_simulator')
     elif job.solver.provider_name == 'IONQ':
-        provider = configure_azure_provider(credentials, quantum=True)
+        provider = configure_azure_provider(quantum=True)
         print([backend.name() for backend in provider.backends()])
         simulator_backend_list = provider.backends('ionq.simulator')
         simulator_backend = simulator_backend_list[0]
@@ -170,7 +168,7 @@ def run_qiskit_job(job):
     return raw_result, variable_values, objective_value, time_to_solution
 
 
-@dataclass
+@ dataclass
 class Result:
     variables_values: float
     objective_value: float
@@ -182,7 +180,7 @@ class Result:
     raw_result: object = None
 
 
-@dataclass
+@ dataclass
 class Problem:
     '''
     OSQP (sparse matrix) notation for quadratic constrained problems:
@@ -216,14 +214,14 @@ class Problem:
         return 0.5 * np.dot(variable_values, self.P.dot(variable_values)) + np.dot(self.q, variable_values)
 
 
-@dataclass
+@ dataclass
 class Solver:
     provider_name: str = 'not specified'
     algorithm: str = 'not specified'
     config: dict = field(default_factory=dict)
 
 
-@dataclass
+@ dataclass
 class Job:
     problem: Problem
     solver: Solver
