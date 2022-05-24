@@ -10,7 +10,7 @@ qiskit[optimization]
 quandl
 uvicorn==0.17.6
 yfinance
-stocksymbol==0.0.5
+pytickersymbols==1.8.78
 
 # development
 flake8
