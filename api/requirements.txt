@@ -11,6 +11,7 @@ quandl
 uvicorn==0.17.6
 yfinance
 pytickersymbols==1.8.78
+sqlalchemy==1.4.36
 
 # development
 flake8
