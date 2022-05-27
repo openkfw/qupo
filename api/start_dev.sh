@@ -1,3 +1,3 @@
 #!/bin/bash
 
-uvicorn app.main:app --reload
+poetry run uvicorn qupo_backend.main:app --reload

@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "qupo-backend"
+version = "0.1.0"
+description = ""
+authors = ["Tim Leonhardt <tim.leonhardt@accenture.com>"]
+homepage = "https://github.com/openkfw/qupo"
+repository = "https://github.com/openkfw/qupo"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+azure-quantum = {extras = ["qiskit"], version = "^0.23.201228b1"}
+click = "^8.1.3"
+dimod = "^0.11.0"
+fastapi = "^0.75.1"
+gunicorn = "^20.1.0"
+numpy = "^1.22.3"
+pydantic = "^1.9.0"
+PyPortfolioOpt = "^1.5.2"
+python-dotenv = "^0.20.0"
+qiskit = {extras = ["optimization"], version = "^0.36.1"}
+quandl = "^3.7.0"
+uvicorn = "^0.17.6"
+yfinance = "^0.1.70"
+sqlalchemy = "^1.4.36"
+pytickersymbols = "^1.8.78"
+
+[tool.poetry.dev-dependencies]
+flake8 = "4.0.1"
+flake8-quotes = "3.3.1"
+
+[tool.poetry.scripts]
+main = "qupo_backend.opti_backend_runscript:main"
+# server = "uvicorn app.main:app --reload"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+

@@ -8,24 +8,40 @@ The application is composed of two parts which are required to be started separa
 
 ### Backend
 
-1. Create, and activate virtual environment:
+1. [Install and register Poetry Package Manager](https://python-poetry.org/docs/#installation):
 
     ```(bash)
-    cd api
-    python3 -m venv ./venv
-    source ./venv/bin/activate
+    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
     ```
 
-2. Install the requirements for development (they include the same linter that is used in the pipeline)
+    Open a new terminal and register poetry
 
     ```(bash)
-    pip install -r requirements_dev.txt
+    source ~/.poetry/env
     ```
 
-3. Start the backend application:
+1. Install the requirements via poetry
 
     ```(bash)
-    ./start_dev.sh
+    poetry install
     ```
 
-To verify that the backend is running, the following URL can be used: <http://localhost:8000/health>
+1. Activate poetry shell
+
+    ```(bash)
+    poetry shell
+    ```
+
+1. Run the python API:
+
+    ```(bash)
+    start_dev.sh
+    ```
+
+    After startup the API URL can be accessed at: <http://127.0.0.1:8000/docs>
+
+    It is possible also to run other scripts in the poetry environment:
+
+    ```(bash)
+    poetry run python qupo_backend/opti_backend_runscript.py
+    ```

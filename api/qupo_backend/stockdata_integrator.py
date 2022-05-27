@@ -7,8 +7,8 @@ import quandl
 import yfinance as yf
 
 # custom packages
-from config import read_credentials
-from qupo_classes import Stock, PortfoliosModel
+from .config import settings
+from qupo_backend.qupo_classes import Stock, PortfoliosModel
 
 
 date_format = '%Y-%m-%d'
@@ -33,8 +33,7 @@ class StockDataExtractor:
 
     def extract_quandl_data(self, api_key=None, identifier='UPR/EXT'):
         if api_key is None:
-            credentials = read_credentials()
-            api_key = credentials['NASDAQ_API_KEY']
+            api_key = settings.nasdaq_api_key
         return quandl.get_table(identifier, api_key=api_key, paginate=True)
 
 

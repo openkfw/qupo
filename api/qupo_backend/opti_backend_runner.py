@@ -17,38 +17,40 @@ from qiskit import IBMQ
 from qiskit import Aer
 from qiskit.algorithms import QAOA
 from qiskit.algorithms.optimizers import COBYLA
+# from qiskit.circuit.library.n_local import QAOAAnsatz
 from qiskit.utils import QuantumInstance
 from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
+# from qiskit_optimization.converters import QuadraticProgramToQubo
 from scipy import sparse
 
 # custom packages
-import opti_model_converter as omc
-from config import read_credentials
+import qupo_backend.opti_model_converter as omc
+from .config import settings
 
 
-def configure_azure_provider(credentials, quantum=False):
-    credential = ClientSecretCredential(tenant_id=credentials['AZURE_TENANT_ID'],
-                                        client_id=credentials['AZURE_CLIENT_ID'],
-                                        client_secret=credentials['AZURE_CLIENT_SECRET'])
+def configure_azure_provider(quantum=False):
+    credential = ClientSecretCredential(tenant_id=settings.azure_tenant_id,
+                                        client_id=settings.azure_client_id,
+                                        client_secret=settings.azure_client_secret)
     if quantum:
-        azure_provider = AzureQuantumProvider(subscription_id=credentials['AZURE_SUBSCRIPTION_ID'],
-                                              resource_group=credentials['AZURE_RESOURCE_GROUP'],
-                                              name=credentials['AZURE_NAME'],
-                                              location=credentials['AZURE_LOCATION'],
+        azure_provider = AzureQuantumProvider(subscription_id=settings.azure_subscription_id,
+                                              resource_group=settings.azure_resource_group,
+                                              name=settings.azure_name,
+                                              location=settings.azure_location,
                                               credential=credential)
     else:
-        azure_provider = Workspace(subscription_id=credentials['AZURE_SUBSCRIPTION_ID'],
-                                   resource_group=credentials['AZURE_RESOURCE_GROUP'],
-                                   name=credentials['AZURE_NAME'],
-                                   location=credentials['AZURE_LOCATION'],
+        azure_provider = Workspace(subscription_id=settings.azure_subscription_id,
+                                   resource_group=settings.azure_resource_group,
+                                   name=settings.azure_name,
+                                   location=settings.azure_location,
                                    credential=credential)
     return azure_provider
 
 
-def configure_qiskit_provider(credentials):
+def configure_qiskit_provider():
     try:
-        IBMQ.enable_account(credentials['IBMQ_CLIENT_SECRET'])
+        IBMQ.enable_account(settings.ibmq_client_secret)
     except IBMQAccountError:
         pass
     provider = IBMQ.get_provider(
@@ -100,8 +102,7 @@ def run_osqp_job(job):
 
 
 def run_azure_qio_job(job):
-    credentials = read_credentials()
-    provider = configure_azure_provider(credentials)
+    provider = configure_azure_provider()
     try:
         if job.solver.algorithm == 'SA':
             qio_solver = SimulatedAnnealing(provider, timeout=job.solver.config['timeout'],
@@ -137,15 +138,14 @@ def run_azure_qio_job(job):
 
 
 def run_qiskit_job(job):
-    credentials = read_credentials()
     qp = job.problem.quadratic_problem
     # Implementation according to https://qiskit.org/documentation/finance/tutorials/01_portfolio_optimization.html
     if job.solver.provider_name == 'IBM':
-        provider = configure_qiskit_provider(credentials)
+        provider = configure_qiskit_provider()
         print([backend.name() for backend in provider.backends()])
         simulator_backend = Aer.get_backend('aer_simulator')
     elif job.solver.provider_name == 'IONQ':
-        provider = configure_azure_provider(credentials, quantum=True)
+        provider = configure_azure_provider(quantum=True)
         print([backend.name() for backend in provider.backends()])
         simulator_backend_list = provider.backends('ionq.simulator')
         simulator_backend = simulator_backend_list[0]
@@ -168,35 +168,35 @@ def run_qiskit_job(job):
     return raw_result, variable_values, objective_value, time_to_solution
 
 
-@dataclass
+@ dataclass
 class Result:
-    variables_values: np.float32
-    objective_value: np.float32
-    time_to_solution: np.float32
+    variables_values: float
+    objective_value: float
+    time_to_solution: float
     valid: bool = False
-    rate_of_return: np.float32 = None
-    variance: np.float32 = None
-    esg_value: np.float32 = None
+    rate_of_return: float = None
+    variance: float = None
+    esg_value: float = None
     raw_result: object = None
 
 
-@dataclass
+@ dataclass
 class Problem:
-    """
+    '''
     OSQP (sparse matrix) notation for quadratic constrained problems:
     objective:      minimize 0.5*x^T*P*x + q*x
     constraints:    subject to l <= A*x <= u
                     with T the transpose operator
-    """
+    '''
     P: sparse.csc_matrix = sparse.csc_matrix((2, 2))
     q: np.array = np.array([0, 0])
     A: sparse.csc_matrix = sparse.csc_matrix((2, 2))
     l: np.array = np.array([0, 0])
     u: np.array = np.array([1, 1])
     dataframe: pd.DataFrame = pd.DataFrame()
-    risk_weight: np.float32 = None
-    esg_weight: np.float32 = None
-    resolution: np.int32 = None
+    risk_weight: float = None
+    esg_weight: float = None
+    resolution: float = None
 
     def __post_init__(self):
         self.rms_covariance = np.round(self.P.power(2).sqrt().sum() / self.P.getnnz(), 2)
@@ -214,14 +214,14 @@ class Problem:
         return 0.5 * np.dot(variable_values, self.P.dot(variable_values)) + np.dot(self.q, variable_values)
 
 
-@dataclass
+@ dataclass
 class Solver:
     provider_name: str = 'not specified'
     algorithm: str = 'not specified'
     config: dict = field(default_factory=dict)
 
 
-@dataclass
+@ dataclass
 class Job:
     problem: Problem
     solver: Solver
@@ -229,6 +229,6 @@ class Job:
     result: Result = None
 
     def parse_job_df(self, df):
-        df = df.loc[df['DateTime'] == self.datetime]
+        df = df.loc[df['DateTime'] == self.timestamp]
         df = df.iloc[:, 3:-5][df['Unnamed: 0'] == df['Unnamed: 0']]
         return df
