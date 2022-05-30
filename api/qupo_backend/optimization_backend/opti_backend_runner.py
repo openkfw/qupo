@@ -25,8 +25,8 @@ from qiskit_optimization.algorithms import MinimumEigenOptimizer
 from scipy import sparse
 
 # custom packages
-import qupo_backend.opti_model_converter as omc
-from .config import settings
+import qupo_backend.optimization_backend.opti_model_converter as omc
+from ..config import settings
 
 
 def configure_azure_provider(quantum=False):
@@ -74,7 +74,10 @@ def run_job(job, filepath=None, experiment=None):
     else:
         warnings.warn(f'Provider {job.solver.provider_name} not available')
         return
-    job.result = Result(variable_values * 100, objective_value, time_to_solution)
+    try:
+        job.result = Result(variable_values * 100, objective_value, time_to_solution)
+    except TypeError:
+        warnings.warn("Solver did not return variable values")
 
 
 def run_pypo_job(job):
@@ -92,7 +95,7 @@ def run_osqp_job(job):
     osqp_job = osqp.OSQP()
     # Setup workspace and change alpha parameter
     osqp_job.setup(job.problem.P, job.problem.q, job.problem.A, job.problem.l, job.problem.u,
-                   alpha=job.solver.config['alpha'], polish=True, eps_rel=1E-10, max_iter=100000)
+                   alpha=1, polish=True, eps_rel=1E-10, max_iter=100000)
     # Solve problem
     raw_result = osqp_job.solve()
     variable_values = raw_result.x
@@ -174,9 +177,9 @@ class Result:
     objective_value: float
     time_to_solution: float
     valid: bool = False
-    rate_of_return: float = None
-    variance: float = None
-    esg_value: float = None
+    rate_of_return: float = 0.0
+    variance: float = 0.0
+    esg_value: float = 0.0
     raw_result: object = None
 
 
@@ -189,14 +192,14 @@ class Problem:
                     with T the transpose operator
     '''
     P: sparse.csc_matrix = sparse.csc_matrix((2, 2))
-    q: np.array = np.array([0, 0])
+    q: np.ndarray = np.array([0, 0])
     A: sparse.csc_matrix = sparse.csc_matrix((2, 2))
-    l: np.array = np.array([0, 0])
-    u: np.array = np.array([1, 1])
+    l: np.ndarray = np.array([0, 0])
+    u: np.ndarray = np.array([1, 1])
     dataframe: pd.DataFrame = pd.DataFrame()
-    risk_weight: float = None
-    esg_weight: float = None
-    resolution: float = None
+    risk_weight: float = 1
+    esg_weight: float = 1
+    resolution: float = 1
 
     def __post_init__(self):
         self.rms_covariance = np.round(self.P.power(2).sqrt().sum() / self.P.getnnz(), 2)
@@ -225,8 +228,8 @@ class Solver:
 class Job:
     problem: Problem
     solver: Solver
+    result: Result = Result(0.0, 0.0, 0.0)
     timestamp: datetime = datetime.now()
-    result: Result = None
 
     def parse_job_df(self, df):
         df = df.loc[df['DateTime'] == self.timestamp]

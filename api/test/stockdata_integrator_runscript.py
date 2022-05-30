@@ -1,3 +1,9 @@
+import sys
+import os.path
+import warnings
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+
 from qupo_backend.qupo_classes import Stock, Portfolio, PortfoliosModel
 from qupo_backend.stockdata_integrator import StockDataExtractor, StockDataTransformer
 
@@ -12,9 +18,20 @@ def portfolios_df_from_default_stock_data():
     stocks = []
 
     for item in stocks_dict.items():
-        time_series = stock_data_extractor.extract_yfinance_data(item[0])
-        print(esg_data)
-        stock = Stock(time_series['Close'], ticker=item[0], full_name=item[1], historic_esg_value=1)
+        time_series = stock_data_extractor.extract_yfinance_data(item[0]) 
+        try:
+            matches = [item[1].startswith(company_name.upper()) for company_name in esg_data.company_name]
+            print(f"Stock Name {item}, ESG Match: {matches}")
+            if any(matches):
+                esg_data_value = esg_data[matches].net_impact_ratio.values[0]
+            else:
+                warnings.warn(f"ESG Data not available for {item[1]}. Set to  0.")
+                esg_data_value = 0
+        except KeyError:
+            warnings.warn(f"ESG Data not available for {item[1]}. Set to  0.")
+            esg_data_value = 0
+
+        stock = Stock(time_series['Close'], ticker=item[0], full_name=item[1], historic_esg_value=esg_data_value)
         print(stock)
         stocks = stocks + [stock]
 

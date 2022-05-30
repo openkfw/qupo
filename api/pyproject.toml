@@ -17,6 +17,7 @@ numpy = "^1.22.3"
 pydantic = "^1.9.0"
 PyPortfolioOpt = "^1.5.2"
 python-dotenv = "^0.20.0"
+pytickersymbols = "^1.8.78"
 qiskit = {extras = ["optimization"], version = "^0.36.1"}
 quandl = "^3.7.0"
 uvicorn = "^0.17.6"
