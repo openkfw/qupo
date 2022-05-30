@@ -1,18 +1,12 @@
-# native packages
 from datetime import datetime
 import sys
 import os.path
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-
-
-# 3rd party packages
 import pandas as pd
 import quandl
 import yfinance as yf
 import json
-
-# custom packages
 from qupo_backend.config import settings
 from qupo_backend.qupo_classes import Stock, PortfoliosModel
 
@@ -30,12 +24,12 @@ class StockDataExtractor:
 
     def extract_stock_tickers(self):
         if self.scope == 'DAX':
-            file = open("qupo/api/test/ticker_symbols_dax.json")
+            file = open('qupo/api/test/ticker_symbols_dax.json')
             stock_ticker_names = json.load(file)
-            stocks_dict = {stock["symbol"]: stock["longName"] for stock in stock_ticker_names}
-            stocks_dict.pop("DAI.DE")
-            stocks_dict.pop("SHL.DE")
-            stocks_dict.pop("ENR.DE")
+            stocks_dict = {stock['symbol']: stock['longName'] for stock in stock_ticker_names}
+            stocks_dict.pop('DAI.DE')
+            stocks_dict.pop('SHL.DE')
+            stocks_dict.pop('ENR.DE')
             return stocks_dict
         else:
             print(f'Scope {self.scope} not available')

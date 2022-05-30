@@ -77,7 +77,7 @@ def run_job(job, filepath=None, experiment=None):
     try:
         job.result = Result(variable_values * 100, objective_value, time_to_solution)
     except TypeError:
-        warnings.warn("Solver did not return variable values")
+        warnings.warn('Solver did not return variable values')
 
 
 def run_pypo_job(job):
