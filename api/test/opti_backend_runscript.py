@@ -1,7 +1,6 @@
 # native packages
 import sys
 import os.path
-
 # custom packages
 import qupo_backend.optimization_backend.opti_backend_runner as obr
 import stockdata_integrator_runscript as sdi

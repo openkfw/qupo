@@ -2,7 +2,6 @@
 import sys
 import os.path
 import warnings
-
 # custom packages
 from qupo_backend.qupo_classes import Stock, Portfolio, PortfoliosModel
 from qupo_backend.stockdata_integrator import StockDataExtractor, StockDataTransformer
@@ -20,7 +19,7 @@ def portfolios_df_from_default_stock_data():
     stocks = []
 
     for item in stocks_dict.items():
-        time_series = stock_data_extractor.extract_yfinance_data(item[0]) 
+        time_series = stock_data_extractor.extract_yfinance_data(item[0])
         try:
             matches = [item[1].startswith(company_name.upper()) for company_name in esg_data.company_name]
             print(f'Stock Name {item}, ESG Match: {matches}')
