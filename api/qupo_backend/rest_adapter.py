@@ -2,9 +2,9 @@ import fastapi
 from pytickersymbols import PyTickerSymbols
 from sqlalchemy.orm import Session
 
-from ..db import crud, models, schemas
-from ..db.database import SessionLocal, engine
-from .operations import save_finance_data
+from .db import crud, models, schemas
+from .db.database import SessionLocal, engine
+from .db.operations import save_finance_data
 
 
 def get_db():

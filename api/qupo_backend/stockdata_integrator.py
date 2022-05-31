@@ -1,16 +1,14 @@
-# native packages
 from datetime import datetime
-
-# 3rd party packages
+import sys
+import os.path
 import pandas as pd
 import quandl
-import yfinance as yf
-
-# custom packages
-from .config import settings
+import yfinance
+import json
+from qupo_backend.config import settings
 from qupo_backend.qupo_classes import Stock, PortfoliosModel
 
-
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 date_format = '%Y-%m-%d'
 
 
@@ -23,13 +21,20 @@ class StockDataExtractor:
             self.config = config_path
 
     def extract_stock_tickers(self):
+        # ToDo - ticker extraction functionality
         if self.scope == 'DAX':
-            return {'ADS': 'Adidas'}  # ToDo: import full names from https://de.wikipedia.org/wiki/DAX
+            file = open('qupo/api/test/ticker_symbols_dax.json')
+            stock_ticker_names = json.load(file)
+            stocks_dict = {stock['symbol']: stock['longName'] for stock in stock_ticker_names}
+            stocks_dict.pop('DAI.DE')
+            stocks_dict.pop('SHL.DE')
+            stocks_dict.pop('ENR.DE')
+            return stocks_dict
         else:
             print(f'Scope {self.scope} not available')
 
     def extract_yfinance_data(self, stock_ticker='ADS'):
-        return yf.download(stock_ticker, self.start_time, self.end_time)
+        return yfinance.download(stock_ticker, self.start_time, self.end_time)
 
     def extract_quandl_data(self, api_key=None, identifier='UPR/EXT'):
         if api_key is None:

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter
 
 # from .config import settings
-from .tickers import tickers
+from . import rest_adapter
 
 app = FastAPI()
 
@@ -11,7 +11,7 @@ apiRouter = APIRouter(
     responses={404: {'description': 'Not found'}},
 )
 
-apiRouter.include_router(tickers.router)
+apiRouter.include_router(rest_adapter.router)
 
 app.include_router(apiRouter)
 
