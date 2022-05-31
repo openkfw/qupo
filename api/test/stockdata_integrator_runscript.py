@@ -1,8 +1,6 @@
-# native packages
 import sys
 import os.path
 import warnings
-# custom packages
 from qupo_backend.qupo_classes import Stock, Portfolio, PortfoliosModel
 from qupo_backend.stockdata_integrator import StockDataExtractor, StockDataTransformer
 

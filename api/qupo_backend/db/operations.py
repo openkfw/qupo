@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import json
 import yfinance
 
-from ..db import crud, schemas
+from . import crud, schemas
 
 
 def save_finance_data(db: Session, stock: schemas.StockBase):

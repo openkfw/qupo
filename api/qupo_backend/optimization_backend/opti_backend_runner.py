@@ -1,9 +1,6 @@
-# native packages
 from dataclasses import dataclass, field
 from datetime import datetime
 import warnings
-
-# 3rd party packages
 from azure.quantum import Workspace
 from azure.quantum.qiskit import AzureQuantumProvider
 from azure.identity import ClientSecretCredential
@@ -17,14 +14,10 @@ from qiskit import IBMQ
 from qiskit import Aer
 from qiskit.algorithms import QAOA
 from qiskit.algorithms.optimizers import COBYLA
-# from qiskit.circuit.library.n_local import QAOAAnsatz
 from qiskit.utils import QuantumInstance
 from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
-# from qiskit_optimization.converters import QuadraticProgramToQubo
 from scipy import sparse
-
-# custom packages
 import qupo_backend.optimization_backend.opti_model_converter as omc
 from ..config import settings
 
