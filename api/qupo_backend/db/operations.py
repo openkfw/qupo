@@ -1,4 +1,5 @@
 from datetime import datetime
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 import json
 import yfinance
@@ -10,9 +11,9 @@ def save_finance_data(db: Session, stock: schemas.StockBase):
     # Get data from yahoo
     data = yfinance.Ticker(stock.symbol)
     yhistory = json.loads(data.history(period='max').to_json(orient='split'))
-    history = []
 
     if(yhistory['data']):
+        history = []
         crud.create_stock(db, stock)
 
         for i in range(len(yhistory['index'])):
@@ -29,5 +30,6 @@ def save_finance_data(db: Session, stock: schemas.StockBase):
         crud.create_stock_info(db, info, stock.symbol)
 
         db.commit()
+        return crud.get_stock(db, stock)
 
-    return crud.get_stock(db, stock)
+    raise HTTPException(status_code=404, detail=f'No data found for symbol: {stock.symbol}')
