@@ -1,6 +1,5 @@
 from fastapi import FastAPI, APIRouter
 
-# from .config import settings
 from . import tickers_api
 
 app = FastAPI()

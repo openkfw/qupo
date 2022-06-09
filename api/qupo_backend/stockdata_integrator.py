@@ -5,11 +5,14 @@ import pandas as pd
 import quandl
 import yfinance
 import json
-from qupo_backend.config import settings
+
+from config import settings
 from qupo_backend.qupo_classes import Stock, PortfoliosModel
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 date_format = '%Y-%m-%d'
+
+settings = settings()
 
 
 class StockDataExtractor:
@@ -38,7 +41,7 @@ class StockDataExtractor:
 
     def extract_quandl_data(self, api_key=None, identifier='UPR/EXT'):
         if api_key is None:
-            api_key = settings.nasdaq_api_key
+            api_key = settings['API_KEYS']['NASDAQ']
         return quandl.get_table(identifier, api_key=api_key, paginate=True)
 
 

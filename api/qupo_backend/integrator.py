@@ -3,9 +3,11 @@ import yfinance
 from datetime import datetime
 from sqlalchemy.orm import Session
 
+from config import settings
 from .db import crud, schemas
 from .db.operations import save_finance_data
-from .config import settings
+
+settings = settings()
 
 
 def get_all_symbols(stock_data, symbols_only: bool):
@@ -22,7 +24,7 @@ def get_all_symbols(stock_data, symbols_only: bool):
 
 
 def get_data_of_symbol(stock: schemas.StockBase, db: Session):
-    if(settings.use_db):
+    if(settings['DATABASE']['USE_DB']):
         db_stock = crud.get_stock(db, stock)
 
         if db_stock is None:

@@ -19,31 +19,33 @@ from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 from scipy import sparse
 import qupo_backend.optimization_backend.opti_model_converter as omc
-from ..config import settings
+from config import settings
+
+settings = settings()
 
 
 def configure_azure_provider(quantum=False):
-    credential = ClientSecretCredential(tenant_id=settings.azure_tenant_id,
-                                        client_id=settings.azure_client_id,
-                                        client_secret=settings.azure_client_secret)
+    credential = ClientSecretCredential(tenant_id=settings['AZURE']['TENANT_ID'],
+                                        client_id=settings['AZURE']['CLIENT_ID'],
+                                        client_secret=settings['AZURE']['CLIENT_SECRET'])
     if quantum:
-        azure_provider = AzureQuantumProvider(subscription_id=settings.azure_subscription_id,
-                                              resource_group=settings.azure_resource_group,
-                                              name=settings.azure_name,
-                                              location=settings.azure_location,
+        azure_provider = AzureQuantumProvider(subscription_id=settings['AZURE']['SUBSCRIPTION_ID'],
+                                              resource_group=settings['AZURE']['RESOURCE_GROUP'],
+                                              name=settings['AZURE']['NAME'],
+                                              location=settings['AZURE']['LOCATION'],
                                               credential=credential)
     else:
-        azure_provider = Workspace(subscription_id=settings.azure_subscription_id,
-                                   resource_group=settings.azure_resource_group,
-                                   name=settings.azure_name,
-                                   location=settings.azure_location,
+        azure_provider = Workspace(subscription_id=settings['AZURE']['SUBSCRIPTION_ID'],
+                                   resource_group=settings['AZURE']['RESOURCE_GROUP'],
+                                   name=settings['AZURE']['NAME'],
+                                   location=settings['AZURE']['LOCATION'],
                                    credential=credential)
     return azure_provider
 
 
 def configure_qiskit_provider():
     try:
-        IBMQ.enable_account(settings.ibmq_client_secret)
+        IBMQ.enable_account(settings['API_KEYS']['IBMQ'])
     except IBMQAccountError:
         pass
     provider = IBMQ.get_provider(

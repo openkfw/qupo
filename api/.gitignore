@@ -127,6 +127,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+config.toml
 
 # Spyder project settings
 .spyderproject
@@ -163,4 +164,4 @@ cython_debug/
 .DS_Store
 
 # Local database file
-app/**/*.db
+qupo_backend/**/*.db

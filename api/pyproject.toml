@@ -23,6 +23,7 @@ uvicorn = "^0.17.6"
 yfinance = "^0.1.70"
 sqlalchemy = "^1.4.36"
 pytickersymbols = "^1.8.78"
+tomli = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "4.0.1"
@@ -35,4 +36,3 @@ main = "qupo_backend.opti_backend_runscript:main"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-

@@ -4,14 +4,23 @@ from fastapi import APIRouter, Depends, HTTPException
 from pytickersymbols import PyTickerSymbols
 from sqlalchemy.orm import Session, sessionmaker
 
-from .config import settings
+from config import settings
 from .db import models, schemas
 from .db.database import SessionLocal, engine
 from .integrator import get_all_symbols, get_data_of_symbol
 
 
+router = APIRouter(
+    prefix='/tickers',
+    tags=['tickers'],
+)
+
+settings = settings()
+stock_data = PyTickerSymbols()
+
+
 def get_db():
-    if(settings.use_db):
+    if(settings['DATABASE']['USE_DB']):
         models.Base.metadata.create_all(bind=engine)
         db = SessionLocal()
         try:
@@ -20,14 +29,6 @@ def get_db():
             db.close()
     else:
         yield sessionmaker(bind=None)
-
-
-router = APIRouter(
-    prefix='/tickers',
-    tags=['tickers'],
-)
-
-stock_data = PyTickerSymbols()
 
 
 @router.get('/symbols')
