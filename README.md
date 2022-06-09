@@ -34,6 +34,14 @@ Navigate into the api folder: `cd api`.
    poetry shell
    ```
 
+1. Set environment variables
+
+   ```(bash)
+   cp config_example.toml config.toml
+   ```
+
+   This creates the `config.toml` file, containing all environment variables that have to be set.
+
 1. Run the python API:
 
    ```(bash)
