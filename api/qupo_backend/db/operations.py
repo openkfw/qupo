@@ -7,6 +7,13 @@ import yfinance
 from . import crud, schemas
 
 
+def get_data_in_timeframe(db: Session, stock: schemas.StockBase):
+    info = crud.get_info(db, stock)
+    history = crud.get_history(db, stock)
+    return schemas.Stock(id=0, symbol=stock.symbol, start=stock.start, end=stock.end,
+                         info=[info], history=history)
+
+
 def save_finance_data(db: Session, stock: schemas.StockBase):
     # Get data from yahoo
     data = yfinance.Ticker(stock.symbol)
@@ -30,6 +37,6 @@ def save_finance_data(db: Session, stock: schemas.StockBase):
         crud.create_stock_info(db, info, stock.symbol)
 
         db.commit()
-        return crud.get_stock(db, stock)
+        return get_data_in_timeframe(db, stock)
 
     raise HTTPException(status_code=404, detail=f'No data found for symbol: {stock.symbol}')

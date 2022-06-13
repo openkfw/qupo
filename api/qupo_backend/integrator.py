@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from config import settings
 from .db import crud, schemas
-from .db.operations import save_finance_data
+from .db.operations import save_finance_data, get_data_in_timeframe
 
 settings = settings()
 
@@ -30,7 +30,7 @@ def get_data_of_symbol(stock: schemas.StockBase, db: Session):
         if db_stock is None:
             return save_finance_data(db, stock)
 
-        return db_stock
+        return get_data_in_timeframe(db, stock)
 
     else:
         data = yfinance.Ticker(stock.symbol)
