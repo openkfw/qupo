@@ -1,16 +1,12 @@
-import os
 import logging
-from dotenv import load_dotenv
 
 from fastapi import APIRouter, Depends, HTTPException
 from pytickersymbols import PyTickerSymbols
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
 
-from .db import models, schemas
-from .db.database import SessionLocal, engine
+from .db import schemas
 from .integrator import get_all_symbols, get_data_of_symbol
-
-load_dotenv()
+from .db.database import get_db
 
 router = APIRouter(
     prefix='/tickers',
@@ -18,18 +14,6 @@ router = APIRouter(
 )
 
 stock_data = PyTickerSymbols()
-
-
-def get_db():
-    if(os.getenv('USE_DB')):
-        models.Base.metadata.create_all(bind=engine)
-        db = SessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-    else:
-        yield sessionmaker(bind=None)
 
 
 @router.get('/symbols')
