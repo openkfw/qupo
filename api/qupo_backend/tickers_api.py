@@ -1,26 +1,27 @@
+import os
 import logging
+from dotenv import load_dotenv
 
 from fastapi import APIRouter, Depends, HTTPException
 from pytickersymbols import PyTickerSymbols
 from sqlalchemy.orm import Session, sessionmaker
 
-from config import settings
 from .db import models, schemas
 from .db.database import SessionLocal, engine
 from .integrator import get_all_symbols, get_data_of_symbol
 
+load_dotenv()
 
 router = APIRouter(
     prefix='/tickers',
     tags=['tickers'],
 )
 
-settings = settings()
 stock_data = PyTickerSymbols()
 
 
 def get_db():
-    if(settings['DATABASE']['USE_DB']):
+    if(os.getenv('USE_DB')):
         models.Base.metadata.create_all(bind=engine)
         db = SessionLocal()
         try:

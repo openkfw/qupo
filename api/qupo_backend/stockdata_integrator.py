@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from datetime import datetime
 import sys
 import os.path
@@ -6,13 +8,12 @@ import quandl
 import yfinance
 import json
 
-from config import settings
 from qupo_backend.qupo_classes import Stock, PortfoliosModel
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 date_format = '%Y-%m-%d'
 
-settings = settings()
+load_dotenv()
 
 
 class StockDataExtractor:
@@ -41,7 +42,7 @@ class StockDataExtractor:
 
     def extract_quandl_data(self, api_key=None, identifier='UPR/EXT'):
         if api_key is None:
-            api_key = settings['API_KEYS']['NASDAQ']
+            api_key = os.getenv('NASDAQ_API_KEY')
         return quandl.get_table(identifier, api_key=api_key, paginate=True)
 
 
