@@ -1,5 +1,3 @@
-import os
-from dotenv import load_dotenv
 from dataclasses import dataclass, field
 from datetime import datetime
 import warnings
@@ -21,32 +19,31 @@ from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 from scipy import sparse
 import qupo_backend.optimization_backend.opti_model_converter as omc
-
-load_dotenv()
+from ..config import settings
 
 
 def configure_azure_provider(quantum=False):
-    credential = ClientSecretCredential(tenant_id=os.getenv('AZURE_TENANT_ID'),
-                                        client_id=os.getenv('AZURE_CLIENT_ID'),
-                                        client_secret=os.getenv('AZURE_CLIENT_SECRET'))
+    credential = ClientSecretCredential(tenant_id=settings.azure_tenant_id,
+                                        client_id=settings.azure_client_id,
+                                        client_secret=settings.azure_client_secret)
     if quantum:
-        azure_provider = AzureQuantumProvider(subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
-                                              resource_group=os.getenv('AZURE_RESOURCE_GROUP'),
-                                              name=os.getenv('AZURE_NAME'),
-                                              location=os.getenv('AZURE_LOCATION'),
+        azure_provider = AzureQuantumProvider(subscription_id=settings.azure_subscription_id,
+                                              resource_group=settings.azure_resource_group,
+                                              name=settings.azure_name,
+                                              location=settings.azure_location,
                                               credential=credential)
     else:
-        azure_provider = Workspace(subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
-                                   resource_group=os.getenv('AZURE_RESOURCE_GROUP'),
-                                   name=os.getenv('AZURE_NAME'),
-                                   location=os.getenv('AZURE_LOCATION'),
+        azure_provider = Workspace(subscription_id=settings.azure_subscription_id,
+                                   resource_group=settings.azure_resource_group,
+                                   name=settings.azure_name,
+                                   location=settings.azure_location,
                                    credential=credential)
     return azure_provider
 
 
 def configure_qiskit_provider():
     try:
-        IBMQ.enable_account(os.getenv('IBMQ_CLIENT_SECRET'))
+        IBMQ.enable_account(settings.ibmq_client_secret)
     except IBMQAccountError:
         pass
     provider = IBMQ.get_provider(

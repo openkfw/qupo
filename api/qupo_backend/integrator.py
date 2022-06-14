@@ -1,16 +1,12 @@
-import os
 import json
-from dotenv import load_dotenv
-
 import yfinance
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+from .config import settings
 from .db import crud, schemas
 from .db.operations import (save_finance_data, get_data_in_timeframe,
                             update_history, deconstruct_yhistory)
-
-load_dotenv()
 
 
 def get_all_symbols(stock_data, symbols_only: bool):
@@ -27,7 +23,7 @@ def get_all_symbols(stock_data, symbols_only: bool):
 
 
 def get_data_of_symbol(stock: schemas.StockBase, db: Session):
-    if(os.getenv('USE_DB')):
+    if(settings.use_db):
         db_stock = crud.get_stock(db, stock)
 
         if db_stock is None:
