@@ -37,10 +37,10 @@ Navigate into the api folder: `cd api`.
 1. Set environment variables
 
    ```(bash)
-   cp config_example.toml config.toml
+   cp .env_example .env
    ```
 
-   This creates the `config.toml` file, containing all environment variables that have to be set.
+   This creates the `.env` file, containing all environment variables that have to be set.
 
 1. Run the python API:
 
