@@ -87,4 +87,4 @@ def stock(stock: schemas.StockBase, db: Session = Depends(get_db)):
         return get_data_of_symbol(stock, db)
     except Exception as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f'Unable to return stock data of symbol: {stock.symbol}.')
+        raise e

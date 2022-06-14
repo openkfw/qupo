@@ -3,11 +3,12 @@ import json
 from dotenv import load_dotenv
 
 import yfinance
-from datetime import datetime
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from .db import crud, schemas
-from .db.operations import save_finance_data, get_data_in_timeframe
+from .db.operations import (save_finance_data, get_data_in_timeframe,
+                            update_history, deconstruct_yhistory)
 
 load_dotenv()
 
@@ -32,6 +33,10 @@ def get_data_of_symbol(stock: schemas.StockBase, db: Session):
         if db_stock is None:
             return save_finance_data(db, stock)
 
+        date_last_entry = db_stock.history[len(db_stock.history) - 1].date
+        if(date_last_entry < stock.end):
+            return update_history(db, stock, date_last_entry)
+
         return get_data_in_timeframe(db, stock)
 
     else:
@@ -39,18 +44,11 @@ def get_data_of_symbol(stock: schemas.StockBase, db: Session):
         yhistory = json.loads(data.history(start=str(stock.start), end=str(stock.end)).to_json(orient='split'))
 
         if(yhistory['data']):
-            history = []
-            for i in range(len(yhistory['index'])):
-                date = datetime.date(datetime.fromtimestamp(yhistory['index'][i] / 1000.0))
-                rowData = yhistory['data'][i]
-                row = schemas.History(id=i, symbol=stock.symbol, date=date, open=rowData[0], high=rowData[1],
-                                      low=rowData[2], close=rowData[3], volume=rowData[4],
-                                      dividends=rowData[5], splits=rowData[6])
-                history.append(row)
+            history = deconstruct_yhistory(yhistory)
 
             info = schemas.Info(id=0, symbol=stock.symbol, name=data.info['shortName'], type=data.info['quoteType'],
                                 country=data.info['country'], currency=data.info['currency'])
 
             return schemas.Stock(id=0, symbol=stock.symbol, start=stock.start, end=stock.end, info=[info], history=history)
 
-    raise Exception
+    raise HTTPException(status_code=500, detail=f'Unable to return stock data of symbol: {stock.symbol}.')
