@@ -3,13 +3,10 @@ import os.path
 import qupo_backend.optimization_backend.opti_backend_runner as obr
 import stockdata_integrator_runscript as sdi
 import qupo_backend.finance_utilities as fu
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
 
-def main():
-    RISK_WEIGHT = 0.0001
-    ESG_WEIGHT = 0.0001
+def main(RISK_WEIGHT=1, ESG_WEIGHT=0.0001):
     portfolio_model_df = sdi.portfolios_df_from_default_stock_data()
 
     # create abstract representation of problem (to identify and leverage hidden structure)
