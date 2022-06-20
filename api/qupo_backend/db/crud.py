@@ -6,10 +6,21 @@ from . import models, schemas
 
 def get_stock(db: Session, stock: schemas.StockBase):
     return db.query(models.Stock). \
-        join(models.Info). \
-        join(models.History). \
-        filter(models.Stock.symbol == stock.symbol). \
+        where(models.Stock.symbol == stock.symbol). \
         first()
+
+
+def get_info(db: Session, stock: schemas.StockBase):
+    return db.query(models.Info). \
+        where(models.Info.symbol == stock.symbol). \
+        first()
+
+
+def get_history(db: Session, stock: schemas.StockBase):
+    return db.query(models.History). \
+        where(models.History.symbol == stock.symbol). \
+        filter(models.History.date.between(stock.start, stock.end)). \
+        all()
 
 
 def create_stock(db: Session, stock: schemas.StockCreate):

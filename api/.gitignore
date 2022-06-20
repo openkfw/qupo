@@ -163,4 +163,4 @@ cython_debug/
 .DS_Store
 
 # Local database file
-app/**/*.db
+qupo_backend/**/*.db
