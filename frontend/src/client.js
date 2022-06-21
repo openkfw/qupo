@@ -19,6 +19,30 @@ class ApiClient {
       .get(`/tickers/symbols?symbols_only=${symbolsOnly}`)
       .then(({ data }) => {
         return data;
+      })
+      .catch((error) => console.error(error));
+  }
+
+  getIndices(index = "") {
+    const route = index ? `/${index}?symbols_only=True` : "";
+    return this.apiClient.get(`/tickers/indices${route}`).then(({ data }) => {
+      return data;
+    });
+  }
+
+  getCountries(country = "") {
+    const route = country ? `/${country}?symbols_only=True` : "";
+    return this.apiClient.get(`/tickers/countries${route}`).then(({ data }) => {
+      return data;
+    });
+  }
+
+  getIndustries(industry = "") {
+    const route = industry ? `/${industry}?symbols_only=True` : "";
+    return this.apiClient
+      .get(`/tickers/industries${route}`)
+      .then(({ data }) => {
+        return data;
       });
   }
 }
