@@ -25,13 +25,13 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     # objective: minimize 0.5*x^T*P*x + q*x
     # constraints: subject to l <= A*x <= u
     # with T the transpose operator
-    def _make_obj_matrix(covar, n):
-        obj_matrix = sparse.csc_matrix(covar)
+    def _make_obj_matrix(covar, alpha_scaling):
+        obj_matrix = sparse.csc_matrix(covar) * alpha_scaling / 2
         return obj_matrix
 
-    def _make_obj_vector(alpha_vector, alpha_scaling, beta_vector, beta_scaling):
-        obj_vector = alpha_scaling * alpha_vector + beta_scaling * beta_vector
-        return obj_vector
+    def _make_obj_vector(alpha_vector, beta_vector, beta_scaling):
+        obj_vector = alpha_vector + beta_scaling * beta_vector / 2
+        return - obj_vector
 
     def _make_constraint_matrix(n):
         sum_one_matrix = _make_sum_one_constraint(n)
@@ -60,9 +60,9 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     w_init = np.ones(n_portfolio) * 1 / n_portfolio
     asset_ub = np.ones(n_portfolio)
 
-    P = _make_obj_matrix(dataframe.iloc[:, -n_portfolio:].to_numpy(), n_portfolio)
-    q = _make_obj_vector(dataframe.RateOfReturn.to_numpy(), 0.5 * risk_weight,
-                         dataframe.ESGRating.to_numpy(), 0.5 * esg_weight)
+    P = _make_obj_matrix(dataframe.iloc[:, -n_portfolio:].to_numpy(), risk_weight)
+    q = _make_obj_vector(dataframe.RateOfReturn.to_numpy(),
+                         dataframe.ESGRating.to_numpy(), esg_weight)
     A = _make_constraint_matrix(n_portfolio)
     l = _make_lower_bounds(n_portfolio, w_init)
     u = _make_upper_bounds(n_portfolio, asset_ub, w_init)

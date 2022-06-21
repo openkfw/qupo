@@ -106,3 +106,4 @@ dist
 # VSCode directory
 .vscode/
 api/env.json
+api/qupo_backend/config.py

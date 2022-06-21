@@ -23,12 +23,17 @@ class StockDataExtractor:
     def extract_stock_tickers(self):
         # ToDo - ticker extraction functionality
         if self.scope == 'DAX':
-            file = open('qupo/api/test/ticker_symbols_dax.json')
+            file = open('api/test/ticker_symbols_dax.json')
             stock_ticker_names = json.load(file)
             stocks_dict = {stock['symbol']: stock['longName'] for stock in stock_ticker_names}
             stocks_dict.pop('DAI.DE')
             stocks_dict.pop('SHL.DE')
             stocks_dict.pop('ENR.DE')
+            return stocks_dict
+        elif self.scope == 'DAX_mini':
+            file = open('api/test/ticker_symbols_dax_mini.json')
+            stock_ticker_names = json.load(file)
+            stocks_dict = {stock['symbol']: stock['longName'] for stock in stock_ticker_names}
             return stocks_dict
         else:
             print(f'Scope {self.scope} not available')

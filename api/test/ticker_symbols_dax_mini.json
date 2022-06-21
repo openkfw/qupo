@@ -1,0 +1,10 @@
+[{"symbol":"ZAL.DE","shortName":"zalando","longName":"ZALANDO SE","exchange":"XETR","market":"de_market","quoteType":"EQUITY"},
+    {
+        "symbol": "QIA.DE",
+        "shortName": "qiagen-nv",
+        "longName": "QIAGEN NV EO -,01",
+        "exchange": "XETR",
+        "market": "de_market",
+        "quoteType": "EQUITY"
+    }
+]
