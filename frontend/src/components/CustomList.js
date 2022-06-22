@@ -37,7 +37,7 @@ const CustomList = ({ client, view, setView }) => {
     fetchIndices();
     fetchCountries();
     fetchIndustries();
-  }, []);
+  }, [client]);
 
   const fetchSymbolsOfIndex = async (index) => {
     return await client.getIndices(index);

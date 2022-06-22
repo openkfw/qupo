@@ -11,6 +11,8 @@ import ApiClient from "./client";
 import Controllers from "./components/Controllers";
 import CustomList from "./components/CustomList";
 import QuantumDashboard from "./components/QuantumDashboard";
+import ProcessFlow from "./components/ProcessFlow";
+import Questionaire from "./components/Questionaire";
 
 const client = new ApiClient();
 
@@ -37,6 +39,11 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const [view, setView] = useState("index");
+  const [currentStep, setCurrentStep] = useState(1);
+  const [weights, setWeights] = useState({
+    risk_weight: 50,
+    esg_weight: 50,
+  });
 
   return (
     <Grid className={classes.background}>
@@ -49,7 +56,16 @@ function App() {
         <CustomList view={view} client={client} setView={setView} />
         {view === "chart" && (
           <div hidden={!(view === "chart")}>
-            <QuantumDashboard />
+            <ProcessFlow
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+            >
+              {currentStep === 1 ? (
+                <Questionaire setWeights={setWeights} />
+              ) : (
+                <div />
+              )}
+            </ProcessFlow>
           </div>
         )}
       </Container>
