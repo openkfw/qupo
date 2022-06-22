@@ -76,7 +76,7 @@ def run_job(job, filepath=None, experiment=None):
 def run_pypo_job(job):
     df = job.problem.dataframe
     efficient_frontier = ppo.efficient_frontier.EfficientFrontier(df.RateOfReturn, df.iloc[:, -len(df.index):])
-    raw_result = efficient_frontier.max_quadratic_utility(risk_aversion=job.problem.risk_weight/2, market_neutral=False)
+    raw_result = efficient_frontier.max_quadratic_utility(risk_aversion=job.problem.risk_weight, market_neutral=False)
     variable_values = np.array(list(raw_result.values()))
     objective_value = job.problem.calc_objective_value(variable_values)
     time_to_solution = None
