@@ -25,16 +25,22 @@ class ApiClient {
 
   getIndices(index = "") {
     const route = index ? `/${index}?symbols_only=True` : "";
-    return this.apiClient.get(`/tickers/indices${route}`).then(({ data }) => {
-      return data;
-    });
+    return this.apiClient
+      .get(`/tickers/indices${route}`)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((error) => console.error(error));
   }
 
   getCountries(country = "") {
     const route = country ? `/${country}?symbols_only=True` : "";
-    return this.apiClient.get(`/tickers/countries${route}`).then(({ data }) => {
-      return data;
-    });
+    return this.apiClient
+      .get(`/tickers/countries${route}`)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((error) => console.error(error));
   }
 
   getIndustries(industry = "") {
@@ -43,7 +49,8 @@ class ApiClient {
       .get(`/tickers/industries${route}`)
       .then(({ data }) => {
         return data;
-      });
+      })
+      .catch((error) => console.error(error));
   }
 }
 

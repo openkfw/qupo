@@ -1,9 +1,15 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import makeStyles from "@mui/styles/makeStyles";
+
+import ProcessOverview from "../components/ProcessOverview";
+import Questionaire from "../components/Questionaire";
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -12,13 +18,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProcessFlow = ({ currentStep, setCurrentStep, ...props }) => {
+const ProcessFlow = ({
+  client,
+  weights,
+  setWeights,
+  selectedSymbols,
+  setSelectedSymbols,
+}) => {
   const classes = useStyles();
+  const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(1);
   const steps = [
     "Choose stock symbols",
     "Answer questions for calculation",
     "Continue",
   ];
+
+  const getContent = () => {
+    if (currentStep === 1) return <Questionaire setWeights={setWeights} />;
+    else
+      return (
+        <ProcessOverview
+          client={client}
+          weights={weights}
+          setWeights={setWeights}
+          selectedSymbols={selectedSymbols}
+          setSelectedSymbols={setSelectedSymbols}
+        />
+      );
+  };
+
+  const onBack = () => {
+    if (currentStep === 1) navigate("/");
+    else setCurrentStep(currentStep - 1);
+  };
 
   return (
     <Grid>
@@ -29,12 +62,12 @@ const ProcessFlow = ({ currentStep, setCurrentStep, ...props }) => {
           </Step>
         ))}
       </Stepper>
-      <Grid className={classes.spacing}>{props.children}</Grid>
+      <Grid className={classes.spacing}>{getContent()}</Grid>
       <Grid container className={classes.spacing}>
         <Grid xs={6} item>
           <Button
             variant="contained"
-            onClick={() => setCurrentStep(currentStep - 1)}
+            onClick={() => onBack()}
             disabled={currentStep === 0}
           >
             Back
@@ -50,7 +83,9 @@ const ProcessFlow = ({ currentStep, setCurrentStep, ...props }) => {
                 Next
               </Button>
             ) : (
-              <Button variant="contained">Calculate</Button>
+              <Button variant="contained" onClick={() => navigate("/chart")}>
+                Calculate
+              </Button>
             )}
           </Grid>
         </Grid>

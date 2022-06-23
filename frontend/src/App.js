@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -8,11 +9,9 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import "./App.css";
 import ApiClient from "./client";
-import Controllers from "./components/Controllers";
-import CustomList from "./components/CustomList";
-import QuantumDashboard from "./components/QuantumDashboard";
-import ProcessFlow from "./components/ProcessFlow";
-import Questionaire from "./components/Questionaire";
+import ProcessFlow from "./pages/ProcessFlow";
+import QuantumDashboard from "./pages/QuantumDashboard";
+import Stocks from "./pages/Stocks";
 
 const client = new ApiClient();
 
@@ -36,10 +35,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const AppWrapper = () => {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+};
+
 function App() {
   const classes = useStyles();
-  const [view, setView] = useState("index");
-  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedSymbols, setSelectedSymbols] = useState([]);
   const [weights, setWeights] = useState({
     risk_weight: 50,
     esg_weight: 50,
@@ -52,25 +58,30 @@ function App() {
         <Box sx={{ textAlign: "center", padding: "5vh" }}>
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
-        <Controllers view={view} setView={setView} />
-        <CustomList view={view} client={client} setView={setView} />
-        {view === "chart" && (
-          <div hidden={!(view === "chart")}>
-            <ProcessFlow
-              currentStep={currentStep}
-              setCurrentStep={setCurrentStep}
-            >
-              {currentStep === 1 ? (
-                <Questionaire setWeights={setWeights} />
-              ) : (
-                <div />
-              )}
-            </ProcessFlow>
-          </div>
-        )}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Stocks client={client} setSelectedSymbols={setSelectedSymbols} />
+            }
+          />
+          <Route
+            path="/process"
+            element={
+              <ProcessFlow
+                client={client}
+                weights={weights}
+                setWeights={setWeights}
+                selectedSymbols={selectedSymbols}
+                setSelectedSymbols={setSelectedSymbols}
+              />
+            }
+          />
+          <Route path="/chart" element={<QuantumDashboard />} />
+        </Routes>
       </Container>
     </Grid>
   );
 }
 
-export default App;
+export default AppWrapper;

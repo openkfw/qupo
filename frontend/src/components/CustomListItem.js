@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  CardContent,
-  Collapse,
-  Grid,
-  CardActions,
-  Typography,
-} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import IconButton from "@mui/material/IconButton";
-import makeStyles from "@mui/styles/makeStyles";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+
 import ForwardIcon from "@mui/icons-material/ArrowForward";
+import makeStyles from "@mui/styles/makeStyles";
+import CollapsedSection from "./CollapsedSection";
 
 const useStyles = makeStyles((theme) => ({
   card: { backgroundColor: theme.palette.grey.light },
@@ -23,15 +22,12 @@ const useStyles = makeStyles((theme) => ({
   symbols: {
     display: "inline",
   },
-  expandButton: {
-    padding: theme.spacing(1),
-  },
 }));
 
-const CustomListItem = ({ fetchSymbols, kind, name, setView }) => {
+const CustomListItem = ({ fetchSymbols, kind, name, setSelectedSymbols }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [symbols, setSymbols] = useState([]);
-  const [expand, setExpand] = useState(false);
 
   useEffect(() => {
     const fetchSymbolsOfName = async () => {
@@ -42,32 +38,17 @@ const CustomListItem = ({ fetchSymbols, kind, name, setView }) => {
     fetchSymbolsOfName();
   }, [name, fetchSymbols]);
 
-  const toggleExpand = () => {
-    setExpand(!expand);
-  };
-
   return (
     <Card>
       <CardContent className={classes.card}>
-        <Grid container>
-          <Grid xs={6} item>
-            <Typography color="text.secondary">{kind}</Typography>
-            <Box className={classes.box}>{name}</Box>
-          </Grid>
-          <Grid item xs={6} className={classes.expandButton}>
-            <Grid container justifyContent="flex-end">
-              <IconButton onClick={toggleExpand}>
-                <ExpandMoreIcon
-                  fontSize="medium"
-                  style={{
-                    transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-                  }}
-                />
-              </IconButton>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Collapse in={expand} collapsedSize={38}>
+        <CollapsedSection
+          heading={
+            <>
+              <Typography color="text.secondary">{kind}</Typography>
+              <Box className={classes.box}>{name}</Box>
+            </>
+          }
+        >
           {symbols?.map((symbol) => (
             <Typography
               key={symbol}
@@ -78,14 +59,17 @@ const CustomListItem = ({ fetchSymbols, kind, name, setView }) => {
               {symbol}{" "}
             </Typography>
           ))}
-        </Collapse>
+        </CollapsedSection>
       </CardContent>
       <CardActions>
         <Grid container justifyContent="flex-end">
           <Button
             size="small"
             startIcon={<ForwardIcon />}
-            onClick={() => setView("chart")}
+            onClick={() => {
+              setSelectedSymbols(symbols);
+              navigate("/process");
+            }}
           >
             Continue with these symbols
           </Button>

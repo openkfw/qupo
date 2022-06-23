@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomList = ({ client, view, setView }) => {
+const CustomList = ({ client, view, setSelectedSymbols }) => {
   const classes = useStyles();
   const [indices, setIndices] = useState([]);
   const [countries, setCountries] = useState([]);
@@ -62,7 +62,7 @@ const CustomList = ({ client, view, setView }) => {
                 fetchSymbols={fetchSymbolsOfIndex}
                 kind="Index"
                 name={index}
-                setView={setView}
+                setSelectedSymbols={setSelectedSymbols}
               />
             ))}
           </Stack>
@@ -77,7 +77,7 @@ const CustomList = ({ client, view, setView }) => {
                 fetchSymbols={fetchSymbolsOfCountry}
                 name={country}
                 kind="Country"
-                setView={setView}
+                setSelectedSymbols={setSelectedSymbols}
               />
             ))}
           </Stack>
@@ -92,7 +92,7 @@ const CustomList = ({ client, view, setView }) => {
                 fetchSymbols={fetchSymbolsOfIndustry}
                 name={industry}
                 kind="Industry"
-                setView={setView}
+                setSelectedSymbols={setSelectedSymbols}
               />
             ))}
           </Stack>
