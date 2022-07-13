@@ -18,13 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProcessFlow = ({
-  client,
-  weights,
-  setWeights,
-  selectedSymbols,
-  setSelectedSymbols,
-}) => {
+const ProcessFlow = ({ client, weights, setWeights }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -42,8 +36,6 @@ const ProcessFlow = ({
           client={client}
           weights={weights}
           setWeights={setWeights}
-          selectedSymbols={selectedSymbols}
-          setSelectedSymbols={setSelectedSymbols}
         />
       );
   };

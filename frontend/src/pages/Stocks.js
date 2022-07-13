@@ -1,49 +1,47 @@
 import { useEffect, useState } from "react";
 
-import Controllers from "../components/Controllers";
-import CustomList from "../components/CustomList";
-import Search from "../components/Search";
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import makeStyles from "@mui/styles/makeStyles";
 
-const Stocks = ({ client, setSelectedSymbols }) => {
-  const [view, setView] = useState("index");
-  const [indices, setIndices] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [industries, setIndustries] = useState([]);
+import store from "store-js";
+import { TransitionGroup } from "react-transition-group";
+
+import views from "../utils/views";
+import Controllers from "../components/Controllers";
+import Search from "../components/Search";
+import SymbolsListItem from "../components/SymbolsListItem";
+
+const useStyles = makeStyles((theme) => ({
+  box: {
+    padding: `${theme.spacing(2)} 0`,
+  },
+  item: {
+    paddingBottom: theme.spacing(2),
+  },
+}));
+
+const Stocks = () => {
+  const classes = useStyles();
+  const [view, setView] = useState(views[0].value);
+  const allItems = store.get(view);
   const [filter, setFilter] = useState([]);
   const [filterValue, setFilterValue] = useState(null);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
-    const fetchIndices = async () => {
-      const i = await client.getIndices();
-      setIndices(i);
-    };
-
-    const fetchCountries = async () => {
-      const c = await client.getCountries();
-      setCountries(c);
-    };
-
-    const fetchIndustries = async () => {
-      const i = await client.getIndustries();
-      setIndustries(i);
-    };
-
-    fetchIndices();
-    fetchCountries();
-    fetchIndustries();
-  }, [client]);
-
-  useEffect(() => {
+    setItems(store.get(view).slice(0, 8));
     setFilterValue(null);
-    if (view === "index") setFilter(indices);
-    if (view === "country") setFilter(countries);
-    if (view === "industry") setFilter(industries);
-  }, [view, indices, countries, industries]);
+    setFilter(store.get(view));
+  }, [view]);
 
-  const filterNames = (names) => {
+  const filterItems = (items) => {
     return filterValue !== null
-      ? names.filter((name) => name === filterValue)
-      : names;
+      ? allItems.filter((item) => item === filterValue)
+      : items;
   };
 
   return (
@@ -55,14 +53,26 @@ const Stocks = ({ client, setSelectedSymbols }) => {
         filterValue={filterValue}
         setFilterValue={setFilterValue}
       />
-      <CustomList
-        view={view}
-        client={client}
-        setSelectedSymbols={setSelectedSymbols}
-        indices={filterNames(indices)}
-        countries={filterNames(countries)}
-        industries={filterNames(industries)}
-      />
+      <Box className={classes.box}>
+        <TransitionGroup>
+          {filterItems(items).map((item) => (
+            <Collapse key={item} className={classes.item}>
+              <SymbolsListItem
+                key={item}
+                name={item}
+                symbols={store.get(item)}
+              />
+            </Collapse>
+          ))}
+        </TransitionGroup>
+      </Box>
+      {filterValue === null && items.length !== allItems.length && (
+        <Grid justifyContent="center" container direction="row">
+          <IconButton onClick={() => setItems(allItems)}>
+            <ExpandMoreIcon fontSize="medium" />
+          </IconButton>
+        </Grid>
+      )}
     </>
   );
 };

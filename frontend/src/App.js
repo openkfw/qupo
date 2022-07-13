@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -6,6 +6,8 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
+
+import store from "store-js";
 
 import "./App.css";
 import ApiClient from "./client";
@@ -45,11 +47,43 @@ const AppWrapper = () => {
 
 function App() {
   const classes = useStyles();
-  const [selectedSymbols, setSelectedSymbols] = useState([]);
   const [weights, setWeights] = useState({
     risk_weight: 50,
     esg_weight: 50,
   });
+
+  useEffect(() => {
+    const fetchIndices = async () => {
+      const indices = await client.getIndices();
+      store.set("indices", indices);
+      indices.map(async (index) => {
+        const symbolsOfIndex = await client.getIndices(index);
+        store.set(index, symbolsOfIndex);
+      });
+    };
+
+    const fetchCountries = async () => {
+      const countries = await client.getCountries();
+      store.set("countries", countries);
+      countries.map(async (country) => {
+        const symbolsOfCountry = await client.getCountries(country);
+        store.set(country, symbolsOfCountry);
+      });
+    };
+
+    const fetchIndustries = async () => {
+      const industries = await client.getIndustries();
+      store.set("industries", industries);
+      industries.map(async (industry) => {
+        const symbolsOfIndustry = await client.getIndustries(industry);
+        store.set(industry, symbolsOfIndustry);
+      });
+    };
+
+    fetchIndices();
+    fetchCountries();
+    fetchIndustries();
+  }, []);
 
   return (
     <Grid className={classes.background}>
@@ -59,12 +93,7 @@ function App() {
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Stocks client={client} setSelectedSymbols={setSelectedSymbols} />
-            }
-          />
+          <Route path="/" element={<Stocks />} />
           <Route
             path="/process"
             element={
@@ -72,12 +101,9 @@ function App() {
                 client={client}
                 weights={weights}
                 setWeights={setWeights}
-                selectedSymbols={selectedSymbols}
-                setSelectedSymbols={setSelectedSymbols}
               />
             }
           />
-          <Route path="/chart" element={<QuantumDashboard />} />
         </Routes>
       </Container>
     </Grid>

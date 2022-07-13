@@ -7,8 +7,9 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-
 import makeStyles from "@mui/styles/makeStyles";
+
+import store from "store-js";
 
 import CollapsedSection from "./CollapsedSection";
 
@@ -29,8 +30,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StocksCollection = ({ client, selectedSymbols, setSelectedSymbols }) => {
+const StocksCollection = ({ client }) => {
   const classes = useStyles();
+  const [selectedSymbols, setSelectedSymbols] = useState(
+    store.get("selected_symbols")
+  );
   const [symbolsToAdd, setSymbolsToAdd] = useState([]);
   const [allSymbols, setAllSymbols] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,10 +51,12 @@ const StocksCollection = ({ client, selectedSymbols, setSelectedSymbols }) => {
 
   const onDeleteSymbol = (symbol) => {
     setSelectedSymbols(selectedSymbols.filter((s) => s !== symbol));
+    store.set("selected_symbols", selectedSymbols);
   };
 
   const onAddSymbols = () => {
     setSelectedSymbols([...new Set([...selectedSymbols, ...symbolsToAdd])]);
+    store.set("selected_symbols", selectedSymbols);
     setSymbolsToAdd([]);
   };
 

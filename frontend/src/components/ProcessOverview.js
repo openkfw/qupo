@@ -12,13 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProcessOverview = ({
-  client,
-  weights,
-  setWeights,
-  selectedSymbols,
-  setSelectedSymbols,
-}) => {
+const ProcessOverview = ({ client, weights, setWeights }) => {
   const classes = useStyles();
   const labels = ["Risk Weight", "ESG Weight"];
 
@@ -27,11 +21,7 @@ const ProcessOverview = ({
       <Typography variant="h5" className={classes.heading}>
         Selected Symbols:
       </Typography>
-      <StocksCollection
-        client={client}
-        selectedSymbols={selectedSymbols}
-        setSelectedSymbols={setSelectedSymbols}
-      />
+      <StocksCollection client={client} />
       <Typography variant="h5" className={classes.heading}>
         Answers:
       </Typography>
