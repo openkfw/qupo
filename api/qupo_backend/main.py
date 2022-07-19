@@ -1,9 +1,20 @@
 from fastapi import FastAPI, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import tickers_api
 
 app = FastAPI()
 
+origins = [
+    'http://localhost:3000'
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 apiRouter = APIRouter(
     prefix='/api',

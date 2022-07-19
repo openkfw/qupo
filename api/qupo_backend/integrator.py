@@ -9,6 +9,17 @@ from .db.operations import (save_finance_data, get_data_in_timeframe,
                             update_history, deconstruct_yhistory)
 
 
+def filter_stocks(stocks):
+    ticker_list = []
+    for stock in stocks:
+        sub_list = []
+        for symbol in stock['symbols']:
+            if symbol['yahoo'] != '-':
+                sub_list.append(symbol['yahoo'])
+        ticker_list.append(sub_list)
+    return ticker_list
+
+
 def get_all_symbols(stock_data, symbols_only: bool):
     indices = stock_data.get_all_indices()
     symbols = []

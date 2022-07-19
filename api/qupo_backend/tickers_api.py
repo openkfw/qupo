@@ -5,7 +5,7 @@ from pytickersymbols import PyTickerSymbols
 from sqlalchemy.orm import Session
 
 from .db import schemas
-from .integrator import get_all_symbols, get_data_of_symbol
+from .integrator import filter_stocks, get_all_symbols, get_data_of_symbol
 from .db.database import get_db
 
 router = APIRouter(
@@ -55,9 +55,12 @@ async def get_countries():
 
 
 @router.get('/countries/{country}')
-async def get_symbols_of_country(country: str):
+async def get_symbols_of_country(country: str, symbols_only=False):
     try:
-        return list(stock_data.get_stocks_by_country(country))
+        stocks = list(stock_data.get_stocks_by_country(country))
+        if(symbols_only):
+            return sum(filter_stocks(stocks), [])
+        return stocks
     except Exception as e:
         logging.error(e)
         raise HTTPException(status_code=500, detail=f'Could not fetch symbols of country: {country}.')
@@ -73,9 +76,12 @@ async def get_industries():
 
 
 @router.get('/industries/{industry}')
-async def get_symbols_of_industry(industry: str):
+async def get_symbols_of_industry(industry: str, symbols_only=False):
     try:
-        return list(stock_data.get_stocks_by_industry(industry))
+        stocks = list(stock_data.get_stocks_by_industry(industry))
+        if(symbols_only):
+            return sum(filter_stocks(stocks), [])
+        return stocks
     except Exception as e:
         logging.error(e)
         raise HTTPException(status_code=500, detail=f'Could not fetch symbols of industry: {industry}')
