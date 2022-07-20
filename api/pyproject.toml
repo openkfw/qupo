@@ -18,11 +18,16 @@ pydantic = "^1.9.0"
 PyPortfolioOpt = "^1.5.2"
 python-dotenv = "^0.20.0"
 qiskit = {extras = ["optimization"], version = "^0.36.1"}
+qiskit-ionq = "^0.3.3"
+qiskit-qir = "^0.1.0"
 quandl = "^3.7.0"
 uvicorn = "^0.17.6"
 yfinance = "^0.1.70"
 sqlalchemy = "^1.4.36"
 pytickersymbols = "^1.8.78"
+osqp = "^0.6.2"
+pyportfolioopt = "^1.5.3"
+qiskit-optimization = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "4.0.1"
