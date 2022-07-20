@@ -10,6 +10,9 @@ from .db.operations import (save_finance_data, get_data_in_timeframe,
 
 
 def filter_stocks(stocks):
+    '''Result object from the API contains multiple stocks from different sources.
+    This method returns only the symbols provided by yahoo finance'''
+
     ticker_list = []
     for stock in stocks:
         sub_list = []
@@ -58,4 +61,5 @@ def get_data_of_symbol(stock: schemas.StockBase, db: Session):
 
             return schemas.Stock(id=0, symbol=stock.symbol, start=stock.start, end=stock.end, info=[info], history=history)
 
+    # TODO: Replace by generic exception and move HTTPException to API
     raise HTTPException(status_code=500, detail=f'Unable to return stock data of symbol: {stock.symbol}.')
