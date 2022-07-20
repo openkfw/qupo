@@ -36,7 +36,7 @@ class Portfolio:
             stock_weights = np.append(np.zeros(len(self.stock_tickers) - 1), 1)
         elif np.sum(stock_weights) > 1:
             stock_weights = stock_weights / np.sum(stock_weights)
-            # print(f'Sum of stock weights >1, normalized to {stock_weights}')
+            print(f'Sum of stock weights >1, normalized to {stock_weights}')
         self.price_time_series = np.dot(stock_weights, np.array(
             [stock.price_time_series for stock in stocks] + [stocks[0].price_time_series * 0]))  # sum of weighted stock price time series
         # annualized historic returns [%] and relative volatility (standart deviation of return) [%]

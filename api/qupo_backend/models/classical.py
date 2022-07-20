@@ -21,6 +21,6 @@ def calculate_classical(db, model, symbols, risk_weight=0.0001, esg_weight=0.000
     print(f'OSQP suggested portfolio composition[%]: {solution_output_percent}')
     print(f'OSQP objective value: {job_osqp.result.objective_value}')
 
-    portfolio_model_df["RateOfReturn"].update(pd.Series(solution_output_percent))
+    portfolio_model_df['RateOfReturn'].update(pd.Series(solution_output_percent))
 
     return portfolio_model_df.iloc[:, 0:3]
