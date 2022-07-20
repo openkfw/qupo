@@ -26,7 +26,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     # constraints: subject to l <= A*x <= u
     # with T the transpose operator
     def _make_obj_matrix(covar, alpha_scaling):
-        obj_matrix = sparse.csc_matrix(covar) * alpha_scaling 
+        obj_matrix = sparse.csc_matrix(covar) * alpha_scaling
         return obj_matrix
 
     def _make_obj_vector(alpha_vector, beta_vector, beta_scaling):

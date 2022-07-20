@@ -53,7 +53,7 @@ async def health():
 @app.post('/models')
 async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
     try:
-        if("osqp" == params.model):
+        if('osqp' == params.model):
             return calculate_classical(db, model=params.model, symbols=params.symbols,
                                        risk_weight=params.risk_weight, esg_weight=params.esg_weight)
         return {'message': 'Model not found'}
