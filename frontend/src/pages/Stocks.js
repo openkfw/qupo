@@ -66,7 +66,7 @@ const Stocks = () => {
           ))}
         </TransitionGroup>
       </Box>
-      {filterValue === null && items.length !== allItems.length && (
+      {filterValue === null && items?.length !== allItems?.length && (
         <Grid justifyContent="center" container direction="row">
           <IconButton onClick={() => setItems(allItems)}>
             <ExpandMoreIcon fontSize="medium" />

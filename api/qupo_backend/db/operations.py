@@ -2,7 +2,6 @@ import json
 import yfinance
 
 from datetime import datetime
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from . import crud, schemas
@@ -21,14 +20,22 @@ def get_data_from_yahoo(symbol: str, period: str):
     return data, yhistory
 
 
+def construct_history_row(date, rowData):
+    cleanedRowData = [0 if value is None else value for value in rowData]
+
+    if rowData[3] is None:
+        print(cleanedRowData)
+
+    return schemas.HistoryCreate(date=date, open=cleanedRowData[0], high=cleanedRowData[1],
+                                 low=cleanedRowData[2], close=cleanedRowData[3], volume=cleanedRowData[4],
+                                 dividends=cleanedRowData[5], splits=cleanedRowData[6])
+
+
 def deconstruct_yhistory(yhistory):
     history = []
     for i in range(len(yhistory['index'])):
         date = datetime.date(datetime.fromtimestamp(yhistory['index'][i] / 1000.0))
-        rowData = yhistory['data'][i]
-        row = schemas.HistoryCreate(date=date, open=rowData[0], high=rowData[1],
-                                    low=rowData[2], close=rowData[3], volume=rowData[4],
-                                    dividends=rowData[5], splits=rowData[6])
+        row = construct_history_row(date, yhistory['data'][i])
         history.append(row)
     return history
 
@@ -36,7 +43,7 @@ def deconstruct_yhistory(yhistory):
 def save_finance_data(db: Session, stock: schemas.StockBase):
     data, yhistory = get_data_from_yahoo(stock.symbol, 'max')
 
-    if(yhistory['data']):
+    if(len(yhistory['data']) > 0):
         history = deconstruct_yhistory(yhistory)
         info = schemas.InfoCreate(name=data.info['shortName'], type=data.info['quoteType'],
                                   country=data.info['country'], currency=data.info['currency'])
@@ -48,7 +55,7 @@ def save_finance_data(db: Session, stock: schemas.StockBase):
 
         return get_data_in_timeframe(db, stock)
 
-    raise HTTPException(status_code=404, detail=f'No data found for symbol: {stock.symbol}')
+    return None
 
 
 def update_history(db: Session, stock: schemas.BaseModel, last_date):
@@ -59,14 +66,11 @@ def update_history(db: Session, stock: schemas.BaseModel, last_date):
         for i in range(len(yhistory['index'])):
             date = datetime.date(datetime.fromtimestamp(yhistory['index'][i] / 1000.0))
             if(date > last_date):
-                rowData = yhistory['data'][i]
-                row = schemas.HistoryCreate(date=date, open=rowData[0], high=rowData[1],
-                                            low=rowData[2], close=rowData[3], volume=rowData[4],
-                                            dividends=rowData[5], splits=rowData[6])
+                row = construct_history_row(date, yhistory['data'][i])
                 history.append(row)
 
         crud.create_stock_history(db, history, stock.symbol)
         db.commit()
         return get_data_in_timeframe(db, stock)
 
-    raise HTTPException(status_code=400, detail=f'Could not update history for symbol: {stock.symbol}')
+    return None

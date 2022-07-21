@@ -1,4 +1,4 @@
-export default [
+const views = [
   {
     label: "Indices",
     value: "indices",
@@ -12,3 +12,5 @@ export default [
     value: "industries",
   },
 ];
+
+export default views;

@@ -1,0 +1,78 @@
+import dimod
+# TODO: AzureQuantumOptimization?
+import azure.quantum.optimization as aqo
+# TODO: docplexModel?
+from docplex.mp.model import Model as dpxModel
+import numpy as np
+from qiskit_optimization.converters import QuadraticProgramToQubo as Qp2Qubo
+from qiskit_optimization.translators import from_docplex_mp
+
+
+# TODO: Add descriptions to each module, explaining what it does
+
+# TODO: find better variable names
+def convert_osqp_to_docplex_model(P, qu, A, l, u, resolution=1E3):
+    # create docplex model as basis for all quantum and quantum inspired models
+    # https://qiskit.org/documentation/tutorials/optimization/1_quadratic_program.html
+
+    # TODO: don't overwrite values
+    l = resolution * l
+    u = resolution * u
+    # TODO: some sort of length?
+    n = len(qu)
+
+    # TODO: mdl = docplex_model?
+    mdl = dpxModel('portfolio_optimization')
+    x = mdl.integer_var_list(['x{}'.format(i) for i in range(n)], ub=resolution)
+    objective = mdl.sum([qu[i] * x[i] for i in range(n)])
+    objective += mdl.sum([P.todense()[i, j] * x[i] * x[j] for i in range(n) for j in range(n)])
+    mdl.minimize(objective)
+    A = np.array(A.todense())
+    mdl.add_constraint(mdl.sum(A[-1][i] * x[i] for i in range(n)) == l[-1])
+    return mdl
+
+
+# TODO: Remove not needed code
+def convert_docplex_to_qubo_model(dpx_model):
+    # TODO: Better variable names
+    qp = from_docplex_mp(dpx_model)
+    qp2qubo = Qp2Qubo()
+    qubo = qp2qubo.convert(qp)
+    # TODO: Why return all of them?
+    return qp, qubo, qp2qubo
+
+
+def convert_qubo_to_azureqio_model(qubo):
+    # TODO: Superfluous comment
+    # Convert QISKIT QUBO model Azure Quantum QUBO model
+    # TODO: lin -> linear, quad -> quadratic
+    qubo_dict_lin = qubo.objective.linear.to_dict()
+    qubo_dict_quad = qubo.objective.quadratic.to_dict()
+    # Convert keys to string
+    qubo_list_lin = [{'c': float(value), 'ids': [int(key)]} for key, value in qubo_dict_lin.items()]
+    qubo_list_quad = [{'c': float(value), 'ids': [int(key[0]), int(key[1])]} for key, value in qubo_dict_quad.items()]
+    # Combine lists
+    qubo_list = qubo_list_lin + qubo_list_quad
+    qubo_terms = list()
+    for term in qubo_list:
+        # TODO: Append? Or list comprehension?
+        qubo_terms = qubo_terms + [aqo.Term(c=term['c'], indices=term['ids'])]
+    # TODO: qubo_terms = [aqo.Term(c=term['c'], indices=term['ids']) for term in qubo_list]
+    aqo_model = aqo.Problem(name='Supply Chain', problem_type=aqo.ProblemType.pubo, terms=qubo_terms)
+    return aqo_model
+
+
+def convert_qubo_to_dimod_model(qubo):
+    # TODO: Superfluous comment?
+    # Convert QISKit model to dimod model
+    qubo_dict_lin = qubo.objective.linear.to_dict()
+    qubo_dict_quad = qubo.objective.quadratic.to_dict()
+    # TODO: bqm = ?
+    bqm = dimod.BinaryQuadraticModel(qubo_dict_lin, qubo_dict_quad, 0, dimod.BINARY)
+    return bqm
+
+
+# TODO: penalty factor not needed?
+# TODO: Not used? 
+def convert_docplex_to_azureqio_model(dpx_model):
+    return convert_qubo_to_azureqio_model(convert_docplex_to_qubo_model(dpx_model))

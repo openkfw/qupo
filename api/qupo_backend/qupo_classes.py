@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 # custom packages
-import qupo_backend.finance_utilities as fu
+import qupo_backend.finance_utilities as finance_utilities
 
 
 @dataclass
@@ -18,9 +18,12 @@ class Stock:
     risk_free_return_pa: InitVar[float] = 0.0
 
     def __post_init__(self, risk_free_return_pa):
-        self.historic_rate_of_return_pa = fu.calc_historic_rate_of_return_pa(self.price_time_series)  # annualized historic mean returns [%]
-        self.historic_volatility_pa = fu.calc_historic_volatility_pa(self.price_time_series)  # annualized historic volatility relative to hist. RoR pa[%]
-        self.historic_sharpe_ratio = fu.calc_historic_sharpe_ratio(self.historic_rate_of_return_pa, risk_free_return_pa, self.historic_volatility_pa)
+        # annualized historic mean returns [%]
+        self.historic_rate_of_return_pa = finance_utilities.calc_historic_rate_of_return_pa(self.price_time_series)
+        # annualized historic volatility relative to hist. RoR pa[%]
+        self.historic_volatility_pa = finance_utilities.calc_historic_volatility_pa(self.price_time_series)
+        self.historic_sharpe_ratio = finance_utilities.calc_historic_sharpe_ratio(self.historic_rate_of_return_pa,
+                                                                                  risk_free_return_pa, self.historic_volatility_pa)
 
 
 @dataclass
@@ -40,11 +43,15 @@ class Portfolio:
         self.price_time_series = np.dot(stock_weights, np.array(
             [stock.price_time_series for stock in stocks] + [stocks[0].price_time_series * 0]))  # sum of weighted stock price time series
         # annualized historic returns [%] and relative volatility (standart deviation of return) [%]
-        self.historic_rate_of_return_pa = fu.calc_historic_rate_of_return_pa(self.price_time_series)  # annualized historic mean returns [%]
-        self.historic_volatility_pa = fu.calc_historic_volatility_pa(self.price_time_series)  # annualized historic volatility relative to hist. RoR pa[%]
-        self.historic_sharpe_ratio = fu.calc_historic_sharpe_ratio(self.historic_rate_of_return_pa, risk_free_return_pa, self.historic_volatility_pa)
+        # annualized historic mean returns [%]
+        self.historic_rate_of_return_pa = finance_utilities.calc_historic_rate_of_return_pa(self.price_time_series)
+        # annualized historic volatility relative to hist. RoR pa[%]
+        self.historic_volatility_pa = finance_utilities.calc_historic_volatility_pa(self.price_time_series)
+        self.historic_sharpe_ratio = finance_utilities.calc_historic_sharpe_ratio(self.historic_rate_of_return_pa,
+                                                                                  risk_free_return_pa, self.historic_volatility_pa)
+        # sum of weighted stock price time series
         self.historic_esg_value = np.dot(stock_weights, np.array(
-            [stock.historic_esg_value for stock in stocks] + [0]))  # sum of weighted stock price time series
+            [stock.historic_esg_value for stock in stocks] + [0]))
 
 
 @dataclass
@@ -67,16 +74,15 @@ class PortfoliosModel():
             stocks_time_series = pd.concat([stocks_time_series, stock_time_series], axis=1)
             stocks_esg_data = stocks_esg_data + [stock.historic_esg_value]
             stocks_expected_rate_of_return_pa = np.concatenate(
-                (stocks_expected_rate_of_return_pa, fu.calc_historic_rate_of_return_pa(stocks_time_series[stock.ticker])))
-            print(f'RoR Stocks: {stocks_expected_rate_of_return_pa}')
+                (stocks_expected_rate_of_return_pa, finance_utilities.calc_historic_rate_of_return_pa(stocks_time_series[stock.ticker])))
 
         self.stocks_full_names = stocks_full_names
         self.stocks_tickers = stocks_tickers
         self.price_time_series = stocks_time_series
         self.expected_rates_of_return_pa = stocks_expected_rate_of_return_pa
         self.expected_esg_ratings = stocks_esg_data
-        self.expected_covariance_pa = fu.calc_expected_covariance_pa(self.price_time_series)
-        self.expected_volatilities_pa = fu.calc_historic_volatility_pa(self.price_time_series)
-        expected_sharpe_ratios = fu.calc_historic_sharpe_ratio(
+        self.expected_covariance_pa = finance_utilities.calc_expected_covariance_pa(self.price_time_series)
+        self.expected_volatilities_pa = finance_utilities.calc_historic_volatility_pa(self.price_time_series)
+        expected_sharpe_ratios = finance_utilities.calc_historic_sharpe_ratio(
             np.array(self.expected_rates_of_return_pa[1:]), risk_free_return_pa, np.array(self.expected_volatilities_pa[1:]))
         self.expected_sharpe_ratios = np.append(0, expected_sharpe_ratios)
