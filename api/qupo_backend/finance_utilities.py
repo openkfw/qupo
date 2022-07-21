@@ -28,9 +28,6 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     # TODO: Rename variables and functions
     # TODO: Check if functions are needed
 
-    def _make_obj_matrix(covar, alpha_scaling):
-        return sparse.csc_matrix(covar) * alpha_scaling
-
     def _make_obj_vector(alpha_vector, beta_vector, beta_scaling):
         return (-1) * alpha_vector + beta_scaling * beta_vector / 2
 
@@ -48,7 +45,9 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     portfolio_size = len(dataframe.index)
     asset_initial_upper_bound = np.ones(portfolio_size)
 
-    P = _make_obj_matrix(dataframe.iloc[:, -portfolio_size:].to_numpy(), risk_weight)
+    # P is the object matrix which is a sparesly populated n * n matrix where n is the number 
+    # stocks in the portfolio multiplied by the risk weitght (the alpha scaling)
+    P = sparse.csc_matrix(dataframe.iloc[:, -portfolio_size:].to_numpy()) * risk_weight
     q = _make_obj_vector(dataframe.RateOfReturn.to_numpy(),
                          dataframe.ESGRating.to_numpy(), esg_weight)
     A = _make_constraint_matrix(portfolio_size)
