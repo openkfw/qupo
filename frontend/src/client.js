@@ -1,6 +1,47 @@
 import axios from "axios";
 import config from "./utils/config";
 
+const SYMBOLS = [
+  "Acct",
+  "LIN.DE",
+  "SAP.DE",
+  "SIE.DE",
+  "VOW3.DE",
+  "ALV.DE",
+  "AIR.DE",
+  "MRK.DE",
+  "DTE.DE",
+  "DPW.DE",
+  "BMW.DE",
+  "BAS.DE",
+  "IFX.DE",
+  "BAYN.DE",
+  "ADS.DE",
+  "MUV2.DE",
+  "VNA.DE",
+  "HEN3.DE",
+  "EOAN.DE",
+  "SRT3.DE",
+  "DB1.DE",
+  "PAH3.DE",
+  "DBK.DE",
+  "RWE.DE",
+  "BEI.DE",
+  "DHER.DE",
+  "FRE.DE",
+  "CON.DE",
+  "ZAL.DE",
+  "FME.DE",
+  "SY1.DE",
+  "PUM.DE",
+  "HEI.DE",
+  "BNR.DE",
+  "1COV.DE",
+  "MTX.DE",
+  "HFG.DE",
+  "QIA.DE",
+];
+
 class ApiClient {
   constructor() {
     this.config = { ...config };
@@ -9,7 +50,7 @@ class ApiClient {
 
   getApiClient(config) {
     return axios.create({
-      baseURL: `${config.apiBaseUrl}/api`,
+      baseURL: `${config.apiBaseUrl}`,
       headers: { "Content-Type": "application/json" },
     });
   }
@@ -47,6 +88,25 @@ class ApiClient {
     const route = industry ? `/${industry}?symbols_only=True` : "";
     return this.apiClient
       .get(`/tickers/industries${route}`)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((error) => console.error(error));
+  }
+
+  getModelCalculations(
+    model = "osqp",
+    symbols = ["ACCT"],
+    riskWeight = 0.001,
+    esgWeight = 0.001
+  ) {
+    return this.apiClient
+      .post("/models", {
+        model: model,
+        symbols: SYMBOLS,
+        risk_weight: riskWeight,
+        esg_weight: esgWeight,
+      })
       .then(({ data }) => {
         return data;
       })

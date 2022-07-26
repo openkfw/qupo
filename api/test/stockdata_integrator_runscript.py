@@ -2,7 +2,7 @@ import sys
 import os.path
 import warnings
 from qupo_backend.qupo_classes import Stock, Portfolio, PortfoliosModel
-from qupo_backend.stockdata_integrator import StockDataExtractor, StockDataTransformer
+from .stockdata_integrator import StockDataExtractor, StockDataTransformer
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
