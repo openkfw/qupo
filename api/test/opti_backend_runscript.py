@@ -1,6 +1,6 @@
 import sys
 import os.path
-import qupo_backend.optimization_backend.opti_backend_runner as backend_runner
+import qupo_backend.optimization_backend.backend_runner as backend_runner
 import stockdata_integrator_runscript as sdi
 import qupo_backend.finance_utilities as finance_utilities
 
