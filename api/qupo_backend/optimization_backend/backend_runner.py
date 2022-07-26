@@ -127,7 +127,7 @@ def run_azure_qio_job(job):
                                                  seed=48)
         else:
             warnings.warn('QIO solver not implemented - choose from: SA, PA, PT, Tabu, QMC, SMC')
-        
+
         azure_qio_problem = model_converter.convert_qubo_to_azureqio_model(job.problem.qubo_problem)
         result = qio_solver.optimize(azure_qio_problem)
         raw_result = job.problem.converter.interpret(list(result['configuration'].values())) * job.problem.resolution

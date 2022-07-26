@@ -45,7 +45,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     portfolio_size = len(dataframe.index)
     asset_initial_upper_bound = np.ones(portfolio_size)
 
-    # P is the object matrix which is a sparesly populated n * n matrix where n is the number 
+    # P is the object matrix which is a sparesly populated n * n matrix where n is the number
     # stocks in the portfolio multiplied by the risk weitght (the alpha scaling)
     P = sparse.csc_matrix(dataframe.iloc[:, -portfolio_size:].to_numpy()) * risk_weight
     q = _make_obj_vector(dataframe.RateOfReturn.to_numpy(),
