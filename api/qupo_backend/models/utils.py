@@ -1,13 +1,14 @@
+import json
 import pandas as pd
 
 from qupo_backend.qupo_classes import Stock, PortfoliosModel
 from qupo_backend.stockdata_integrator import StockDataExtractor, StockDataTransformer
-from qupo_backend.integrator import get_data_of_symbol
+from qupo_backend.tickers_utilities import get_data_of_symbol
 import qupo_backend.db.schemas as schemas
 
 
 def portfolios_df_from_default_stock_data(db, symbols, start='2018-01-01', end='2018-02-28'):
-    stock_data_extractor = StockDataExtractor(start_time='2018-01-01', end_time='2018-02-28')
+    stock_data_extractor = StockDataExtractor(start_time=start, end_time=end)
     esg_data = stock_data_extractor.extract_quandl_data()
 
     # create stock and portfolio objects for frontend
@@ -34,4 +35,13 @@ def portfolios_df_from_default_stock_data(db, symbols, start='2018-01-01', end='
 
     stock_data_transformer = StockDataTransformer()
     portfolios_model_df = stock_data_transformer.to_dataframe(portfolios_model)
+
     return portfolios_model_df
+
+
+def get_models():
+    f = open('qupo_backend/models/models.json')
+    models = json.load(f)
+    f.close()
+
+    return models

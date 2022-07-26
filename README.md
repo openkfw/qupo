@@ -8,15 +8,21 @@ The application is composed of two parts which are required to be started separa
 
 0. Install Python >3.9 and openblas
    https://www.python.org/downloads/
-   openblas on MacOS (via homebrew): 
-      ```(bash) 
-         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      ```
+   openblas on MacOS (via homebrew):
 
-      ```(bash) 
-         brew install openblas
-      ```
-      and follow the instructions to configure compilers
+   ````(bash)
+      ```(bash)
+   ```(bash)
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ````
+
+   ````(bash)
+      ```(bash)
+   ```(bash)
+      brew install openblas
+   ````
+
+   and follow the instructions to configure compilers
 
 ### Backend
 
@@ -65,5 +71,5 @@ Navigate into the api folder: `cd api`.
    It is possible also to run other scripts in the poetry environment:
 
    ```(bash)
-   poetry run python qupo_backend/opti_backend_runscript.py
+   poetry run python qupo_backend/test/opti_backend_runscript.py
    ```

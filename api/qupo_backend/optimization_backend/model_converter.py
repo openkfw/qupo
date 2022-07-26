@@ -44,7 +44,7 @@ def convert_docplex_to_qubo_model(dpx_model):
 
 def convert_qubo_to_azureqio_model(qubo):
     # TODO: Superfluous comment
-    # Convert QISKIT QUBO model Azure Quantum QUBO model
+    # Converting QISKIT QUBO model Azure Quantum QUBO model
     # TODO: lin -> linear, quad -> quadratic
     qubo_dict_lin = qubo.objective.linear.to_dict()
     qubo_dict_quad = qubo.objective.quadratic.to_dict()
@@ -73,6 +73,6 @@ def convert_qubo_to_dimod_model(qubo):
 
 
 # TODO: penalty factor not needed?
-# TODO: Not used? 
+# TODO: Not used?
 def convert_docplex_to_azureqio_model(dpx_model):
     return convert_qubo_to_azureqio_model(convert_docplex_to_qubo_model(dpx_model))

@@ -5,7 +5,7 @@ from pytickersymbols import PyTickerSymbols
 from sqlalchemy.orm import Session
 
 from .db import schemas
-from .integrator import filter_stocks, get_all_symbols, get_data_of_symbol
+from .tickers_utilities import filter_stocks, get_all_symbols, get_data_of_symbol
 from .db.database import get_db
 
 router = APIRouter(

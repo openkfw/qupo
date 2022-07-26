@@ -29,7 +29,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     # TODO: Check if functions are needed
 
     def _make_obj_vector(alpha_vector, beta_vector, beta_scaling):
-        return (-1) * alpha_vector + beta_scaling * beta_vector / 2
+        return (-1) * (alpha_vector + beta_scaling * beta_vector / 2)
 
     def _make_constraint_matrix(n):
         sum_one_matrix = sparse.csc_matrix(np.ones((1, n)))

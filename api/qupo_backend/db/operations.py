@@ -16,15 +16,12 @@ def get_data_in_timeframe(db: Session, stock: schemas.StockBase):
 
 def get_data_from_yahoo(symbol: str, period: str):
     data = yfinance.Ticker(symbol)
-    yhistory = json.loads(data.history(period=period).to_json(orient='split'))
+    yhistory = json.loads(data.history(period=period, auto_adjust=False).to_json(orient='split'))
     return data, yhistory
 
 
 def construct_history_row(date, rowData):
     cleanedRowData = [0 if value is None else value for value in rowData]
-
-    if rowData[3] is None:
-        print(cleanedRowData)
 
     return schemas.HistoryCreate(date=date, open=cleanedRowData[0], high=cleanedRowData[1],
                                  low=cleanedRowData[2], close=cleanedRowData[3], volume=cleanedRowData[4],
@@ -61,7 +58,7 @@ def save_finance_data(db: Session, stock: schemas.StockBase):
 def update_history(db: Session, stock: schemas.BaseModel, last_date):
     _, yhistory = get_data_from_yahoo(stock.symbol, 'max')
 
-    if(yhistory['data']):
+    if(len(yhistory['data']) > 0):
         history = []
         for i in range(len(yhistory['index'])):
             date = datetime.date(datetime.fromtimestamp(yhistory['index'][i] / 1000.0))

@@ -8,8 +8,7 @@ from typing import List
 
 from . import tickers_api
 from .db.database import get_db
-from qupo_backend.models.classical import calculate_classical
-
+from .models.classical import calculate_classical_model
 
 app = FastAPI()
 
@@ -53,9 +52,10 @@ async def health():
 @app.post('/models')
 async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
     try:
-        if('osqp' == params.model):
-            return calculate_classical(db, model=params.model, symbols=params.symbols,
-                                       risk_weight=params.risk_weight, esg_weight=params.esg_weight)
+        if('osqp' == params.model or 'pypo' == params.model):
+            return calculate_classical_model(db, model=params.model, symbols=params.symbols,
+                                             risk_weight=params.risk_weight, esg_weight=params.esg_weight)
+
         return {'message': 'Model not found'}
     except Exception as e:
         logging.error(e)

@@ -2,6 +2,7 @@ import json
 import yfinance
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from types import SimpleNamespace
 
 from .config import settings
 from .db import crud, schemas
@@ -51,15 +52,16 @@ def get_data_of_symbol(stock: schemas.StockBase, db: Session):
 
     else:
         data = yfinance.Ticker(stock.symbol)
-        yhistory = json.loads(data.history(start=str(stock.start), end=str(stock.end)).to_json(orient='split'))
+        yhistory = json.loads(data.history(start=str(stock.start), end=str(stock.end), auto_adjust=False).to_json(orient='split'))
 
-        if(yhistory['data']):
+        if(len(yhistory['data']) > 0):
             history = deconstruct_yhistory(yhistory)
 
-            info = schemas.Info(id=0, symbol=stock.symbol, name=data.info['shortName'], type=data.info['quoteType'],
-                                country=data.info['country'], currency=data.info['currency'])
+            info = schemas.InfoCreate(symbol=stock.symbol, name=data.info['shortName'], type=data.info['quoteType'],
+                                      country=data.info['country'], currency=data.info['currency'])
 
-            return schemas.Stock(id=0, symbol=stock.symbol, start=stock.start, end=stock.end, info=[info], history=history)
+            return SimpleNamespace(**{'symbol': stock.symbol, 'start': stock.start,
+                                      'end': stock.end, 'info': [info], 'history': history})
 
     # TODO: Replace by generic exception and move HTTPException to API
     raise HTTPException(status_code=500, detail=f'Unable to return stock data of symbol: {stock.symbol}.')
