@@ -8,32 +8,32 @@ from qiskit_optimization.converters import QuadraticProgramToQubo as Qp2Qubo
 from qiskit_optimization.translators import from_docplex_mp
 
 
-# TODO: Add descriptions to each module, explaining what it does
-
 # TODO: find better variable names
-def convert_osqp_to_docplex_model(P, qu, A, l, u, resolution=1E3):
-    # create docplex model as basis for all quantum and quantum inspired models
+def convert_osqp_to_docplex_model(P, q, A, l, u, resolution=1E3):
+    # input: osqp model of single period sustainable portfolio model without transaction costs
+    # osqp (sparse matrix) notation for quadratic constrained problems:
+    # objective: minimize 0.5*x^T*P*x + q*x
+    # constraints: subject to l <= A*x <= u
+    # with x - real valued vector (of variables x_i), T - transpose operator, P - objective matrix, q - objective vector, l/u - constraint lower/upper bound vector, A - constraint matrix
+    # output: docplex model as basis for all quantum and quantum inspired models
     # https://qiskit.org/documentation/tutorials/optimization/1_quadratic_program.html
-
-    # TODO: don't overwrite values
-    l = resolution * l
-    u = resolution * u
+    discrete_l = resolution * l
+    discrete_u = resolution * u
     # TODO: some sort of length?
-    n = len(qu)
-
+    n = len(q)
     # TODO: mdl = docplex_model?
     mdl = dpxModel('portfolio_optimization')
-    x = mdl.integer_var_list(['x{}'.format(i) for i in range(n)], ub=resolution)
-    objective = mdl.sum([qu[i] * x[i] for i in range(n)])
+    x = mdl.integer_var_list(['x{}'.format(i) for i in range(n)], ub=discrete_u)
+    objective = mdl.sum([q[i] * x[i] for i in range(n)])
     objective += mdl.sum([P.todense()[i, j] * x[i] * x[j] for i in range(n) for j in range(n)])
     mdl.minimize(objective)
     A = np.array(A.todense())
-    mdl.add_constraint(mdl.sum(A[-1][i] * x[i] for i in range(n)) == l[-1])
+    mdl.add_constraint(mdl.sum(A[-1][i] * x[i] for i in range(n)) == discrete_l[-1])
     return mdl
 
 
 def approximate_docplex_by_qubo_model(dpx_model):
-    # qp = qktQP()
+    # approximate the exact docplex model by a quadratic binary unconstrained model
     qp = from_docplex_mp(dpx_model)
     qp2qubo = Qp2Qubo()
     qubo = qp2qubo.convert(qp)
@@ -42,9 +42,6 @@ def approximate_docplex_by_qubo_model(dpx_model):
 
 
 def convert_qubo_to_azureqio_model(qubo):
-    # TODO: Superfluous comment
-    # Converting QISKIT QUBO model Azure Quantum QUBO model
-    # TODO: lin -> linear, quad -> quadratic
     qubo_dict_lin = qubo.objective.linear.to_dict()
     qubo_dict_quad = qubo.objective.quadratic.to_dict()
     # Convert keys to string
@@ -62,11 +59,9 @@ def convert_qubo_to_azureqio_model(qubo):
 
 
 def convert_qubo_to_dimod_model(qubo):
-    # TODO: Superfluous comment?
-    # Convert QISKit model to dimod model
+    # convert qubo model to a dwave input format
     qubo_dict_lin = qubo.objective.linear.to_dict()
     qubo_dict_quad = qubo.objective.quadratic.to_dict()
-    # TODO: bqm = ?
     bqm = dimod.BinaryQuadraticModel(qubo_dict_lin, qubo_dict_quad, 0, dimod.BINARY)
     return bqm
 

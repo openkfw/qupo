@@ -23,7 +23,7 @@ from scipy import sparse
 
 # custom packages
 import qupo_backend.optimization_backend.model_converter as model_converter
-from ..config import settings
+from qupo_backend.config import settings
 
 
 def configure_azure_provider(quantum=False):
