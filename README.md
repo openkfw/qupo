@@ -73,3 +73,14 @@ Navigate into the api folder: `cd api`.
    ```(bash)
    poetry run python qupo_backend/test/opti_backend_runscript.py
    ```
+
+### Frontend
+
+From your bash navigate into the frontend folder: `cd ../frontend`. It is a create-react-app and contains all the files that are needed to run the web application. On initial start-up, first install all required packages from the `package.json` file. Then you can run the app with:
+
+```bash
+npm install
+npm start
+```
+
+In your browser visit [http://localhost:3000](http://localhost:3000) to see the app up and running.
