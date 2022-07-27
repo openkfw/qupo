@@ -21,50 +21,17 @@ def calc_expected_covariance_pa(price_time_series):
 
 
 def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
+    # return exact mathematical model of single period sustainable portfolio model without transaction costs
     # osqp (sparse matrix) notation for quadratic constrained problems:
     # objective: minimize 0.5*x^T*P*x + q*x
     # constraints: subject to l <= A*x <= u
-    # with T the transpose operator
-    def _make_obj_matrix(covar, alpha_scaling):
-        obj_matrix = sparse.csc_matrix(covar) * alpha_scaling 
-        return obj_matrix
-
-    def _make_obj_vector(alpha_vector, beta_vector, beta_scaling):
-        obj_vector = alpha_vector + beta_scaling * beta_vector / 2
-        return - obj_vector
-
-    def _make_constraint_matrix(n):
-        sum_one_matrix = _make_sum_one_constraint(n)
-        asset_matrix = _make_asset_constraints(n)
-        constraint_matrix = sparse.vstack([asset_matrix,
-                                           sum_one_matrix], format='csc')
-        return constraint_matrix
-
-    def _make_sum_one_constraint(n):
-        sum_one = sparse.csc_matrix(np.ones((1, n)))
-        return sum_one
-
-    def _make_asset_constraints(n):
-        asset_matrix = sparse.eye(n)
-        return asset_matrix
-
-    def _make_lower_bounds(n, w_init):
-        lb = np.hstack([np.zeros(n), 1])
-        return lb
-
-    def _make_upper_bounds(n, asset_ub, w_init):
-        ub = np.hstack([asset_ub, 1])
-        return ub
-
+    # with x - real valued vector (of variables x_i), T - transpose operator, P - objective matrix, q - objective vector, l/u - constraint lower/upper bound vector, A - constraint matrix
     n_portfolio = len(dataframe.index)
-    w_init = np.ones(n_portfolio) * 1 / n_portfolio
-    asset_ub = np.ones(n_portfolio)
-
-    P = _make_obj_matrix(dataframe.iloc[:, -n_portfolio:].to_numpy(), risk_weight)
-    q = _make_obj_vector(dataframe.RateOfReturn.to_numpy(),
-                         dataframe.ESGRating.to_numpy(), esg_weight)
-    A = _make_constraint_matrix(n_portfolio)
-    l = _make_lower_bounds(n_portfolio, w_init)
-    u = _make_upper_bounds(n_portfolio, asset_ub, w_init)
+    covariance = dataframe.iloc[:, -n_portfolio:].to_numpy()
+    P = sparse.csc_matrix(covariance) * risk_weight 
+    q = dataframe.RateOfReturn.to_numpy() + esg_weight * dataframe.ESGRating.to_numpy() / 2
+    A = sparse.vstack([sparse.eye(n_portfolio), sparse.csc_matrix(np.ones((1, n_portfolio)))], format='csc')
+    l = np.hstack([np.zeros(n_portfolio), 1])
+    u = np.hstack([np.ones(n_portfolio), 1]) 
 
     return P, q, A, l, u

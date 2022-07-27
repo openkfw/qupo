@@ -4,8 +4,7 @@ import warnings
 from azure.quantum import Workspace
 from azure.quantum.qiskit import AzureQuantumProvider
 from azure.identity import ClientSecretCredential
-from azure.quantum.optimization import SimulatedAnnealing, PopulationAnnealing, ParallelTempering, \
-    Tabu, QuantumMonteCarlo, SubstochasticMonteCarlo, HardwarePlatform
+from azure.quantum.optimization import SimulatedAnnealing, PopulationAnnealing, ParallelTempering, Tabu, QuantumMonteCarlo, SubstochasticMonteCarlo, HardwarePlatform
 import numpy as np
 import osqp
 import pandas as pd
@@ -203,7 +202,7 @@ class Problem:
         if self.resolution is not None:
             self.docplex_problem = omc.convert_osqp_to_docplex_model(self.P, self.q, self.A, self.l, self.u,
                                                                      resolution=self.resolution)
-            self.quadratic_problem, self.qubo_problem, self.converter = omc.convert_docplex_to_qubo_model(
+            self.quadratic_problem, self.qubo_problem, self.converter = omc.approximate_docplex_by_qubo_model(
                 self.docplex_problem)
 
     def calc_objective_value(self, variable_values):

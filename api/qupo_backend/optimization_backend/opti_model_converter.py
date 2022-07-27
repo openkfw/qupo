@@ -23,7 +23,7 @@ def convert_osqp_to_docplex_model(P, qu, A, l, u, resolution=1E3):
     return mdl
 
 
-def convert_docplex_to_qubo_model(dpx_model):
+def approximate_docplex_by_qubo_model(dpx_model):
     # qp = qktQP()
     qp = from_docplex_mp(dpx_model)
     # %% Converting to QUBO using QISKit
@@ -60,5 +60,5 @@ def convert_qubo_to_dimod_model(qubo):
 
 
 def convert_docplex_to_azureqio_model(dpx_model, penalty_factor=1E5):
-    azuremodel = convert_qubo_to_azureqio_model(convert_docplex_to_qubo_model(dpx_model))
+    azuremodel = convert_qubo_to_azureqio_model(approximate_docplex_by_qubo_model(dpx_model))
     return azuremodel

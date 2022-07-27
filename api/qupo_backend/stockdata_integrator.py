@@ -6,7 +6,7 @@ import quandl
 import yfinance
 import json
 
-from .config import settings
+from qupo_backend.config import settings
 from qupo_backend.qupo_classes import Stock, PortfoliosModel
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
