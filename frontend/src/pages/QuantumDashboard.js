@@ -40,7 +40,7 @@ export const options = {
 };
 
 // sample processed data
-const data = {
+const data1 = {
   labels: [],
   datasets: [
     {
@@ -58,13 +58,27 @@ const data = {
   ],
 };
 
-const QuantumDashboard = () => {
-  const processedData = data;
-  return (
-    <Box>
-      <Bar options={options} data={processedData} />
-    </Box>
-  );
+const QuantumDashboard = ({ data }) => {
+  const processedData = data1;
+
+  const processData = () => {
+    const datasets = [
+      {
+        label: "Classical solver - OSQP",
+        data: [],
+      },
+    ];
+    const labels = [];
+    for (const [key, value] of Object.entries(data.RateOfReturn)) {
+      labels.push(key);
+      datasets[0].data.push(value);
+    }
+
+    return { labels, datasets };
+  };
+
+  console.log(data);
+  return <Box>{data && <Bar options={options} data={processData()} />}</Box>;
 };
 
 export default QuantumDashboard;

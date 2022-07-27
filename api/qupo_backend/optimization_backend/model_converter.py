@@ -1,18 +1,27 @@
-# 3rd party packages
 import dimod
+# TODO: AzureQuantumOptimization?
 import azure.quantum.optimization as aqo
+# TODO: docplexModel?
 from docplex.mp.model import Model as dpxModel
 import numpy as np
 from qiskit_optimization.converters import QuadraticProgramToQubo as Qp2Qubo
 from qiskit_optimization.translators import from_docplex_mp
 
 
+# TODO: Add descriptions to each module, explaining what it does
+
+# TODO: find better variable names
 def convert_osqp_to_docplex_model(P, qu, A, l, u, resolution=1E3):
     # create docplex model as basis for all quantum and quantum inspired models
     # https://qiskit.org/documentation/tutorials/optimization/1_quadratic_program.html
+
+    # TODO: don't overwrite values
     l = resolution * l
     u = resolution * u
+    # TODO: some sort of length?
     n = len(qu)
+
+    # TODO: mdl = docplex_model?
     mdl = dpxModel('portfolio_optimization')
     x = mdl.integer_var_list(['x{}'.format(i) for i in range(n)], ub=resolution)
     objective = mdl.sum([qu[i] * x[i] for i in range(n)])
@@ -26,17 +35,16 @@ def convert_osqp_to_docplex_model(P, qu, A, l, u, resolution=1E3):
 def approximate_docplex_by_qubo_model(dpx_model):
     # qp = qktQP()
     qp = from_docplex_mp(dpx_model)
-    # %% Converting to QUBO using QISKit
-    # print('\n[Converting to QUBO directly using QISKIT]')
-    # qprob_eq_bin, int2bin = qktQP.lin2quad_qiskit_eq_bin(qp)
-    # qubo = qktQP.lin2quad_qiskit_penalty(qprob_eq_bin, penalty_factor=penalty_factor)
     qp2qubo = Qp2Qubo()
     qubo = qp2qubo.convert(qp)
+    # TODO: Why return all of them?
     return qp, qubo, qp2qubo
 
 
 def convert_qubo_to_azureqio_model(qubo):
-    # %% Converting QISKIT QUBO model Azure Quantum QUBO model
+    # TODO: Superfluous comment
+    # Converting QISKIT QUBO model Azure Quantum QUBO model
+    # TODO: lin -> linear, quad -> quadratic
     qubo_dict_lin = qubo.objective.linear.to_dict()
     qubo_dict_quad = qubo.objective.quadratic.to_dict()
     # Convert keys to string
@@ -46,15 +54,19 @@ def convert_qubo_to_azureqio_model(qubo):
     qubo_list = qubo_list_lin + qubo_list_quad
     qubo_terms = list()
     for term in qubo_list:
+        # TODO: Append? Or list comprehension?
         qubo_terms = qubo_terms + [aqo.Term(c=term['c'], indices=term['ids'])]
+    # TODO: qubo_terms = [aqo.Term(c=term['c'], indices=term['ids']) for term in qubo_list]
     aqo_model = aqo.Problem(name='Supply Chain', problem_type=aqo.ProblemType.pubo, terms=qubo_terms)
     return aqo_model
 
 
 def convert_qubo_to_dimod_model(qubo):
+    # TODO: Superfluous comment?
     # Convert QISKit model to dimod model
     qubo_dict_lin = qubo.objective.linear.to_dict()
     qubo_dict_quad = qubo.objective.quadratic.to_dict()
+    # TODO: bqm = ?
     bqm = dimod.BinaryQuadraticModel(qubo_dict_lin, qubo_dict_quad, 0, dimod.BINARY)
     return bqm
 

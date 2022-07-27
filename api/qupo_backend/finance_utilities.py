@@ -1,15 +1,15 @@
 # 3rd party packages
 import numpy as np
-import pypfopt as ppo
+import pypfopt
 from scipy import sparse
 
 
 def calc_historic_rate_of_return_pa(price_time_series):
-    return ppo.expected_returns.mean_historical_return(price_time_series).to_numpy()
+    return pypfopt.expected_returns.mean_historical_return(price_time_series).to_numpy()
 
 
 def calc_historic_volatility_pa(price_time_series):
-    return np.sqrt(np.diag(ppo.risk_models.sample_cov(price_time_series).to_numpy())) / price_time_series.mean()
+    return np.sqrt(np.diag(pypfopt.risk_models.sample_cov(price_time_series).to_numpy())) / price_time_series.mean()
 
 
 def calc_historic_sharpe_ratio(historic_rate_of_return_pa, risk_free_return_pa, historic_volatility_pa):
@@ -17,7 +17,7 @@ def calc_historic_sharpe_ratio(historic_rate_of_return_pa, risk_free_return_pa, 
 
 
 def calc_expected_covariance_pa(price_time_series):
-    return ppo.risk_models.risk_matrix(price_time_series, method='sample_cov')
+    return pypfopt.risk_models.risk_matrix(price_time_series, method='sample_cov')
 
 
 def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):

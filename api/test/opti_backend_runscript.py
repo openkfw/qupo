@@ -1,8 +1,8 @@
 import sys
 import os.path
-import qupo_backend.optimization_backend.opti_backend_runner as obr
+import qupo_backend.optimization_backend.backend_runner as backend_runner
 import stockdata_integrator_runscript as sdi
-import qupo_backend.finance_utilities as fu
+import qupo_backend.finance_utilities as finance_utilities
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
@@ -13,23 +13,23 @@ def main():
     portfolio_model_df = sdi.portfolios_df_from_default_stock_data()
 
     # create abstract representation of problem (to identify and leverage hidden structure)
-    P, q, A, l, u = fu.convert_business_to_osqp_model(portfolio_model_df, risk_weight=RISK_WEIGHT, esg_weight=ESG_WEIGHT)
-    problem = obr.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT)
+    P, q, A, l, u = finance_utilities.convert_business_to_osqp_model(portfolio_model_df, risk_weight=RISK_WEIGHT, esg_weight=ESG_WEIGHT)
+    problem = backend_runner.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT)
 
     # 0. Classical benchmark solution: instantiate, configure and run
     # 0.1 PyPortfolioOptimization (excl. sustainability measures)
-    solver_pypo = obr.Solver(provider_name='PyPortfolioOptimization', algorithm='pypo')
-    job_pypo = obr.Job(problem, solver_pypo)
-    obr.run_job(job_pypo)
+    solver_pypo = backend_runner.Solver(provider_name='PyPortfolioOptimization', algorithm='pypo')
+    job_pypo = backend_runner.Job(problem, solver_pypo)
+    backend_runner.run_job(job_pypo)
 
     solution_output_percent = dict(zip(job_pypo.problem.dataframe.index, job_pypo.result.variables_values.round(2)))
     print(f'PyPO suggested portfolio composition[%]: {solution_output_percent}')
     print(f'PyPO objective value: {job_pypo.result.objective_value}')
 
     # 0.2 University of Oxford OSQP Solver (incl. sustainability measures)
-    solver_osqp = obr.Solver(provider_name='University of Oxford', algorithm='osqp')
-    job_osqp = obr.Job(problem, solver_osqp)
-    obr.run_job(job_osqp)
+    solver_osqp = backend_runner.Solver(provider_name='University of Oxford', algorithm='osqp')
+    job_osqp = backend_runner.Job(problem, solver_osqp)
+    backend_runner.run_job(job_osqp)
 
     solution_output_percent = dict(zip(job_osqp.problem.dataframe.index, job_osqp.result.variables_values.round(2)))
     print(f'OSQP suggested portfolio composition[%]: {solution_output_percent}')

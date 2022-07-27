@@ -47,10 +47,20 @@ const AppWrapper = () => {
 
 function App() {
   const classes = useStyles();
+  const [data, setData] = useState(null);
   const [weights, setWeights] = useState({
     risk_weight: 50,
     esg_weight: 50,
   });
+
+  useEffect(() => {
+    const calculateModels = async () => {
+      const d = await client.getModelCalculations();
+      setData(d);
+    };
+
+    calculateModels();
+  }, []);
 
   useEffect(() => {
     const fetchIndices = async () => {
@@ -89,7 +99,7 @@ function App() {
     <Grid className={classes.background}>
       <Grid className={classes.banner} />
       <Container maxWidth="md" className={classes.container}>
-        <Box sx={{ textAlign: "center", padding: "5vh" }}>
+        <Box sx={{ textAlign: "center", padding: "8vh" }}>
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
         <Routes>
@@ -104,6 +114,7 @@ function App() {
               />
             }
           />
+          <Route path="/chart" element={<QuantumDashboard data={data} />} />
         </Routes>
       </Container>
     </Grid>

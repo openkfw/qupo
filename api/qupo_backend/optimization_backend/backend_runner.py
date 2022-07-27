@@ -1,6 +1,9 @@
+# native packages
 from dataclasses import dataclass, field
 from datetime import datetime
 import warnings
+
+# 3rd party packages
 from azure.quantum import Workspace
 from azure.quantum.qiskit import AzureQuantumProvider
 from azure.identity import ClientSecretCredential
@@ -8,7 +11,7 @@ from azure.quantum.optimization import SimulatedAnnealing, PopulationAnnealing, 
 import numpy as np
 import osqp
 import pandas as pd
-import pypfopt as ppo
+import pypfopt
 from qiskit import IBMQ
 from qiskit import Aer
 from qiskit.algorithms import QAOA
@@ -17,7 +20,9 @@ from qiskit.utils import QuantumInstance
 from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 from scipy import sparse
-import qupo_backend.optimization_backend.opti_model_converter as omc
+
+# custom packages
+import qupo_backend.optimization_backend.model_converter as model_converter
 from ..config import settings
 
 
@@ -44,6 +49,7 @@ def configure_qiskit_provider():
     try:
         IBMQ.enable_account(settings.ibmq_client_secret)
     except IBMQAccountError:
+        # TODO: Handle error case correctly
         pass
     provider = IBMQ.get_provider(
         hub='ibm-q',
@@ -53,16 +59,17 @@ def configure_qiskit_provider():
     return provider
 
 
-def run_job(job, filepath=None, experiment=None):
+def run_job(job):
+    # TODO: Names as constants/enums?
     if job.solver.provider_name == 'PyPortfolioOptimization':
         warnings.warn(f'{job.solver.provider_name} does not include sustainability measures in optimization')
-        raw_result, variable_values, objective_value, time_to_solution = run_pypo_job(job)
+        variable_values, objective_value, time_to_solution = run_pypo_job(job)
     elif job.solver.provider_name == 'University of Oxford':
-        raw_result, variable_values, objective_value, time_to_solution = run_osqp_job(job)
+        variable_values, objective_value, time_to_solution = run_osqp_job(job)
     elif job.solver.provider_name == 'Azure':
-        raw_result, variable_values, objective_value, time_to_solution = run_azure_qio_job(job)
+        variable_values, objective_value, time_to_solution = run_azure_qio_job(job)
     elif job.solver.provider_name in ['IBM', 'IONQ']:
-        raw_result, variable_values, objective_value, time_to_solution = run_qiskit_job(job)
+        variable_values, objective_value, time_to_solution = run_qiskit_job(job)
     else:
         warnings.warn(f'Provider {job.solver.provider_name} not available')
         return
@@ -74,26 +81,26 @@ def run_job(job, filepath=None, experiment=None):
 
 def run_pypo_job(job):
     df = job.problem.dataframe
-    efficient_frontier = ppo.efficient_frontier.EfficientFrontier(df.RateOfReturn, df.iloc[:, -len(df.index):])
+    efficient_frontier = pypfopt.efficient_frontier.EfficientFrontier(df.RateOfReturn, df.iloc[:, -len(df.index):])
     raw_result = efficient_frontier.max_quadratic_utility(risk_aversion=job.problem.risk_weight, market_neutral=False)
     variable_values = np.array(list(raw_result.values()))
     objective_value = job.problem.calc_objective_value(variable_values)
     time_to_solution = None
-    return raw_result, variable_values, objective_value, time_to_solution
+    return variable_values, objective_value, time_to_solution
 
 
 def run_osqp_job(job):
-    # Create an OSQP object
     osqp_job = osqp.OSQP()
+
     # Setup workspace and change alpha parameter
     osqp_job.setup(job.problem.P, job.problem.q, job.problem.A, job.problem.l, job.problem.u,
                    alpha=1, polish=True, eps_rel=1E-10, max_iter=100000)
-    # Solve problem
+
     raw_result = osqp_job.solve()
     variable_values = raw_result.x
     objective_value = raw_result.info.obj_val
     time_to_solution = raw_result.info.run_time
-    return raw_result, variable_values, objective_value, time_to_solution
+    return variable_values, objective_value, time_to_solution
 
 
 def run_azure_qio_job(job):
@@ -119,29 +126,31 @@ def run_azure_qio_job(job):
                                                  seed=48)
         else:
             warnings.warn('QIO solver not implemented - choose from: SA, PA, PT, Tabu, QMC, SMC')
-        azure_qio_problem = omc.convert_qubo_to_azureqio_model(job.problem.qubo_problem)
+
+        azure_qio_problem = model_converter.convert_qubo_to_azureqio_model(job.problem.qubo_problem)
         result = qio_solver.optimize(azure_qio_problem)
         raw_result = job.problem.converter.interpret(list(result['configuration'].values())) * job.problem.resolution
         variable_values = raw_result
         objective_value = 0.5 * np.dot(variable_values, job.problem.P.dot(variable_values)) + np.dot(job.problem.q,
                                                                                                      variable_values)
         time_to_solution = job.solver.config['timeout']
-        return raw_result, variable_values, objective_value, time_to_solution
+        return variable_values, objective_value, time_to_solution
     except TypeError:
+        # TODO: Handle properly
         warnings.warn(f'Qio job failed. Config: {job.solver.config}')
         return None, None, None, None
 
 
 def run_qiskit_job(job):
-    qp = job.problem.quadratic_problem
     # Implementation according to https://qiskit.org/documentation/finance/tutorials/01_portfolio_optimization.html
+    qp = job.problem.quadratic_problem
     if job.solver.provider_name == 'IBM':
         provider = configure_qiskit_provider()
-        print([backend.name() for backend in provider.backends()])
+        # print([backend.name() for backend in provider.backends()])
         simulator_backend = Aer.get_backend('aer_simulator')
     elif job.solver.provider_name == 'IONQ':
         provider = configure_azure_provider(quantum=True)
-        print([backend.name() for backend in provider.backends()])
+        # print([backend.name() for backend in provider.backends()])
         simulator_backend_list = provider.backends('ionq.simulator')
         simulator_backend = simulator_backend_list[0]
 
@@ -160,7 +169,7 @@ def run_qiskit_job(job):
                                                                                                  variable_values)
     time_to_solution = None
 
-    return raw_result, variable_values, objective_value, time_to_solution
+    return variable_values, objective_value, time_to_solution
 
 
 @ dataclass
@@ -172,7 +181,6 @@ class Result:
     rate_of_return: float = 0.0
     variance: float = 0.0
     esg_value: float = 0.0
-    raw_result: object = None
 
 
 @ dataclass

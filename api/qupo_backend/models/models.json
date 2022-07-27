@@ -1,0 +1,17 @@
+{
+    "qio": {
+        "provider": "Azure"
+    },
+    "qiskit": {
+        "provider": "IBM"
+    },
+    "azure_ionq": {
+        "provider": ""
+    },
+    "osqp": {
+        "provider": "University of Oxford"
+    },
+    "pypo": {
+        "provider": "PyPortfolioOptimization"
+    }
+}
