@@ -19,16 +19,15 @@ def convert_osqp_to_docplex_model(P, q, A, l, u, resolution=1E3):
     # https://qiskit.org/documentation/tutorials/optimization/1_quadratic_program.html
     discrete_l = resolution * l
     discrete_u = resolution * u
-    # TODO: some sort of length?
-    n = len(q)
+    length_objective_vector = len(q)
     # TODO: mdl = docplex_model?
     mdl = dpxModel('portfolio_optimization')
-    x = mdl.integer_var_list(['x{}'.format(i) for i in range(n)], ub=discrete_u)
-    objective = mdl.sum([q[i] * x[i] for i in range(n)])
+    x = mdl.integer_var_list(['x{}'.format(i) for i in range(length_objective_vector)], ub=discrete_u)
+    objective = mdl.sum([q[i] * x[i] for i in range(length_objective_vector)])
     objective += mdl.sum([P.todense()[i, j] * x[i] * x[j] for i in range(n) for j in range(n)])
     mdl.minimize(objective)
     A = np.array(A.todense())
-    mdl.add_constraint(mdl.sum(A[-1][i] * x[i] for i in range(n)) == discrete_l[-1])
+    mdl.add_constraint(mdl.sum(A[-1][i] * x[i] for i in range(length_objective_vector)) == discrete_l[-1])
     return mdl
 
 
@@ -37,7 +36,6 @@ def approximate_docplex_by_qubo_model(dpx_model):
     qp = from_docplex_mp(dpx_model)
     qp2qubo = Qp2Qubo()
     qubo = qp2qubo.convert(qp)
-    # TODO: Why return all of them?
     return qp, qubo, qp2qubo
 
 

@@ -44,26 +44,26 @@
             {
                 "scenario": "Green",
                 "characteristic": "Afine",
-                "label": "By 1 € for 10 net impact ratio points",
+                "label": "By 1 € for additional 10%-points net impact ratio",
                 "value": 1E-1
             },
             {
                 "scenario": "Yellow",
                 "characteristic": "Inclined",
-                "label": "By 10 € for 1 net impact ratio points",
+                "label": "By 10 € for additional 1%-points net impact ratio points",
                 "value": 1E1
             },
             {
                 "scenario": "Orange",
                 "characteristic": "Disinclined",
-                "label": "By 100 € for 0,1 net impact ratio points",
+                "label": "By 100 € for additional 0,1%-points net impact ratio points",
                 "value": 1E3
             }
             ,
             {
                 "scenario": "Red",
                 "characteristic": "Averse",
-                "label": "By 1000 € for 0,01 net impact ratio points",
+                "label": "By 1000 € for additional 0,01%-points net impact ratio points",
                 "value": 1E5
             }
         ]

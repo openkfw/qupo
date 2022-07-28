@@ -39,7 +39,7 @@ def main():
     # instantiate and run qio
     # for algorithm in ['PA']:  # ['SA', 'PT', 'PA', 'Tabu', 'QMC', 'SMC']:
     #    for resolution in np.array([1]) * 1E3:
-    #        for timeout in [60]:  # 60, 10, 1]:
+    #        for timeout in [10]:  # 60, 10, 1]:
     #            quantum_problem = obr.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT, resolution=resolution)
     #            solver_qio = obr.Solver(provider_name='Azure', algorithm=algorithm, config={'timeout': timeout, 'hardware': 'FPGA'})
     #            job_qio = obr.Job(quantum_problem, solver_qio)
