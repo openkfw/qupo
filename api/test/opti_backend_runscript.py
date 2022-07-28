@@ -1,5 +1,6 @@
 import sys
 import os.path
+import numpy as np
 import qupo_backend.optimization_backend.backend_runner as backend_runner
 import stockdata_integrator_runscript as sdi
 import qupo_backend.finance_utilities as finance_utilities
@@ -18,7 +19,7 @@ def main():
 
     # 0. Classical benchmark solution: instantiate, configure and run
     # 0.1 PyPortfolioOptimization (excl. sustainability measures)
-    solver_pypo = backend_runner.Solver(provider_name='PyPortfolioOptimization', algorithm='pypo')
+    solver_pypo = backend_runner.Solver(provider_name='pypfopt', algorithm='pypo')
     job_pypo = backend_runner.Job(problem, solver_pypo)
     backend_runner.run_job(job_pypo)
 
@@ -27,7 +28,7 @@ def main():
     print(f'PyPO objective value: {job_pypo.result.objective_value}')
 
     # 0.2 University of Oxford OSQP Solver (incl. sustainability measures)
-    solver_osqp = backend_runner.Solver(provider_name='University of Oxford', algorithm='osqp')
+    solver_osqp = backend_runner.Solver(provider_name='osqp', algorithm='osqp')
     job_osqp = backend_runner.Job(problem, solver_osqp)
     backend_runner.run_job(job_osqp)
 
@@ -37,27 +38,28 @@ def main():
 
     # 1. Quantization: generate generic quantum problem (quadratic unconstrained binary optimization problem),
     # instantiate and run qio
-    # for algorithm in ['PA']:  # ['SA', 'PT', 'PA', 'Tabu', 'QMC', 'SMC']:
-    #    for resolution in np.array([1]) * 1E3:
-    #        for timeout in [10]:  # 60, 10, 1]:
-    #            quantum_problem = obr.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT, resolution=resolution)
-    #            solver_qio = obr.Solver(provider_name='Azure', algorithm=algorithm, config={'timeout': timeout, 'hardware': 'FPGA'})
-    #            job_qio = obr.Job(quantum_problem, solver_qio)
-    #            obr.run_job(job_qio)
-    #            solution_output_percent = dict(zip(job_pypo.problem.dataframe.index, job_pypo.result.variables_values.round(2)))
-    #            print(f'Azure QIO suggested portfolio composition[%]: {solution_output_percent}')
-    #            print(f'Azure QIO objective value: {job_pypo.result.objective_value}')
+    for algorithm in ['PA']:  # ['SA', 'PT', 'PA', 'Tabu', 'QMC', 'SMC']:
+       for resolution in np.array([1]) * 1:
+           for timeout in [10]:  # 60, 10, 1]:
+               quantum_problem = backend_runner.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT, resolution=resolution)
+               solver_qio = backend_runner.Solver(provider_name='azure_quantum_qio', algorithm=algorithm, config={'timeout': timeout, 'hardware': 'FPGA'})
+               job_qio = backend_runner.Job(quantum_problem, solver_qio)
+               backend_runner.run_job(job_qio) 
+               
+               solution_output_percent = dict(zip(job_pypo.problem.dataframe.index, job_pypo.result.variables_values.round(2)))
+               print(f'Azure QIO suggested portfolio composition[%]: {solution_output_percent}')
+               print(f'Azure QIO objective value: {job_pypo.result.objective_value}')
 
     # 2. Quantization: generate generic quantum problem (quadratic unconstrained binary optimization problem)
     # to run on quantum (simulator) backend
-    # quantum_problem = obr.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT, resolution=1)
-    # solver_qiskit = obr.Solver(provider_name='IBM', algorithm='QAOA')
-    # job_qiskit = obr.Job(quantum_problem, solver_qiskit)
-    # obr.run_job(job_qiskit)
+    quantum_problem = backend_runner.Problem(P, q, A, l, u, portfolio_model_df, RISK_WEIGHT, ESG_WEIGHT, resolution=1)
+    solver_qiskit = backend_runner.Solver(provider_name='qiskit_ibm', algorithm='QAOA')
+    job_qiskit = backend_runner.Job(quantum_problem, solver_qiskit)
+    backend_runner.run_job(job_qiskit)
 
-    # solution_output_percent = dict(zip(job_qiskit.problem.dataframe.index, job_qiskit.result.variables_values.round(2)))
-    # print(f'Qiskit on LocalSimulator suggested portfolio composition[%]: {solution_output_percent}')
-    # print(f'Qiskit on LocalSimulator objective value: {job_qiskit.result.objective_value}')
+    solution_output_percent = dict(zip(job_qiskit.problem.dataframe.index, job_qiskit.result.variables_values.round(2)))
+    print(f'Qiskit on LocalSimulator suggested portfolio composition[%]: {solution_output_percent}')
+    print(f'Qiskit on LocalSimulator objective value: {job_qiskit.result.objective_value}')
 
 
 if __name__ == '__main__':

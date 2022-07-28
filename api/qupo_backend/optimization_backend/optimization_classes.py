@@ -1,5 +1,6 @@
 # native packages
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field
+from datetime import datetime
 from scipy import sparse
 
 # 3rd party packages
@@ -8,6 +9,7 @@ import pandas as pd
 
 # custom packages
 import qupo_backend.finance_utilities as finance_utilities
+import qupo_backend.optimization_backend.model_converter as model_converter
 
 
 @dataclass
@@ -52,9 +54,9 @@ class Problem:
         self.sparsity = np.round(sum([tensor.getnnz() for tensor in [self.P, self.A]]) / sum(
             [tensor.shape[0] * tensor.shape[1] for tensor in [self.P, self.A]]) * 100, 2)
         if self.resolution is not None:
-            self.docplex_problem = omc.convert_osqp_to_docplex_model(self.P, self.q, self.A, self.l, self.u,
+            self.docplex_problem = model_converter.convert_osqp_to_docplex_model(self.P, self.q, self.A, self.l, self.u,
                                                                      resolution=self.resolution)
-            self.quadratic_problem, self.qubo_problem, self.converter = omc.approximate_docplex_by_qubo_model(
+            self.quadratic_problem, self.qubo_problem, self.converter = model_converter.approximate_docplex_by_qubo_model(
                 self.docplex_problem)
 
     def calc_objective_value(self, variable_values):

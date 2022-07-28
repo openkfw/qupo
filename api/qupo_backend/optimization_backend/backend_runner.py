@@ -1,6 +1,5 @@
 # native packages
-from dataclasses import dataclass, field
-from datetime import datetime
+from dataclasses import dataclass
 from enum import Enum
 import warnings
 
@@ -27,67 +26,18 @@ from qupo_backend.optimization_backend.optimization_classes import Problem, Solv
 import qupo_backend.optimization_backend.model_converter as model_converter
 from qupo_backend.config import settings
 
-
-def configure_azure_provider(quantum=False):
-    credential = ClientSecretCredential(tenant_id=settings.azure_tenant_id,
-                                        client_id=settings.azure_client_id,
-                                        client_secret=settings.azure_client_secret)
-    if quantum:
-        azure_provider = AzureQuantumProvider(subscription_id=settings.azure_subscription_id,
-                                              resource_group=settings.azure_resource_group,
-                                              name=settings.azure_name,
-                                              location=settings.azure_location,
-                                              credential=credential)
-    else:
-        azure_provider = Workspace(subscription_id=settings.azure_subscription_id,
-                                   resource_group=settings.azure_resource_group,
-                                   name=settings.azure_name,
-                                   location=settings.azure_location,
-                                   credential=credential)
-    return azure_provider
-
-
-def configure_qiskit_provider():
-    try:
-        IBMQ.enable_account(settings.ibmq_client_secret)
-    except IBMQAccountError:
-        # TODO: Handle error case correctly
-        pass
-    provider = IBMQ.get_provider(
-        hub='ibm-q',
-        group='open',
-        project='main'
-    )
-    return provider
-
-
 def run_job(job):
-    # TODO: Names as constants/enums?
     try:
        variable_values, objective_value, time_to_solution = Providers(job.solver.provider_name).run_job(job)
-    else:
-        warnings.warn(f'Provider {job.solver.provider_name} not available')
-        return
-
-    if job.solver.provider_name == 'PyPortfolioOptimization':
-        warnings.warn(f'{job.solver.provider_name} does not include sustainability measures in optimization')
-        variable_values, objective_value, time_to_solution = run_pypo_job(job)
-    elif job.solver.provider_name == 'University of Oxford':
-        variable_values, objective_value, time_to_solution = run_osqp_job(job)
-    elif job.solver.provider_name == 'Azure':
-        variable_values, objective_value, time_to_solution = run_azure_qio_job(job)
-    elif job.solver.provider_name in ['IBM', 'IONQ']:
-        variable_values, objective_value, time_to_solution = run_qiskit_job(job)
-    else:
-        warnings.warn(f'Provider {job.solver.provider_name} not available')
-        return
+    except TypeError:
+        warnings.warn(f'Provider {job.solver.provider_name} not available')   
     try:
         job.result = Result(variable_values * 100, objective_value, time_to_solution)
     except TypeError:
         warnings.warn('Solver did not return variable values')
 
 
-def run_pypo_job(job):
+def run_pyportfolioopt_job(job):
     df = job.problem.dataframe
     efficient_frontier = pypfopt.efficient_frontier.EfficientFrontier(df.RateOfReturn, df.iloc[:, -len(df.index):])
     raw_result = efficient_frontier.max_quadratic_utility(risk_aversion=job.problem.risk_weight, market_neutral=False)
@@ -111,7 +61,26 @@ def run_osqp_job(job):
     return variable_values, objective_value, time_to_solution
 
 
-def run_azure_qio_job(job):
+def configure_azure_provider(quantum=False):
+    credential = ClientSecretCredential(tenant_id=settings.azure_tenant_id,
+                                        client_id=settings.azure_client_id,
+                                        client_secret=settings.azure_client_secret)
+    if quantum:
+        azure_provider = AzureQuantumProvider(subscription_id=settings.azure_subscription_id,
+                                              resource_group=settings.azure_resource_group,
+                                              name=settings.azure_name,
+                                              location=settings.azure_location,
+                                              credential=credential)
+    else:
+        azure_provider = Workspace(subscription_id=settings.azure_subscription_id,
+                                   resource_group=settings.azure_resource_group,
+                                   name=settings.azure_name,
+                                   location=settings.azure_location,
+                                   credential=credential)
+    return azure_provider
+
+
+def run_azure_job(job):
     provider = configure_azure_provider()
     try:
         if job.solver.algorithm == 'SA':
@@ -145,16 +114,8 @@ def run_azure_qio_job(job):
         return variable_values, objective_value, time_to_solution
     except TypeError:
         # TODO: Handle properly
-        warnings.warn(f'Qio job failed. Config: {job.solver.config}')
-        return None, None, None, None
-
-
-def run_ibm_job(job):
-    provider = configure_qiskit_provider()
-    # print([backend.name() for backend in provider.backends()])
-    simulator_backend = Aer.get_backend('aer_simulator')
-    run_qiskit_job(job, simulator_backend)
-
+        warnings.warn(f'Qio job failed. Please check azure qio service health status and config: {job.solver.config}')
+        return None, None, None
 
 def run_ionq_job(job):
     provider = configure_azure_provider(quantum=True)
@@ -163,6 +124,24 @@ def run_ionq_job(job):
     simulator_backend = simulator_backend_list[0]
     run_qiskit_job(job, simulator_backend)
 
+def configure_qiskit_provider():
+    try:
+        IBMQ.enable_account(settings.ibmq_client_secret)
+    except IBMQAccountError:
+        warnings.warn("IBM account not available. Please check ibmq health status and credentials")
+        pass
+    provider = IBMQ.get_provider(
+        hub='ibm-q',
+        group='open',
+        project='main'
+    )
+    return provider
+
+def run_ibm_job(job):
+    provider = configure_qiskit_provider()
+    # print([backend.name() for backend in provider.backends()])
+    simulator_backend = Aer.get_backend('aer_simulator')
+    run_qiskit_job(job, simulator_backend)
 
 def run_qiskit_job(job, simulator_backend):
     # Implementation according to https://qiskit.org/documentation/finance/tutorials/01_portfolio_optimization.html
@@ -188,7 +167,7 @@ def run_qiskit_job(job, simulator_backend):
 @dataclass
 class Providers(Enum):
     pyportfolioopt = 'pypfopt'
-    universityofoxford = 'osqp'
+    osqp = 'osqp'
     azure = 'azure_quantum_qio'
     ibm = 'qiskit_ibm'
     ionq = 'azure_ionq'

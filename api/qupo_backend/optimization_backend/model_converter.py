@@ -1,14 +1,11 @@
 import dimod
-# TODO: AzureQuantumOptimization?
-import azure.quantum.optimization as aqo
-# TODO: docplexModel?
-from docplex.mp.model import Model as dpxModel
+import azure.quantum.optimization as azure_quantum_optimization
+from docplex.mp.model import Model as docplexModel
 import numpy as np
 from qiskit_optimization.converters import QuadraticProgramToQubo as Qp2Qubo
 from qiskit_optimization.translators import from_docplex_mp
 
 
-# TODO: find better variable names
 def convert_osqp_to_docplex_model(P, q, A, l, u, resolution=1E3):
     # input: osqp model of single period sustainable portfolio model without transaction costs
     # osqp (sparse matrix) notation for quadratic constrained problems:
@@ -20,15 +17,14 @@ def convert_osqp_to_docplex_model(P, q, A, l, u, resolution=1E3):
     discrete_l = resolution * l
     discrete_u = resolution * u
     length_objective_vector = len(q)
-    # TODO: mdl = docplex_model?
-    mdl = dpxModel('portfolio_optimization')
-    x = mdl.integer_var_list(['x{}'.format(i) for i in range(length_objective_vector)], ub=discrete_u)
-    objective = mdl.sum([q[i] * x[i] for i in range(length_objective_vector)])
-    objective += mdl.sum([P.todense()[i, j] * x[i] * x[j] for i in range(n) for j in range(n)])
-    mdl.minimize(objective)
+    docplex_model = docplexModel('portfolio_optimization')
+    x = docplex_model.integer_var_list(['x{}'.format(i) for i in range(length_objective_vector)], ub=discrete_u[-1])
+    objective = docplex_model.sum([q[i] * x[i] for i in range(length_objective_vector)])
+    objective += docplex_model.sum([P.todense()[i, j] * x[i] * x[j] for i in range(length_objective_vector) for j in range(length_objective_vector)])
+    docplex_model.minimize(objective)
     A = np.array(A.todense())
-    mdl.add_constraint(mdl.sum(A[-1][i] * x[i] for i in range(length_objective_vector)) == discrete_l[-1])
-    return mdl
+    docplex_model.add_constraint(docplex_model.sum(A[-1][i] * x[i] for i in range(length_objective_vector)) == discrete_l[-1])
+    return docplex_model
 
 
 def approximate_docplex_by_qubo_model(dpx_model):
@@ -48,12 +44,9 @@ def convert_qubo_to_azureqio_model(qubo):
     # Combine lists
     qubo_list = qubo_list_lin + qubo_list_quad
     qubo_terms = list()
-    for term in qubo_list:
-        # TODO: Append? Or list comprehension?
-        qubo_terms = qubo_terms + [aqo.Term(c=term['c'], indices=term['ids'])]
-    # TODO: qubo_terms = [aqo.Term(c=term['c'], indices=term['ids']) for term in qubo_list]
-    aqo_model = aqo.Problem(name='Supply Chain', problem_type=aqo.ProblemType.pubo, terms=qubo_terms)
-    return aqo_model
+    qubo_terms = [azure_quantum_optimization.Term(c=term['c'], indices=term['ids']) for term in qubo_list]
+    azure_quantum_optimization_model = azure_quantum_optimization.Problem(name='Supply Chain', problem_type=azure_quantum_optimization.ProblemType.pubo, terms=qubo_terms)
+    return azure_quantum_optimization_model
 
 
 def convert_qubo_to_dimod_model(qubo):
