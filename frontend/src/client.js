@@ -2,7 +2,6 @@ import axios from "axios";
 import config from "./utils/config";
 
 const SYMBOLS = [
-  "Acct",
   "LIN.DE",
   "SAP.DE",
   "SIE.DE",
@@ -21,7 +20,6 @@ const SYMBOLS = [
   "VNA.DE",
   "HEN3.DE",
   "EOAN.DE",
-  "SRT3.DE",
   "DB1.DE",
   "PAH3.DE",
   "DBK.DE",
@@ -95,14 +93,14 @@ class ApiClient {
   }
 
   getModelCalculations(
-    model = "osqp",
+    models = ["osqp", "pypo", "qio"],
     symbols = ["ACCT"],
     riskWeight = 0.001,
     esgWeight = 0.001
   ) {
     return this.apiClient
       .post("/models", {
-        model: model,
+        models: models,
         symbols: SYMBOLS,
         risk_weight: riskWeight,
         esg_weight: esgWeight,

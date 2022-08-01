@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 # custom packages
-import qupo_backend.finance_utilities as finance_utilities
+import qupo_backend.models.finance_utilities as finance_utilities
 
 
 @dataclass
