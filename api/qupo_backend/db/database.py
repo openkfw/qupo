@@ -14,7 +14,7 @@ Base = declarative_base()
 
 
 def get_db():
-    if(settings.use_db):
+    if (settings.use_db):
         models.Base.metadata.create_all(bind=engine)
         db = SessionLocal()
         try:

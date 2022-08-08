@@ -130,7 +130,7 @@ def configure_qiskit_provider():
     try:
         IBMQ.enable_account(settings.ibmq_client_secret)
     except IBMQAccountError:
-        warnings.warn("IBM account not available. Please check ibmq health status and credentials")
+        warnings.warn('IBM account not available. Please check ibmq health status and credentials')
         pass
     provider = IBMQ.get_provider(
         hub='ibm-q',

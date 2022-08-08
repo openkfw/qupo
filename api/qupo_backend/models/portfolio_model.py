@@ -19,7 +19,7 @@ def portfolios_df_from_default_stock_data(db, symbols, start='2018-01-01', end='
 
     for symbol in symbols:
         stock_data = get_data_of_symbol(schemas.StockBase(symbol=symbol, start=start, end=end), db)
-        if(stock_data):
+        if (stock_data):
             try:
                 matches = [stock_data.info[0].name.startswith(company_name.upper()) for company_name in esg_data.company_name]
                 if any(matches):
@@ -49,11 +49,11 @@ def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
     algorithm = model
     resolution = None
 
-    if(model == 'qio'):
+    if (model == 'qio'):
         algorithm = 'PA'
         config = {'timeout': 1, 'hardware': 'FPGA'}
         resolution = 1
-    if(model == 'qiskit'):
+    if (model == 'qiskit' or model == 'ionq'):
         algorithm = 'QAOA'
         resolution = 1
 

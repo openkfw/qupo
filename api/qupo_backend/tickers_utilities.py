@@ -33,7 +33,7 @@ def get_all_symbols(stock_data, symbols_only: bool):
     symbols = []
 
     for index in indices:
-        if(symbols_only):
+        if (symbols_only):
             symbols.extend([*stock_data.get_yahoo_ticker_symbols_by_index(index)])
         else:
             symbols.append(list(stock_data.get_stocks_by_index(index)))
@@ -42,14 +42,14 @@ def get_all_symbols(stock_data, symbols_only: bool):
 
 
 def get_data_of_symbol(stock: schemas.StockBase, db: Session):
-    if(settings.use_db):
+    if (settings.use_db):
         db_stock = crud.get_stock(db, stock)
 
         if db_stock is None:
             return save_finance_data(db, stock)
 
         date_last_entry = db_stock.history[len(db_stock.history) - 1].date
-        if(date_last_entry < stock.end):
+        if (date_last_entry < stock.end):
             return update_history(db, stock, date_last_entry)
 
         return get_data_in_timeframe(db, stock)
@@ -58,7 +58,7 @@ def get_data_of_symbol(stock: schemas.StockBase, db: Session):
         data = yfinance.Ticker(stock.symbol)
         yhistory = json.loads(data.history(start=str(stock.start), end=str(stock.end), auto_adjust=False).to_json(orient='split'))
 
-        if(len(yhistory['data']) > 0):
+        if (len(yhistory['data']) > 0):
             history = deconstruct_yhistory(yhistory)
 
             info = schemas.InfoCreate(symbol=stock.symbol, name=data.info['shortName'], type=data.info['quoteType'],
