@@ -1,5 +1,5 @@
 import dimod
-import azure.quantum.optimization as azure_quantum_optimization
+import azure.quantum.optimization as quantum_optimization
 from docplex.mp.model import Model as docplexModel
 import numpy as np
 from qiskit_optimization.converters import QuadraticProgramToQubo as Qp2Qubo
@@ -11,7 +11,8 @@ def convert_osqp_to_docplex_model(P, q, A, l, u, resolution=1E3):
     # osqp (sparse matrix) notation for quadratic constrained problems:
     # objective: minimize 0.5*x^T*P*x + q*x
     # constraints: subject to l <= A*x <= u
-    # with x - real valued vector (of variables x_i), T - transpose operator, P - objective matrix, q - objective vector, l/u - constraint lower/upper bound vector, A - constraint matrix
+    # with x - real valued vector (of variables x_i), T - transpose operator, P - objective matrix,
+    #      q - objective vector, l/u - constraint lower/upper bound vector, A - constraint matrix
     # output: docplex model as basis for all quantum and quantum inspired models
     # https://qiskit.org/documentation/tutorials/optimization/1_quadratic_program.html
     discrete_l = resolution * l
@@ -44,8 +45,9 @@ def convert_qubo_to_azureqio_model(qubo):
     # Combine lists
     qubo_list = qubo_list_lin + qubo_list_quad
     qubo_terms = list()
-    qubo_terms = [azure_quantum_optimization.Term(c=term['c'], indices=term['ids']) for term in qubo_list]
-    azure_quantum_optimization_model = azure_quantum_optimization.Problem(name='Supply Chain', problem_type=azure_quantum_optimization.ProblemType.pubo, terms=qubo_terms)
+    qubo_terms = [quantum_optimization.Term(c=term['c'], indices=term['ids']) for term in qubo_list]
+    azure_quantum_optimization_model = quantum_optimization.Problem(name='Supply Chain', problem_type=quantum_optimization.ProblemType.pubo,
+                                                                    terms=qubo_terms)
     return azure_quantum_optimization_model
 
 

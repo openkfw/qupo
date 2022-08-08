@@ -62,19 +62,24 @@ const QuantumDashboard = ({ data }) => {
   const processedData = data1;
 
   const processData = () => {
-    const datasets = [
-      {
-        label: "Classical solver - OSQP",
-        data: [],
-      },
-    ];
-    const labels = [];
-    for (const [key, value] of Object.entries(data.RateOfReturn)) {
-      labels.push(key);
-      datasets[0].data.push(value);
-    }
+    const datasets = [];
+    const labels = new Set([]);
 
-    return { labels, datasets };
+    Object.keys(data).forEach((model) => {
+      const dataset = {
+        label: `${model}`,
+        data: [],
+      };
+
+      for (const [key, value] of Object.entries(data[model].RateOfReturn)) {
+        labels.add(key);
+        dataset.data.push(value);
+      }
+
+      datasets.push(dataset);
+    });
+
+    return { labels: [...labels], datasets };
   };
 
   console.log(data);

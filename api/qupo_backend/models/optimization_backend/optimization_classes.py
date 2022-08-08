@@ -8,8 +8,7 @@ import numpy as np
 import pandas as pd
 
 # custom packages
-import qupo_backend.finance_utilities as finance_utilities
-import qupo_backend.optimization_backend.model_converter as model_converter
+from .model_converter import convert_osqp_to_docplex_model, approximate_docplex_by_qubo_model
 
 
 @dataclass
@@ -54,10 +53,9 @@ class Problem:
         self.sparsity = np.round(sum([tensor.getnnz() for tensor in [self.P, self.A]]) / sum(
             [tensor.shape[0] * tensor.shape[1] for tensor in [self.P, self.A]]) * 100, 2)
         if self.resolution is not None:
-            self.docplex_problem = model_converter.convert_osqp_to_docplex_model(self.P, self.q, self.A, self.l, self.u,
-                                                                     resolution=self.resolution)
-            self.quadratic_problem, self.qubo_problem, self.converter = model_converter.approximate_docplex_by_qubo_model(
-                self.docplex_problem)
+            self.docplex_problem = convert_osqp_to_docplex_model(self.P, self.q, self.A, self.l, self.u,
+                                                                 resolution=self.resolution)
+            self.quadratic_problem, self.qubo_problem, self.converter = approximate_docplex_by_qubo_model(self.docplex_problem)
 
     def calc_objective_value(self, variable_values):
         return 0.5 * np.dot(variable_values, self.P.dot(variable_values)) + np.dot(self.q, variable_values)

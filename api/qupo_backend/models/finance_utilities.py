@@ -25,7 +25,8 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     # osqp (sparse matrix) notation for quadratic constrained problems:
     # objective: minimize 0.5*x^T*P*x + q*x
     # constraints: subject to l <= A*x <= u
-    # with x - real valued vector (of variables x_i), T - transpose operator, P - objective matrix, q - objective vector, l/u - constraint lower/upper bound vector, A - constraint matrix
+    # with x - real valued vector (of variables x_i), T - transpose operator, P - objective matrix,
+    #      q - objective vector, l/u - constraint lower/upper bound vector, A - constraint matrix
     n_portfolio = len(dataframe.index)
     covariance = dataframe.iloc[:, -n_portfolio:].to_numpy()
     P = sparse.csc_matrix(covariance) * risk_weight

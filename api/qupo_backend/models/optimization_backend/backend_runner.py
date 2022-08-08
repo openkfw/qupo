@@ -7,10 +7,10 @@ import warnings
 from azure.quantum import Workspace
 from azure.quantum.qiskit import AzureQuantumProvider
 from azure.identity import ClientSecretCredential
-from azure.quantum.optimization import SimulatedAnnealing, PopulationAnnealing, ParallelTempering, Tabu, QuantumMonteCarlo, SubstochasticMonteCarlo, HardwarePlatform
+from azure.quantum.optimization import (SimulatedAnnealing, PopulationAnnealing, ParallelTempering, Tabu,
+                                        QuantumMonteCarlo, SubstochasticMonteCarlo, HardwarePlatform)
 import numpy as np
 import osqp
-import pandas as pd
 import pypfopt
 from qiskit import IBMQ
 from qiskit import Aer
@@ -20,24 +20,24 @@ from qiskit.utils import QuantumInstance
 from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
-
 # custom packages
-from qupo_backend.optimization_backend.optimization_classes import Problem, Solver, Job, Result
-import qupo_backend.optimization_backend.model_converter as model_converter
 from qupo_backend.config import settings
+from .optimization_classes import Result
+from .model_converter import convert_qubo_to_azureqio_model
+
 
 def run_job(job):
     try:
-       variable_values, objective_value, time_to_solution = Providers(job.solver.provider_name).run_job(job)
+        variable_values, objective_value, time_to_solution = Providers(job.solver.provider_name).run_job(job)
     except TypeError:
-        warnings.warn(f'Provider {job.solver.provider_name} not available')   
+        warnings.warn(f'Provider {job.solver.provider_name} not available')
     try:
         job.result = Result(variable_values * 100, objective_value, time_to_solution)
     except TypeError:
         warnings.warn('Solver did not return variable values')
 
 
-def run_pyportfolioopt_job(job):
+def run_pypo_job(job):
     df = job.problem.dataframe
     efficient_frontier = pypfopt.efficient_frontier.EfficientFrontier(df.RateOfReturn, df.iloc[:, -len(df.index):])
     raw_result = efficient_frontier.max_quadratic_utility(risk_aversion=job.problem.risk_weight, market_neutral=False)
@@ -80,7 +80,7 @@ def configure_azure_provider(quantum=False):
     return azure_provider
 
 
-def run_azure_job(job):
+def run_qio_job(job):
     provider = configure_azure_provider()
     try:
         if job.solver.algorithm == 'SA':
@@ -104,7 +104,7 @@ def run_azure_job(job):
         else:
             warnings.warn('QIO solver not implemented - choose from: SA, PA, PT, Tabu, QMC, SMC')
 
-        azure_qio_problem = model_converter.convert_qubo_to_azureqio_model(job.problem.qubo_problem)
+        azure_qio_problem = convert_qubo_to_azureqio_model(job.problem.qubo_problem)
         result = qio_solver.optimize(azure_qio_problem)
         raw_result = job.problem.converter.interpret(list(result['configuration'].values())) * job.problem.resolution
         variable_values = raw_result
@@ -117,6 +117,7 @@ def run_azure_job(job):
         warnings.warn(f'Qio job failed. Please check azure qio service health status and config: {job.solver.config}')
         return None, None, None
 
+
 def run_ionq_job(job):
     provider = configure_azure_provider(quantum=True)
     # print([backend.name() for backend in provider.backends()])
@@ -124,11 +125,12 @@ def run_ionq_job(job):
     simulator_backend = simulator_backend_list[0]
     run_qiskit_job(job, simulator_backend)
 
+
 def configure_qiskit_provider():
     try:
         IBMQ.enable_account(settings.ibmq_client_secret)
     except IBMQAccountError:
-        warnings.warn("IBM account not available. Please check ibmq health status and credentials")
+        warnings.warn('IBM account not available. Please check ibmq health status and credentials')
         pass
     provider = IBMQ.get_provider(
         hub='ibm-q',
@@ -137,13 +139,10 @@ def configure_qiskit_provider():
     )
     return provider
 
-def run_ibm_job(job):
-    provider = configure_qiskit_provider()
-    # print([backend.name() for backend in provider.backends()])
-    simulator_backend = Aer.get_backend('aer_simulator')
-    run_qiskit_job(job, simulator_backend)
 
-def run_qiskit_job(job, simulator_backend):
+def run_qiskit_job(job):
+    configure_qiskit_provider()
+    simulator_backend = Aer.get_backend('aer_simulator')
     # Implementation according to https://qiskit.org/documentation/finance/tutorials/01_portfolio_optimization.html
     qp = job.problem.quadratic_problem
     # define COBYLA optimizer to handle convex continuous problems.
@@ -166,11 +165,11 @@ def run_qiskit_job(job, simulator_backend):
 
 @dataclass
 class Providers(Enum):
-    pyportfolioopt = 'pypfopt'
+    pypo = 'pypfopt'
     osqp = 'osqp'
-    azure = 'azure_quantum_qio'
-    ibm = 'qiskit_ibm'
+    qio = 'azure_quantum_qio'
+    qiskit = 'qiskit_ibm'
     ionq = 'azure_ionq'
 
     def run_job(self, job):
-       return eval('run_' + self.name + '_job(job)')
+        return eval('run_' + self.name + '_job(job)')

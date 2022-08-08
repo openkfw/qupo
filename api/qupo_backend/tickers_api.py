@@ -37,7 +37,7 @@ async def get_indices():
 @router.get('/indices/{index}')
 async def get_symbols_of_index(index: str, symbols_only=False):
     try:
-        if(symbols_only):
+        if (symbols_only):
             return sum(stock_data.get_yahoo_ticker_symbols_by_index(index), [])
         return list(stock_data.get_stocks_by_index(index))
     except Exception as e:
@@ -58,7 +58,7 @@ async def get_countries():
 async def get_symbols_of_country(country: str, symbols_only=False):
     try:
         stocks = list(stock_data.get_stocks_by_country(country))
-        if(symbols_only):
+        if (symbols_only):
             return sum(filter_stocks(stocks), [])
         return stocks
     except Exception as e:
@@ -79,7 +79,7 @@ async def get_industries():
 async def get_symbols_of_industry(industry: str, symbols_only=False):
     try:
         stocks = list(stock_data.get_stocks_by_industry(industry))
-        if(symbols_only):
+        if (symbols_only):
             return sum(filter_stocks(stocks), [])
         return stocks
     except Exception as e:
