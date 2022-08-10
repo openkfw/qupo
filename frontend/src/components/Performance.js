@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 
-export default function QuantumPerformance({ experiment, model }) {
+const Performance = ({ experiment, model }) => {
   return (
     <Box
       sx={{
@@ -76,4 +76,6 @@ export default function QuantumPerformance({ experiment, model }) {
       </Box>
     </Box>
   );
-}
+};
+
+export default Performance;

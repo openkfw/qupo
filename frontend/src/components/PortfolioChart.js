@@ -52,7 +52,7 @@ export const options = {
   },
 };
 
-const QuantumDashboard = ({ data }) => {
+const PortfolioChart = ({ data }) => {
   const chartRef = useRef();
 
   const processData = (dataToProcess) => {
@@ -88,4 +88,4 @@ const QuantumDashboard = ({ data }) => {
   );
 };
 
-export default QuantumDashboard;
+export default PortfolioChart;

@@ -4,8 +4,8 @@ import Grid from "@mui/material/Grid";
 import makeStyles from "@mui/styles/makeStyles";
 
 import PortfolioController from "../components/PortfolioController";
-import QuantumDashboard from "../components/QuantumDashboard";
-import QuantumPerformance from "../components/QuantumPerformance";
+import PortfolioChart from "../components/PortfolioChart";
+import Performance from "../components/Performance";
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -38,10 +38,10 @@ const Portfolio = ({ client, data, setData, weights, setWeights }) => {
       <Grid item xs={9}>
         {data && (
           <Card variant="outlined" sx={{ p: 1 }}>
-            <QuantumDashboard data={data} />
+            <PortfolioChart data={data} />
             <Box className={classes.box}>
               {Object.keys(data).map((model) => (
-                <QuantumPerformance
+                <Performance
                   key={model}
                   experiment={data[model]}
                   model={model}
