@@ -7,13 +7,15 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 
-import store from "store-js";
-
 import "./App.css";
 import ApiClient from "./client";
-import ProcessFlow from "./pages/ProcessFlow";
-import QuantumDashboard from "./pages/QuantumDashboard";
+import Portfolio from "./pages/Portfolio";
+import Process from "./pages/Process";
 import Stocks from "./pages/Stocks";
+
+import store from "store-js";
+import eventsPlugin from "store-js/plugins/events";
+store.addPlugin(eventsPlugin);
 
 const client = new ApiClient();
 
@@ -49,18 +51,13 @@ function App() {
   const classes = useStyles();
   const [data, setData] = useState(null);
   const [weights, setWeights] = useState({
-    risk_weight: 50,
-    esg_weight: 50,
+    risk_weight: { label: "Risk Weight", value: 50 },
+    esg_weight: { label: "ESG Weight", value: 50 },
+    setValues: (prevState, key, value) => ({
+      ...prevState,
+      [key]: { ...prevState[key], value: parseInt(value) },
+    }),
   });
-
-  useEffect(() => {
-    const calculateModels = async () => {
-      const d = await client.getModelCalculations();
-      setData(d);
-    };
-
-    calculateModels();
-  }, []);
 
   useEffect(() => {
     const fetchIndices = async () => {
@@ -90,16 +87,18 @@ function App() {
       });
     };
 
-    fetchIndices();
-    fetchCountries();
-    fetchIndustries();
+    if (!store.get("industries")) {
+      fetchIndices();
+      fetchCountries();
+      fetchIndustries();
+    }
   }, []);
 
   return (
     <Grid className={classes.background}>
       <Grid className={classes.banner} />
       <Container maxWidth="md" className={classes.container}>
-        <Box sx={{ textAlign: "center", padding: "8vh" }}>
+        <Box sx={{ textAlign: "center", padding: "50px" }}>
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
         <Routes>
@@ -107,14 +106,27 @@ function App() {
           <Route
             path="/process"
             element={
-              <ProcessFlow
+              <Process
                 client={client}
+                data={data}
+                setData={setData}
                 weights={weights}
                 setWeights={setWeights}
               />
             }
           />
-          <Route path="/chart" element={<QuantumDashboard data={data} />} />
+          <Route
+            path="/portfolio"
+            element={
+              <Portfolio
+                client={client}
+                data={data}
+                setData={setData}
+                weights={weights}
+                setWeights={setWeights}
+              />
+            }
+          />
         </Routes>
       </Container>
     </Grid>

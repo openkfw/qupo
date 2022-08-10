@@ -7,12 +7,12 @@ import Typography from "@mui/material/Typography";
 
 import questions from "../utils/questions.json";
 
-const Questionaire = ({ setWeights }) => {
+const ProcesssQuestionaire = ({ setWeights }) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setWeights((prevState) => ({
       ...prevState,
-      [name]: parseInt(value),
+      [name]: { ...prevState[name], value: parseInt(value) },
     }));
   };
 
@@ -38,4 +38,4 @@ const Questionaire = ({ setWeights }) => {
   ));
 };
 
-export default Questionaire;
+export default ProcesssQuestionaire;

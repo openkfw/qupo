@@ -1,14 +1,13 @@
 import pandas as pd
 
-from .optimization_backend.optimization_classes import Problem, Job, Solver
-import qupo_backend.models.finance_utilities as finance_utilities
 from .finance_classes import Stock, PortfoliosModel
+from .finance_utilities import convert_business_to_osqp_model
+from .optimization_backend.backend_runner import Providers, run_job
+from .optimization_backend.optimization_classes import Problem, Job, Solver
 
-from .optimization_backend.backend_runner import run_job
+import qupo_backend.db.schemas as schemas
 from qupo_backend.tickers_utilities import get_data_of_symbol
 from qupo_backend.tickers_utilities import extract_quandl_data, stock_data_to_dataframe
-import qupo_backend.db.schemas as schemas
-from .optimization_backend.backend_runner import Providers
 
 
 def portfolios_df_from_default_stock_data(db, symbols, start='2018-01-01', end='2018-02-28'):
@@ -43,7 +42,7 @@ def portfolios_df_from_default_stock_data(db, symbols, start='2018-01-01', end='
 def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
     portfolio_model_df = portfolios_df_from_default_stock_data(db, symbols)
     # create abstract representation of problem (to identify and leverage hidden structure)
-    P, q, A, l, u = finance_utilities.convert_business_to_osqp_model(portfolio_model_df, risk_weight, esg_weight)
+    P, q, A, l, u = convert_business_to_osqp_model(portfolio_model_df, risk_weight, esg_weight)
 
     config = {}
     algorithm = model

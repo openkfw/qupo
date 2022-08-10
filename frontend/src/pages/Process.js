@@ -8,8 +8,9 @@ import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import makeStyles from "@mui/styles/makeStyles";
 
-import ProcessOverview from "../components/ProcessOverview";
-import Questionaire from "../components/Questionaire";
+import ProcessOverview from "./ProcessOverview";
+import ProcessQuestionaire from "./ProcessQuestionaire";
+import CalculateButton from "../components/CalculateButton";
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProcessFlow = ({ client, weights, setWeights }) => {
+const ProcessFlow = ({ client, data, setData, weights, setWeights }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -29,7 +30,8 @@ const ProcessFlow = ({ client, weights, setWeights }) => {
   ];
 
   const getContent = () => {
-    if (currentStep === 1) return <Questionaire setWeights={setWeights} />;
+    if (currentStep === 1)
+      return <ProcessQuestionaire setWeights={setWeights} />;
     else
       return (
         <ProcessOverview
@@ -75,9 +77,14 @@ const ProcessFlow = ({ client, weights, setWeights }) => {
                 Next
               </Button>
             ) : (
-              <Button variant="contained" onClick={() => navigate("/chart")}>
-                Calculate
-              </Button>
+              <Grid>
+                <CalculateButton
+                  client={client}
+                  weights={weights}
+                  data={data}
+                  setData={setData}
+                />
+              </Grid>
             )}
           </Grid>
         </Grid>
