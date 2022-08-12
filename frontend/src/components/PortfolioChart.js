@@ -80,7 +80,7 @@ const PortfolioChart = ({ data }) => {
 
   return (
     <Bar
-      height={350}
+      height="200vh"
       ref={chartRef}
       options={options}
       data={processData(data)}

@@ -1,78 +1,67 @@
-import React from "react";
-
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import makeStyles from "@mui/styles/makeStyles";
 
-const Performance = ({ experiment, model }) => {
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    textAlign: "center",
+    paddingTop: theme.spacing(1),
+  },
+  box: {
+    display: "flex",
+    justifyContent: "space-around",
+  },
+  model: {
+    fontSize: "16px !important",
+    fontWeight: "bold !important",
+  },
+  valueBox: {
+    flexDirection: "column",
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    padding: `${theme.spacing(1)} 0`,
+  },
+  value: {
+    fontSize: "14px !important",
+    fontWeight: "bold !important",
+  },
+}));
+
+const ValueBox = ({ value, kind, fixed = 0 }) => {
+  const classes = useStyles();
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        backgroundColor: "#f2f2f2",
-        py: 1,
-      }}
-    >
-      <Typography color="primary" sx={{ fontSize: 16, fontWeight: "bold" }}>
-        {model}
+    <Box className={classes.valueBox}>
+      <Typography color="primary" className={classes.value}>
+        {Number(value).toFixed(fixed)}
+      </Typography>
+      <Typography variant="button" sx={{ fontSize: 8 }}>
+        {kind}
+      </Typography>
+    </Box>
+  );
+};
+
+const Performance = ({ model, modelName }) => {
+  const classes = useStyles();
+
+  return (
+    <Box className={classes.container}>
+      <Typography color="primary" className={classes.model}>
+        {modelName.toUpperCase()}
       </Typography>
       <Divider sx={{ mx: 2 }} />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          width: "100%",
-          backgroundColor: "#f2f2f2",
-          py: 1,
-        }}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography color="primary" sx={{ fontSize: 14, fontWeight: "bold" }}>
-            {Number(experiment.objective_values).toFixed(0)}
-          </Typography>
-          <Typography variant="button" sx={{ fontSize: 8 }}>
-            Performance
-          </Typography>
-        </Box>
-      </Box>
-
+      <ValueBox value={model.objective_value} kind="Performance" fixed={2} />
       <Divider sx={{ mx: 2 }} />
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-around",
-          width: "100%",
-          backgroundColor: "#f2f2f2",
-          py: 1,
-        }}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography color="primary" sx={{ fontSize: 14, fontWeight: "bold" }}>
-            {Number(experiment.Variance).toFixed(0)}
-          </Typography>
-          <Typography variant="button" sx={{ fontSize: 8 }}>
-            Risk
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography color="primary" sx={{ fontSize: 14, fontWeight: "bold" }}>
-            {Number(experiment.net_impact_ratio).toFixed(0)}
-          </Typography>
-          <Typography variant="button" sx={{ fontSize: 8 }}>
-            Sustainability
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography color="primary" sx={{ fontSize: 14, fontWeight: "bold" }}>
-            {Number(experiment.RateOfReturn).toFixed(2)}
-          </Typography>
-          <Typography variant="button" sx={{ fontSize: 8 }}>
-            Return
-          </Typography>
-        </Box>
+      <Box className={classes.box}>
+        <ValueBox value={model.variance} kind="Risk" />
+        <ValueBox value={model.esg_value} kind="Sustainability" />
+        <ValueBox value={model.rate_of_return} kind="Return" fixed={2} />
       </Box>
     </Box>
   );

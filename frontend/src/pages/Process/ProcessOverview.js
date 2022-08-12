@@ -3,8 +3,9 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 
-import StocksCollection from "../components/StocksCollection";
-import WeightSlider from "../components/WeightSlider";
+import SelectModels from "../../components/SelectModels";
+import StocksCollection from "../../components/StocksCollection";
+import WeightSlider from "../../components/WeightSlider";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -39,6 +40,10 @@ const ProcessOverview = ({ client, weights, setWeights }) => {
           setWeights={setWeights}
         />
       </Grid>
+      <Typography variant="h5" className={classes.heading}>
+        Models:
+      </Typography>
+      <SelectModels defaultModels={["osqp", "qio"]} />
     </Box>
   );
 };

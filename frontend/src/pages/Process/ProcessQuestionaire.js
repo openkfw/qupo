@@ -5,7 +5,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Typography from "@mui/material/Typography";
 
-import questions from "../utils/questions.json";
+import questions from "../../utils/questions.json";
 
 const ProcesssQuestionaire = ({ setWeights }) => {
   const handleChange = (event) => {

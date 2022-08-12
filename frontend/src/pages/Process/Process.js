@@ -10,7 +10,7 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import ProcessOverview from "./ProcessOverview";
 import ProcessQuestionaire from "./ProcessQuestionaire";
-import CalculateButton from "../components/CalculateButton";
+import CalculateButton from "../../components/CalculateButton";
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProcessFlow = ({ client, data, setData, weights, setWeights }) => {
+const ProcessFlow = ({ client, setData, weights, setWeights }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -81,7 +81,6 @@ const ProcessFlow = ({ client, data, setData, weights, setWeights }) => {
                 <CalculateButton
                   client={client}
                   weights={weights}
-                  data={data}
                   setData={setData}
                 />
               </Grid>

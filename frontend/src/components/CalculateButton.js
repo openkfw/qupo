@@ -7,31 +7,37 @@ import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
 import store from "store-js";
 
-const CalculateButton = ({ client, weights, data, setData }) => {
+const CalculateButton = ({ client, weights, setData }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(
-    store.get("selected_symbols").length < 2 ? true : false
+    store.get("selected_symbols")?.length < 2 ||
+      store.get("selected_models")?.length < 2
+      ? true
+      : false
   );
 
   useEffect(() => {
-    store.watch("selected_symbols", () => {
-      if (store.get("selected_symbols").length < 2) setDisabled(true);
-      else setDisabled(false);
-    });
+    ["selected_symbols", "selected_models"].map((key) =>
+      store.watch(key, () => {
+        if (store.get(key).length < 2) setDisabled(true);
+        else setDisabled(false);
+      })
+    );
   });
 
   const calculateModels = async () => {
     navigate("/portfolio");
     setLoading(true);
     const symbols = store.get("selected_symbols");
-    const d = await client.getModelCalculations(
-      [],
+    const models = store.get("selected_models");
+    const data = await client.getModelCalculations(
+      models,
       symbols.slice(0, 10),
       weights.risk_weight.value,
       weights.esg_weight.value
     );
-    setData(d);
+    setData(data);
     setLoading(false);
   };
 

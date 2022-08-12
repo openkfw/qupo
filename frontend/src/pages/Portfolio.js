@@ -12,8 +12,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     width: "100%",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: theme.palette.grey.light,
     padding: `${theme.spacing(1)} 0`,
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -30,7 +31,6 @@ const Portfolio = ({ client, data, setData, weights, setWeights }) => {
     >
       <PortfolioController
         client={client}
-        data={data}
         setData={setData}
         weights={weights}
         setWeights={setWeights}
@@ -40,11 +40,11 @@ const Portfolio = ({ client, data, setData, weights, setWeights }) => {
           <Card variant="outlined" sx={{ p: 1 }}>
             <PortfolioChart data={data} />
             <Box className={classes.box}>
-              {Object.keys(data).map((model) => (
+              {Object.keys(data).map((modelName) => (
                 <Performance
-                  key={model}
-                  experiment={data[model]}
-                  model={model}
+                  key={modelName}
+                  model={data[modelName]}
+                  modelName={modelName}
                 />
               ))}
             </Box>
