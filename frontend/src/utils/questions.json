@@ -8,32 +8,37 @@
                 "scenario": "Blue",
                 "characteristic": "averse",
                 "label": "100% to win a prize of € 1",
-                "value": 2E-04
+                "weight": 2E-04,
+                "percentage": 0
             },
             {
                 "scenario": "Green",
                 "characteristic": "disinclined",
                 "label": "80% to win a prize of € 1.25",
-                "value": 1.88E-04
+                "weight": 1.88E-04,
+                "percentage": 20
             },
             {
                 "scenario": "Yellow",
                 "characteristic": "neutral",
                 "label": "50% to win a prize of € 2",
-                "value": 1E-04
+                "weight": 1E-04,
+                "percentage": 50
             },
             {
                 "scenario": "Orange",
                 "characteristic": "inclined",
                 "label": "10% to win a prize of € 10",
-                "value": 2.44E-08
+                "weight": 2.44E-08,
+                "percentage": 90
             },
             {
                 "scenario": "Red",
                 "characteristic": "afine",
                 "label": "1% to win a prize of € 100",
-                "value": 2.04E-08
-            }            
+                "weight": 2.04E-08,
+                "percentage": 100
+            }
         ]
     },
     {
@@ -43,28 +48,31 @@
         "options": [
             {
                 "scenario": "Green",
-                "characteristic": "Afine",
+                "characteristic": "afine",
                 "label": "By 1 € for additional 10%-points net impact ratio",
-                "value": 1E-1
+                "weight": 1E-1,
+                "percentage": 100
             },
             {
                 "scenario": "Yellow",
-                "characteristic": "Inclined",
+                "characteristic": "inclined",
                 "label": "By 10 € for additional 1%-points net impact ratio points",
-                "value": 1E1
+                "weight": 1E1,
+                "percentage": 40
             },
             {
                 "scenario": "Orange",
-                "characteristic": "Disinclined",
+                "characteristic": "disinclined",
                 "label": "By 100 € for additional 0,1%-points net impact ratio points",
-                "value": 1E3
-            }
-            ,
+                "weight": 1E3,
+                "percentage": 70
+            },
             {
                 "scenario": "Red",
-                "characteristic": "Averse",
+                "characteristic": "averse",
                 "label": "By 1000 € for additional 0,01%-points net impact ratio points",
-                "value": 1E5
+                "weight": 1E5,
+                "percentage": 0
             }
         ]
     }

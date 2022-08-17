@@ -1,4 +1,4 @@
-import Box from "@mui/material/Box";
+import { useRef } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,7 +24,20 @@ export const options = {
   indexAxis: "y",
   elements: {
     bar: {
-      borderWidth: 2,
+      borderWidth: 1,
+    },
+  },
+  scaleShowValues: true,
+  scales: {
+    y: {
+      ticks: {
+        autoSkip: false,
+      },
+    },
+    x: {
+      min: 0,
+      max: 1,
+      stepSize: 0.1,
     },
   },
   responsive: true,
@@ -39,39 +52,24 @@ export const options = {
   },
 };
 
-// sample processed data
-const data1 = {
-  labels: [],
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: [],
-      borderColor: "#000",
-      backgroundColor: "#fff",
-    },
-    {
-      label: "Dataset 2",
-      data: [],
-      borderColor: "#000",
-      backgroundColor: "#fff",
-    },
-  ],
-};
+const PortfolioChart = ({ data }) => {
+  const chartRef = useRef();
 
-const QuantumDashboard = ({ data }) => {
-  const processedData = data1;
-
-  const processData = () => {
+  const processData = (dataToProcess) => {
     const datasets = [];
     const labels = new Set([]);
+    const colors = ["#c6e6f5", "#87bbd0", "#417670", "#336a7e", "#002d3c"];
 
-    Object.keys(data).forEach((model) => {
+    Object.keys(dataToProcess).forEach((model, index) => {
       const dataset = {
         label: `${model}`,
         data: [],
+        backgroundColor: colors[index],
       };
 
-      for (const [key, value] of Object.entries(data[model].RateOfReturn)) {
+      for (const [key, value] of Object.entries(
+        dataToProcess[model].RateOfReturn
+      )) {
         labels.add(key);
         dataset.data.push(value);
       }
@@ -82,8 +80,14 @@ const QuantumDashboard = ({ data }) => {
     return { labels: [...labels], datasets };
   };
 
-  console.log(data);
-  return <Box>{data && <Bar options={options} data={processData()} />}</Box>;
+  return (
+    <Bar
+      height="200vh"
+      ref={chartRef}
+      options={options}
+      data={processData(data)}
+    />
+  );
 };
 
-export default QuantumDashboard;
+export default PortfolioChart;

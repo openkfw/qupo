@@ -1,45 +1,6 @@
 import axios from "axios";
 import config from "./utils/config";
 
-const SYMBOLS = [
-  "LIN.DE",
-  "SAP.DE",
-  "SIE.DE",
-  "VOW3.DE",
-  "ALV.DE",
-  "AIR.DE",
-  "MRK.DE",
-  "DTE.DE",
-  "DPW.DE",
-  "BMW.DE",
-  "BAS.DE",
-  "IFX.DE",
-  "BAYN.DE",
-  "ADS.DE",
-  "MUV2.DE",
-  "VNA.DE",
-  "HEN3.DE",
-  "EOAN.DE",
-  "DB1.DE",
-  "PAH3.DE",
-  "DBK.DE",
-  "RWE.DE",
-  "BEI.DE",
-  "DHER.DE",
-  "FRE.DE",
-  "CON.DE",
-  "ZAL.DE",
-  "FME.DE",
-  "SY1.DE",
-  "PUM.DE",
-  "HEI.DE",
-  "BNR.DE",
-  "1COV.DE",
-  "MTX.DE",
-  "HFG.DE",
-  "QIA.DE",
-];
-
 class ApiClient {
   constructor() {
     this.config = { ...config };
@@ -92,16 +53,11 @@ class ApiClient {
       .catch((error) => console.error(error));
   }
 
-  getModelCalculations(
-    models = ["osqp", "pypo", "qio"],
-    symbols = ["ACCT"],
-    riskWeight = 0.001,
-    esgWeight = 0.001
-  ) {
+  getModelCalculations(models, symbols, riskWeight, esgWeight) {
     return this.apiClient
       .post("/models", {
         models: models,
-        symbols: SYMBOLS,
+        symbols: symbols,
         risk_weight: riskWeight,
         esg_weight: esgWeight,
       })

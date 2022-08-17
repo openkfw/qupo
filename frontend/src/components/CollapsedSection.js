@@ -5,7 +5,12 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const CollapsedSection = ({ heading, collapsedSize = 38, ...props }) => {
+const CollapsedSection = ({
+  heading,
+  collapsedSize = 38,
+  size = "medium",
+  ...props
+}) => {
   const [expand, setExpand] = useState(false);
 
   const toggleExpand = () => {
@@ -22,7 +27,7 @@ const CollapsedSection = ({ heading, collapsedSize = 38, ...props }) => {
           <Grid container justifyContent="flex-end">
             <IconButton onClick={toggleExpand}>
               <ExpandMoreIcon
-                fontSize="medium"
+                fontSize={size}
                 style={{
                   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
                 }}
@@ -31,7 +36,11 @@ const CollapsedSection = ({ heading, collapsedSize = 38, ...props }) => {
           </Grid>
         </Grid>
       </Grid>
-      <Collapse in={expand} collapsedSize={collapsedSize}>
+      <Collapse
+        in={expand}
+        collapsedSize={collapsedSize}
+        sx={{ overflowY: "auto" }}
+      >
         {props.children}
       </Collapse>
     </>

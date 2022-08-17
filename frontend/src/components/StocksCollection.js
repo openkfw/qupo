@@ -8,6 +8,8 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
+import CheckIcon from "@mui/icons-material/Check";
+import { green } from "@mui/material/colors";
 
 import store from "store-js";
 
@@ -15,12 +17,13 @@ import CollapsedSection from "./CollapsedSection";
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(1),
     paddingBottom: theme.spacing(1),
   },
   collapsed: {
     border: "1px solid",
     borderRadius: "2px",
+    borderColor: theme.palette.grey.middle,
     padding: theme.spacing(1),
     marginBottom: theme.spacing(2),
   },
@@ -50,24 +53,48 @@ const StocksCollection = ({ client }) => {
   }, [client]);
 
   const onDeleteSymbol = (symbol) => {
-    setSelectedSymbols(selectedSymbols.filter((s) => s !== symbol));
-    store.set("selected_symbols", selectedSymbols);
+    const filteredSymbols = selectedSymbols.filter((s) => s !== symbol);
+    setSelectedSymbols(filteredSymbols);
+    store.set("selected_symbols", filteredSymbols);
   };
 
   const onAddSymbols = () => {
-    setSelectedSymbols([...new Set([...selectedSymbols, ...symbolsToAdd])]);
-    store.set("selected_symbols", selectedSymbols);
+    const newSymbols = [...new Set([...selectedSymbols, ...symbolsToAdd])];
+    setSelectedSymbols(newSymbols);
+    store.set("selected_symbols", newSymbols);
     setSymbolsToAdd([]);
+  };
+
+  const onDeleteAll = () => {
+    store.set("selected_symbols", []);
+    setSelectedSymbols([]);
   };
 
   return (
     <Grid className={classes.spacing}>
       <Grid className={classes.collapsed}>
-        <CollapsedSection heading={<div />} collapsedSize={100}>
+        <CollapsedSection
+          heading={
+            <Button size="small" onClick={onDeleteAll}>
+              Delete
+            </Button>
+          }
+          collapsedSize={100}
+          size="small"
+        >
           <Grid container>
-            {selectedSymbols.map((symbol) => (
+            {selectedSymbols.map((symbol, index) => (
               <Grid key={symbol} className={classes.chipBox} item>
-                <Chip label={symbol} onDelete={() => onDeleteSymbol(symbol)} />
+                <Chip
+                  label={symbol}
+                  size="small"
+                  onDelete={() => onDeleteSymbol(symbol)}
+                  avatar={
+                    index < 10 ? (
+                      <CheckIcon color="white" style={{ color: green[500] }} />
+                    ) : null
+                  }
+                />
               </Grid>
             ))}
           </Grid>
@@ -82,9 +109,15 @@ const StocksCollection = ({ client }) => {
           loading={loading}
           filterSelectedOptions
           onChange={(_, value) => setSymbolsToAdd(value)}
-          renderInput={(params) => <TextField {...params} label="Symbols" />}
+          renderInput={(params) => (
+            <TextField {...params} size="small" label="Symbols" />
+          )}
         />
-        <Button variant="contained" onClick={onAddSymbols}>
+        <Button
+          disabled={selectedSymbols.length > 9 ? true : false}
+          variant="contained"
+          onClick={onAddSymbols}
+        >
           Add
         </Button>
       </Stack>

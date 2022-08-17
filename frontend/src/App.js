@@ -7,13 +7,15 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 
-import store from "store-js";
-
 import "./App.css";
 import ApiClient from "./client";
-import ProcessFlow from "./pages/ProcessFlow";
-import QuantumDashboard from "./pages/QuantumDashboard";
+import Process from "./pages//Process/Process";
+import Portfolio from "./pages/Portfolio";
 import Stocks from "./pages/Stocks";
+
+import store from "store-js";
+import eventsPlugin from "store-js/plugins/events";
+store.addPlugin(eventsPlugin);
 
 const client = new ApiClient();
 
@@ -21,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   background: {
     backgroundColor: theme.palette.grey.light,
     paddingBottom: theme.spacing(5),
+  },
+  heading: {
+    textAlign: "center",
+    padding: "50px",
   },
   banner: {
     backgroundColor: theme.palette.primary.dark,
@@ -32,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.common.white,
     color: theme.palette.grey.dark,
     boxShadow: "1px 1px 9px #607d8b",
-    paddingBottom: theme.spacing(1),
+    paddingBottom: theme.spacing(3),
     borderRadius: "2px",
   },
 }));
@@ -49,20 +55,16 @@ function App() {
   const classes = useStyles();
   const [data, setData] = useState(null);
   const [weights, setWeights] = useState({
-    risk_weight: 50,
-    esg_weight: 50,
+    risk_weight: { label: "Risk Weight", value: 50 },
+    esg_weight: { label: "ESG Weight", value: 40 },
+    setValues: (prevState, key, value) => ({
+      ...prevState,
+      [key]: { ...prevState[key], value: parseInt(value) },
+    }),
   });
 
   useEffect(() => {
-    const calculateModels = async () => {
-      const d = await client.getModelCalculations();
-      setData(d);
-    };
-
-    calculateModels();
-  }, []);
-
-  useEffect(() => {
+    store.set("loading", false);
     const fetchIndices = async () => {
       const indices = await client.getIndices();
       store.set("indices", indices);
@@ -90,16 +92,18 @@ function App() {
       });
     };
 
-    fetchIndices();
-    fetchCountries();
-    fetchIndustries();
+    if (!store.get("industries")) {
+      fetchIndices();
+      fetchCountries();
+      fetchIndustries();
+    }
   }, []);
 
   return (
     <Grid className={classes.background}>
       <Grid className={classes.banner} />
       <Container maxWidth="md" className={classes.container}>
-        <Box sx={{ textAlign: "center", padding: "8vh" }}>
+        <Box className={classes.heading}>
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
         <Routes>
@@ -107,14 +111,26 @@ function App() {
           <Route
             path="/process"
             element={
-              <ProcessFlow
+              <Process
                 client={client}
+                setData={setData}
                 weights={weights}
                 setWeights={setWeights}
               />
             }
           />
-          <Route path="/chart" element={<QuantumDashboard data={data} />} />
+          <Route
+            path="/portfolio"
+            element={
+              <Portfolio
+                client={client}
+                data={data}
+                setData={setData}
+                weights={weights}
+                setWeights={setWeights}
+              />
+            }
+          />
         </Routes>
       </Container>
     </Grid>

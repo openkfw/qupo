@@ -5,14 +5,14 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Typography from "@mui/material/Typography";
 
-import questions from "../utils/questions.json";
+import questions from "../../utils/questions.json";
 
-const Questionaire = ({ setWeights }) => {
+const ProcesssQuestionaire = ({ setWeights }) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setWeights((prevState) => ({
       ...prevState,
-      [name]: parseInt(value),
+      [name]: { ...prevState[name], value: parseInt(value) },
     }));
   };
 
@@ -26,10 +26,10 @@ const Questionaire = ({ setWeights }) => {
           {question.options.map((option) => (
             <FormControlLabel
               key={option.scenario}
-              value={option.value}
+              value={option.percentage}
               control={<Radio />}
               name={question.name}
-              label={`${option.scenario}: ${option.label}`}
+              label={option.label}
             />
           ))}
         </RadioGroup>
@@ -38,4 +38,4 @@ const Questionaire = ({ setWeights }) => {
   ));
 };
 
-export default Questionaire;
+export default ProcesssQuestionaire;
