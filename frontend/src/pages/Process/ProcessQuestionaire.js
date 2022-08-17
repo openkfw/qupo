@@ -26,10 +26,10 @@ const ProcesssQuestionaire = ({ setWeights }) => {
           {question.options.map((option) => (
             <FormControlLabel
               key={option.scenario}
-              value={option.value}
+              value={option.percentage}
               control={<Radio />}
               name={question.name}
-              label={`${option.scenario}: ${option.label}`}
+              label={option.label}
             />
           ))}
         </RadioGroup>

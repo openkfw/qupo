@@ -9,8 +9,8 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import "./App.css";
 import ApiClient from "./client";
+import Process from "./pages//Process/Process";
 import Portfolio from "./pages/Portfolio";
-import Process from "./pages/Process";
 import Stocks from "./pages/Stocks";
 
 import store from "store-js";
@@ -24,6 +24,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey.light,
     paddingBottom: theme.spacing(5),
   },
+  heading: {
+    textAlign: "center",
+    padding: "50px",
+  },
   banner: {
     backgroundColor: theme.palette.primary.dark,
     height: "25vh",
@@ -34,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.common.white,
     color: theme.palette.grey.dark,
     boxShadow: "1px 1px 9px #607d8b",
-    paddingBottom: theme.spacing(1),
+    paddingBottom: theme.spacing(3),
     borderRadius: "2px",
   },
 }));
@@ -52,7 +56,7 @@ function App() {
   const [data, setData] = useState(null);
   const [weights, setWeights] = useState({
     risk_weight: { label: "Risk Weight", value: 50 },
-    esg_weight: { label: "ESG Weight", value: 50 },
+    esg_weight: { label: "ESG Weight", value: 40 },
     setValues: (prevState, key, value) => ({
       ...prevState,
       [key]: { ...prevState[key], value: parseInt(value) },
@@ -60,6 +64,7 @@ function App() {
   });
 
   useEffect(() => {
+    store.set("loading", false);
     const fetchIndices = async () => {
       const indices = await client.getIndices();
       store.set("indices", indices);
@@ -98,7 +103,7 @@ function App() {
     <Grid className={classes.background}>
       <Grid className={classes.banner} />
       <Container maxWidth="md" className={classes.container}>
-        <Box sx={{ textAlign: "center", padding: "50px" }}>
+        <Box className={classes.heading}>
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
         <Routes>
@@ -108,7 +113,6 @@ function App() {
             element={
               <Process
                 client={client}
-                data={data}
                 setData={setData}
                 weights={weights}
                 setWeights={setWeights}

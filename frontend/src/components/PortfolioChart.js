@@ -58,11 +58,13 @@ const PortfolioChart = ({ data }) => {
   const processData = (dataToProcess) => {
     const datasets = [];
     const labels = new Set([]);
+    const colors = ["#c6e6f5", "#87bbd0", "#417670", "#336a7e", "#002d3c"];
 
-    Object.keys(dataToProcess).forEach((model) => {
+    Object.keys(dataToProcess).forEach((model, index) => {
       const dataset = {
         label: `${model}`,
         data: [],
+        backgroundColor: colors[index],
       };
 
       for (const [key, value] of Object.entries(
