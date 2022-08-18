@@ -36,8 +36,8 @@ export const options = {
     },
     x: {
       min: 0,
-      max: 1,
-      stepSize: 0.1,
+      max: 100,
+      stepSize: 10,
     },
   },
   responsive: true,
