@@ -118,14 +118,6 @@ def run_qio_job(job):
         return None, None, None
 
 
-def run_ionq_job(job):
-    provider = configure_azure_provider(quantum=True)
-    # print([backend.name() for backend in provider.backends()])
-    simulator_backend_list = provider.backends('ionq.simulator')
-    simulator_backend = simulator_backend_list[0]
-    run_qiskit_job(job, simulator_backend)
-
-
 def configure_qiskit_provider():
     try:
         IBMQ.enable_account(settings.ibmq_client_secret)
@@ -140,27 +132,38 @@ def configure_qiskit_provider():
     return provider
 
 
-def run_qiskit_job(job):
-    configure_qiskit_provider()
-    simulator_backend = Aer.get_backend('aer_simulator')
+def run_quantum_job(job, quantum_instance, repetitions):
     # Implementation according to https://qiskit.org/documentation/finance/tutorials/01_portfolio_optimization.html
     qp = job.problem.quadratic_problem
-    # define COBYLA optimizer to handle convex continuous problems.
-    seed = 42
-    repetitions = 3
     cobyla = COBYLA()
     cobyla.set_options(maxiter=250)
-    quantum_instance = QuantumInstance(backend=simulator_backend, seed_simulator=seed, seed_transpiler=seed)
+
     qaoa_algorithm = QAOA(optimizer=cobyla, reps=repetitions, quantum_instance=quantum_instance)
     qaoa = MinimumEigenOptimizer(qaoa_algorithm)
     raw_result = qaoa.solve(qp)
-
-    variable_values = raw_result.x  # mc.convert_qubo_results(job.problem.converter, raw_result, job.problem.resolution)
+    variable_values = raw_result.x
     objective_value = 0.5 * np.dot(variable_values, job.problem.P.dot(variable_values)) + np.dot(job.problem.q,
                                                                                                  variable_values)
     time_to_solution = None
 
     return variable_values, objective_value, time_to_solution
+
+
+def run_qiskit_job(job):
+    configure_qiskit_provider()
+    simulator_backend = Aer.get_backend('aer_simulator')
+    seed = 42
+    quantum_instance = QuantumInstance(backend=simulator_backend, seed_simulator=seed, seed_transpiler=seed)
+
+    return run_quantum_job(job, quantum_instance, 3)
+
+
+def run_ionq_job(job):
+    provider = configure_azure_provider(quantum=True)
+    simulator_backend = provider.get_backend('ionq.simulator')
+    quantum_instance = QuantumInstance(backend=simulator_backend)
+
+    return run_quantum_job(job, quantum_instance, 1)
 
 
 @dataclass
