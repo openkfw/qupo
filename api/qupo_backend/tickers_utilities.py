@@ -1,4 +1,5 @@
 import json
+
 import quandl
 import pandas as pd
 import yfinance
@@ -28,6 +29,15 @@ def filter_stocks(stocks):
     return ticker_list
 
 
+def replace_to_yahoo_symbols(stocks):
+    for index in range(len(stocks)):
+        if(len(stocks[index]['symbols']) > 0):
+            stocks[index]['symbol'] = stocks[index]['symbols'][0]['yahoo']
+
+    # Delete all stocks that have no symbols
+    return [stock for stock in stocks if stock['symbol'] is not None]
+
+
 def get_all_symbols(stock_data, symbols_only: bool):
     indices = stock_data.get_all_indices()
     symbols = []
@@ -36,9 +46,14 @@ def get_all_symbols(stock_data, symbols_only: bool):
         if (symbols_only):
             symbols.extend([*stock_data.get_yahoo_ticker_symbols_by_index(index)])
         else:
-            symbols.append(list(stock_data.get_stocks_by_index(index)))
+            symbols.append([json.dumps(stock) for stock in stock_data.get_stocks_by_index(index)])
 
-    return sum(symbols, [])
+    symbols_list = sum(symbols, [])
+
+    if (symbols_only):
+        return list(set(symbols))
+
+    return replace_to_yahoo_symbols([json.loads(stock) for stock in set(symbols_list)])
 
 
 def get_data_of_symbol(stock: schemas.StockBase, db: Session):

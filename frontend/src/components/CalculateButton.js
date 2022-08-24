@@ -44,7 +44,7 @@ const CalculateButton = ({ client, weights, setData }) => {
     const models = store.get("selected_models");
     const data = await client.getModelCalculations(
       models,
-      symbols.slice(0, 10),
+      symbols.slice(0, 10).map((symbol) => symbol.symbol),
       getWeightValue("risk_weight", weights.risk_weight.value),
       getWeightValue("esg_weight", weights.esg_weight.value)
     );
