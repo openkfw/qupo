@@ -6,6 +6,7 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
 import ForwardIcon from "@mui/icons-material/ArrowForward";
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomListItem = ({ name, symbols }) => {
+const SymbolsListItem = ({ name, symbols }) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -35,16 +36,23 @@ const CustomListItem = ({ name, symbols }) => {
     <Card>
       <CardContent className={classes.card}>
         <CollapsedSection heading={<Box className={classes.box}>{name}</Box>}>
-          {symbols?.map((symbol) => (
-            <Typography
-              key={symbol}
-              color="text.secondary"
-              className={classes.symbols}
-              sx={{ fontSize: 14 }}
-            >
-              {symbol}{" "}
-            </Typography>
-          ))}
+          {symbols.map((symbol, index) => {
+            const expression =
+              index === symbols.length - 1
+                ? symbol.symbol
+                : `${symbol.symbol}, `;
+            return (
+              <Tooltip title={symbol.name} key={symbol.name}>
+                <Typography
+                  color="text.secondary"
+                  className={classes.symbols}
+                  sx={{ fontSize: 14 }}
+                >
+                  {expression}
+                </Typography>
+              </Tooltip>
+            );
+          })}
         </CollapsedSection>
       </CardContent>
       <CardActions>
@@ -65,4 +73,4 @@ const CustomListItem = ({ name, symbols }) => {
   );
 };
 
-export default CustomListItem;
+export default SymbolsListItem;

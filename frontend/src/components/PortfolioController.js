@@ -26,7 +26,7 @@ const PortfolioController = ({ client, setData, weights, setWeights }) => {
             size="small"
           />
         </Grid>
-        <StocksCollection client={client} />
+        <StocksCollection client={client} size="small" />
         <SelectModels defaultModels={store.get("selected_models")} />
       </Card>
       <CalculateButton client={client} weights={weights} setData={setData} />

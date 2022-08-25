@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -53,6 +54,7 @@ const AppWrapper = () => {
 
 function App() {
   const classes = useStyles();
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [weights, setWeights] = useState({
     risk_weight: { label: "Risk Weight", value: 50 },
@@ -66,6 +68,7 @@ function App() {
   useEffect(() => {
     store.set("loading", false);
     const fetchIndices = async () => {
+      setLoading(true);
       const indices = await client.getIndices();
       store.set("indices", indices);
       indices.map(async (index) => {
@@ -90,6 +93,7 @@ function App() {
         const symbolsOfIndustry = await client.getIndustries(industry);
         store.set(industry, symbolsOfIndustry);
       });
+      setLoading(false);
     };
 
     if (!store.get("industries")) {
@@ -106,32 +110,38 @@ function App() {
         <Box className={classes.heading}>
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
-        <Routes>
-          <Route path="/" element={<Stocks />} />
-          <Route
-            path="/process"
-            element={
-              <Process
-                client={client}
-                setData={setData}
-                weights={weights}
-                setWeights={setWeights}
-              />
-            }
-          />
-          <Route
-            path="/portfolio"
-            element={
-              <Portfolio
-                client={client}
-                data={data}
-                setData={setData}
-                weights={weights}
-                setWeights={setWeights}
-              />
-            }
-          />
-        </Routes>
+        {!loading ? (
+          <Routes>
+            <Route path="/" element={<Stocks />} />
+            <Route
+              path="/process"
+              element={
+                <Process
+                  client={client}
+                  setData={setData}
+                  weights={weights}
+                  setWeights={setWeights}
+                />
+              }
+            />
+            <Route
+              path="/portfolio"
+              element={
+                <Portfolio
+                  client={client}
+                  data={data}
+                  setData={setData}
+                  weights={weights}
+                  setWeights={setWeights}
+                />
+              }
+            />
+          </Routes>
+        ) : (
+          <Grid container justifyContent="center" sx={{ py: 10 }}>
+            <CircularProgress size="7rem" />
+          </Grid>
+        )}
       </Container>
     </Grid>
   );
