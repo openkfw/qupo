@@ -31,7 +31,7 @@ def filter_stocks(stocks):
 
 def replace_to_yahoo_symbols(stocks):
     for index in range(len(stocks)):
-        if(len(stocks[index]['symbols']) > 0):
+        if (len(stocks[index]['symbols']) > 0):
             stocks[index]['symbol'] = stocks[index]['symbols'][0]['yahoo']
 
     # Delete all stocks that have no symbols

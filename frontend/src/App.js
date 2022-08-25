@@ -138,7 +138,9 @@ function App() {
             />
           </Routes>
         ) : (
-          <CircularProgress />
+          <Grid container justifyContent="center" sx={{ py: 10 }}>
+            <CircularProgress size="7rem" />
+          </Grid>
         )}
       </Container>
     </Grid>
