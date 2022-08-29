@@ -7,6 +7,8 @@ flake8-quotes==3.3.1
 Flask==2.1.2
 gunicorn==20.1.0
 numpy==1.22.3
+osqp==0.6.2.post5
+pandas==1.4.3
 pydantic==1.9.0
 pyportfolioopt==1.5.2
 pytickersymbols==1.8.78
@@ -15,6 +17,7 @@ qiskit[optimization]==0.36.1
 qiskit-ionq==0.3.3
 qiskit-qir==0.1.0b12
 quandl==3.7.0
+scipy==1.9.1
 SQLAlchemy==1.4.36
 sqlalchemy-migrate==0.13.0
 uvicorn==0.17.6
