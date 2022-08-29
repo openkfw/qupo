@@ -10,7 +10,6 @@ class Settings(BaseSettings):
     azure_name: str
     azure_subscription_id: str
     ibmq_client_secret: str
-    nasdaq_api_key: str
     use_db: bool = True
     sqllite_db_url: str = 'sqlite:///./qupo_backend/db/finance.db'
 
