@@ -1,32 +1,67 @@
-# qupo
+# QUPO
 
-Platform for portfolio optimization using quantum and not quantum
+A platform for portfolio optimization using quantum and non quantum (classical) algorithms.
 
 ## Getting started
 
 The application is composed of two parts which are required to be started separately. Before starting, please make sure you have at least Python 3.9 installed and your `python3` command points to the version 3.9 or higher:
 
-0. Install Python >3.9 and openblas
-   https://www.python.org/downloads/
-   openblas on MacOS (via homebrew):
+### Install Python >3.9 and openblas
 
-   ````(bash)
-      ```(bash)
-   ```(bash)
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ````
+https://www.python.org/downloads/
+openblas on MacOS (via homebrew):
 
-   ````(bash)
-      ```(bash)
-   ```(bash)
-      brew install openblas
-   ````
+```(bash)
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
-   and follow the instructions to configure compilers
+```(bash)
+   brew install python3
+```
+
+```(bash)
+   brew install openblas
+```
+
+and follow the instructions to configure compilers
 
 ### Backend
 
 Navigate into the api folder: `cd api`.
+
+### Installation with Requirements.txt
+
+1. Create a virtual env with the right python version and activate the environment:
+
+   ```bash
+   python3.10 -m venv venv
+   source venv/bin/activate
+   python --version  # Python 3.10.4
+   ```
+
+1. Install the requirements via the `requirements.txt` file:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+1. Set environment variables:
+
+   ```(bash)
+   cp .env_example .env
+   ```
+
+   This creates the `.env` file, containing all environment variables that have to be set.
+
+1. Run the python backend with the run script:
+
+   ```(bash)
+   ./start_dev.sh
+   ```
+
+   The backend is now running at [http://localhost:8000](http://localhost:8000/health).
+
+### Installation with Poetry
 
 1. [Install and register Poetry Package Manager](https://python-poetry.org/docs/#installation):
 
@@ -40,19 +75,19 @@ Navigate into the api folder: `cd api`.
    source ~/.poetry/env
    ```
 
-2. Install the requirements via poetry
+1. Install the requirements via poetry
 
    ```(bash)
    poetry install
    ```
 
-3. Activate poetry shell
+1. Activate poetry shell
 
    ```(bash)
    poetry shell
    ```
 
-4. Set environment variables
+1. Set environment variables
 
    ```(bash)
    cp .env_example .env
@@ -60,11 +95,13 @@ Navigate into the api folder: `cd api`.
 
    This creates the `.env` file, containing all environment variables that have to be set.
 
-5. Run the python API:
+1. Run the python API:
 
    ```(bash)
    ./start_dev.sh
    ```
+
+   The backend is now running at [http://localhost:8000](http://localhost:8000/health).
 
    After startup the API URL can be accessed at: <http://127.0.0.1:8000/docs>
 
