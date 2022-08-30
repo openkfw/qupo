@@ -14,7 +14,7 @@ class ApiClient {
     });
   }
 
-  getSymbols(symbolsOnly = true) {
+  getSymbols(symbolsOnly = false) {
     return this.apiClient
       .get(`/tickers/symbols?symbols_only=${symbolsOnly}`)
       .then(({ data }) => {
@@ -24,7 +24,7 @@ class ApiClient {
   }
 
   getIndices(index = "") {
-    const route = index ? `/${index}?symbols_only=True` : "";
+    const route = index ? `/${index}?symbols_only=False` : "";
     return this.apiClient
       .get(`/tickers/indices${route}`)
       .then(({ data }) => {
@@ -34,7 +34,7 @@ class ApiClient {
   }
 
   getCountries(country = "") {
-    const route = country ? `/${country}?symbols_only=True` : "";
+    const route = country ? `/${country}?symbols_only=False` : "";
     return this.apiClient
       .get(`/tickers/countries${route}`)
       .then(({ data }) => {
@@ -44,7 +44,7 @@ class ApiClient {
   }
 
   getIndustries(industry = "") {
-    const route = industry ? `/${industry}?symbols_only=True` : "";
+    const route = industry ? `/${industry}?symbols_only=False` : "";
     return this.apiClient
       .get(`/tickers/industries${route}`)
       .then(({ data }) => {
