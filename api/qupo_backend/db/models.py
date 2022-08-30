@@ -25,6 +25,7 @@ class Info(Base):
     type = Column(String)
     country = Column(String)
     currency = Column(String)
+    sustainability = Column(Float)
 
     stock = relationship('Stock', back_populates='info')
 

@@ -1,6 +1,5 @@
 import json
 
-import quandl
 import pandas as pd
 import yfinance
 from types import SimpleNamespace
@@ -11,8 +10,8 @@ from sqlalchemy.orm import Session
 from .config import settings
 from .db import crud, schemas
 from .db.operations import (save_finance_data, get_data_in_timeframe,
-                            update_history, deconstruct_yhistory)
-from .models.finance_classes import PortfoliosModel
+                            update_history, deconstruct_yhistory, get_sustainability)
+from .models.finance_classes import PortfolioModel
 
 
 def filter_stocks(stocks):
@@ -77,7 +76,7 @@ def get_data_of_symbol(stock: schemas.StockBase, db: Session):
             history = deconstruct_yhistory(yhistory)
 
             info = schemas.InfoCreate(symbol=stock.symbol, name=data.info['shortName'], type=data.info['quoteType'],
-                                      country=data.info['country'], currency=data.info['currency'])
+                                      country=data.info['country'], currency=data.info['currency'], sustainability=get_sustainability(data))
 
             return SimpleNamespace(**{'symbol': stock.symbol, 'start': stock.start,
                                       'end': stock.end, 'info': [info], 'history': history})
@@ -86,22 +85,16 @@ def get_data_of_symbol(stock: schemas.StockBase, db: Session):
     raise HTTPException(status_code=500, detail=f'Unable to return stock data of symbol: {stock.symbol}.')
 
 
-def extract_quandl_data(api_key=None, identifier='UPR/EXT'):
-    if api_key is None:
-        api_key = settings.nasdaq_api_key
-    return quandl.get_table(identifier, api_key=api_key, paginate=True)
-
-
-def stock_data_to_dataframe(portfolios_model: PortfoliosModel):
-    expected_rate_of_return_pa = pd.DataFrame(data=portfolios_model.expected_rates_of_return_pa,
-                                              index=portfolios_model.stocks_tickers,
+def stock_data_to_dataframe(portfolio_model: PortfolioModel):
+    expected_rate_of_return_pa = pd.DataFrame(data=portfolio_model.expected_rates_of_return_pa,
+                                              index=portfolio_model.stocks_tickers,
                                               columns=['RateOfReturn'])
-    expected_esg_ratings = pd.DataFrame(data=portfolios_model.expected_esg_ratings,
-                                        index=portfolios_model.stocks_tickers,
+    expected_esg_ratings = pd.DataFrame(data=portfolio_model.expected_esg_ratings,
+                                        index=portfolio_model.stocks_tickers,
                                         columns=['ESGRating'])
-    expected_covariance_pa = portfolios_model.expected_covariance_pa
-    expected_volatility_pa = pd.DataFrame(portfolios_model.expected_volatilities_pa,
-                                          index=portfolios_model.stocks_tickers,
+    expected_covariance_pa = portfolio_model.expected_covariance_pa
+    expected_volatility_pa = pd.DataFrame(portfolio_model.expected_volatilities_pa,
+                                          index=portfolio_model.stocks_tickers,
                                           columns=['Volatility'])
     return pd.concat([expected_rate_of_return_pa, expected_volatility_pa,
                       expected_esg_ratings, expected_covariance_pa], axis=1)

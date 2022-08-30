@@ -31,8 +31,8 @@ def create_stock(db: Session, stock: schemas.StockCreate):
 
 
 def create_stock_info(db: Session, info: schemas.InfoCreate, symbol: str):
-    db_info = models.Info(symbol=symbol, name=info.name, type=info.type,
-                          country=info.country, currency=info.currency)
+    db_info = models.Info(symbol=symbol, name=info.name, type=info.type, country=info.country,
+                          currency=info.currency, sustainability=info.sustainability)
     db.add(db_info)
     return db_info
 
