@@ -1,46 +1,35 @@
 import pandas as pd
 
-from .finance_classes import Stock, PortfoliosModel
+from .finance_classes import Stock, PortfolioModel
 from .finance_utilities import convert_business_to_osqp_model
 from .optimization_backend.backend_runner import Providers, run_job
 from .optimization_backend.optimization_classes import Problem, Job, Solver
 
 import qupo_backend.db.schemas as schemas
-from qupo_backend.tickers_utilities import get_data_of_symbol
-from qupo_backend.tickers_utilities import extract_quandl_data, stock_data_to_dataframe
+from qupo_backend.tickers_utilities import get_data_of_symbol, stock_data_to_dataframe
 
 
 def portfolio_df_from_stock_data(db, symbols, start='2018-01-01', end='2018-02-28'):
-    esg_data = extract_quandl_data()
-
     # create stock and portfolio objects for frontend
     stocks = []
 
     for symbol in symbols:
         stock_data = get_data_of_symbol(schemas.StockBase(symbol=symbol, start=start, end=end), db)
         if (stock_data):
-            try:
-                matches = [stock_data.info[0].name.startswith(company_name.upper()) for company_name in esg_data.company_name]
-                if any(matches):
-                    esg_data_value = esg_data[matches].net_impact_ratio.values[0]
-                else:
-                    esg_data_value = 0
-            except KeyError:
-                esg_data_value = 0
-
             close_values = [h.close for h in stock_data.history]
-            stock = Stock(pd.Series(data=close_values), ticker=symbol, full_name=stock_data.info[0].name, historic_esg_value=esg_data_value)
+            stock = Stock(pd.Series(data=close_values), ticker=symbol, full_name=stock_data.info[0].name,
+                          historic_esg_value=stock_data.info[0].sustainability)
             stocks = stocks + [stock]
 
     # setup mathematical model
-    portfolios_model = PortfoliosModel(stocks)
-    portfolios_model_df = stock_data_to_dataframe(portfolios_model)
+    portfolio_model = PortfolioModel(stocks)
+    portfolio_model_df = stock_data_to_dataframe(portfolio_model)
 
-    return portfolios_model_df
+    return portfolio_model_df, portfolio_model
 
 
 def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
-    portfolio_model_df = portfolio_df_from_stock_data(db, symbols)
+    portfolio_model_df, portfolio_model = portfolio_df_from_stock_data(db, symbols)
     # create abstract representation of problem (to identify and leverage hidden structure)
     P, q, A, l, u = convert_business_to_osqp_model(portfolio_model_df, risk_weight, esg_weight)
 
@@ -67,6 +56,7 @@ def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
 
     return {
         **data,
+        'stock_names': portfolio_model.stocks_full_names,
         'objective_value': job.result.objective_value,
         'rate_of_return': job.result.rate_of_return,
         'variance': job.result.variance,

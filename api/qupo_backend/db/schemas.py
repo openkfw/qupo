@@ -31,6 +31,7 @@ class InfoBase(BaseModel):
     type: str
     country: str
     currency: str
+    sustainability: float
 
 
 class InfoCreate(InfoBase):

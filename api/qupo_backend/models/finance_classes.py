@@ -27,45 +27,16 @@ class Stock:
 
 
 @dataclass
-class Portfolio:
-    stocks: InitVar[list[Stock]]
-    stock_weights: InitVar[np.ndarray] = np.array([])
-    risk_free_return_pa: InitVar[float] = 0
-
-    def __post_init__(self, stocks, stock_weights, risk_free_return_pa):
-        self.stock_tickers = [stock.ticker for stock in stocks] + ['Acct']
-        self.stock_full_names = [stock.full_name for stock in stocks] + ['Bank Account']
-        if stock_weights.size == 0:
-            stock_weights = np.append(np.zeros(len(self.stock_tickers) - 1), 1)
-        elif np.sum(stock_weights) > 1:
-            stock_weights = stock_weights / np.sum(stock_weights)
-            print(f'Sum of stock weights >1, normalized to {stock_weights}')
-        self.price_time_series = np.dot(stock_weights, np.array(
-            [stock.price_time_series for stock in stocks] + [stocks[0].price_time_series * 0]))  # sum of weighted stock price time series
-        # annualized historic returns [%] and relative volatility (standart deviation of return) [%]
-        # annualized historic mean returns [%]
-        self.historic_rate_of_return_pa = finance_utilities.calc_historic_rate_of_return_pa(self.price_time_series)
-        # annualized historic volatility relative to hist. RoR pa[%]
-        self.historic_volatility_pa = finance_utilities.calc_historic_volatility_pa(self.price_time_series)
-        self.historic_sharpe_ratio = finance_utilities.calc_historic_sharpe_ratio(self.historic_rate_of_return_pa,
-                                                                                  risk_free_return_pa, self.historic_volatility_pa)
-        # sum of weighted stock price time series
-        self.historic_esg_value = np.dot(stock_weights, np.array(
-            [stock.historic_esg_value for stock in stocks] + [0]))
-
-
-@dataclass
-class PortfoliosModel():
+class PortfolioModel():
     stocks: InitVar[list[Stock]]
     risk_free_return_pa: InitVar[float] = 0.0
 
     def __post_init__(self, stocks, risk_free_return_pa):
-        stocks_full_names = ['Bank Account']
-        stocks_tickers = ['Acct']
-        stocks_esg_data = [0.0]
-        stocks_expected_rate_of_return_pa = np.array([0.0])
-        stocks_time_series = stocks[0].price_time_series * 0.0 + 1.0
-        stocks_time_series = stocks_time_series.to_frame(name=stocks_tickers[0])
+        stocks_full_names = []
+        stocks_tickers = []
+        stocks_esg_data = []
+        stocks_expected_rate_of_return_pa = np.array([])
+        stocks_time_series = pd.DataFrame()
 
         for stock in stocks:
             stocks_full_names = stocks_full_names + [stock.full_name]

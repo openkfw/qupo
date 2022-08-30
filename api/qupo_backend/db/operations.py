@@ -20,6 +20,12 @@ def get_data_from_yahoo(symbol: str, period: str):
     return data, yhistory
 
 
+def get_sustainability(data):
+    if (data.sustainability is not None):
+        return data.sustainability.loc['totalEsg']['Value']
+    return 0
+
+
 def construct_history_row(date, rowData):
     cleanedRowData = [0 if value is None else value for value in rowData]
 
@@ -42,8 +48,9 @@ def save_finance_data(db: Session, stock: schemas.StockBase):
 
     if (len(yhistory['data']) > 0):
         history = deconstruct_yhistory(yhistory)
-        info = schemas.InfoCreate(name=data.info['shortName'], type=data.info['quoteType'],
-                                  country=data.info['country'], currency=data.info['currency'])
+        sustainability = get_sustainability(data)
+        info = schemas.InfoCreate(name=data.info['shortName'], type=data.info['quoteType'], country=data.info['country'],
+                                  currency=data.info['currency'], sustainability=sustainability)
 
         crud.create_stock(db, stock)
         crud.create_stock_info(db, info, stock.symbol)
