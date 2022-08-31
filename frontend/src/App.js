@@ -55,7 +55,7 @@ const AppWrapper = () => {
 function App() {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [weights, setWeights] = useState({
     risk_weight: { label: "Risk Weight", value: 50 },
     esg_weight: { label: "ESG Weight", value: 40 },

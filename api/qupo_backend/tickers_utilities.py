@@ -1,16 +1,15 @@
 import json
-
 import pandas as pd
-import yfinance
 from types import SimpleNamespace
 
+import yfinance
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from .config import settings
-from .db import crud, schemas
-from .db.operations import (save_finance_data, get_data_in_timeframe,
-                            update_history, deconstruct_yhistory, get_sustainability)
+from .db.stocks import crud, schemas
+from .db.stocks.operations import (save_finance_data, get_data_in_timeframe,
+                                   update_history, deconstruct_yhistory, get_sustainability)
 from .models.finance_classes import PortfolioModel
 
 

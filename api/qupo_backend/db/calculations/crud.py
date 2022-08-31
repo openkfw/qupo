@@ -1,15 +1,16 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
-from sqlalchemy import delete
-
+from sqlalchemy.ext.mutable import MutableList
 
 from . import models, schemas
 
 
 def get_calculation(db: Session, calculation: schemas.CalculationBase):
-    return db.query(models.Calculation). \
+    return db.query(models.Calculation, models.Result). \
         join(models.Result, models.Calculation.id == models.Result.calculation_id). \
-        where(models.Calculation.model == calculation.model). \
+        filter(models.Calculation.model == calculation.model). \
+        filter(models.Calculation.risk_weight == calculation.risk_weight). \
+        filter(models.Calculation.esg_weight == calculation.esg_weight). \
+        filter(models.Calculation.symbols == MutableList(calculation.symbols)). \
         first()
 
 
@@ -23,13 +24,15 @@ def create_calculation(db: Session, calculation: schemas.CalculationCreate):
     db_calculation = models.Calculation(model=calculation.model, symbols=calculation.symbols,
                                         risk_weight=calculation.risk_weight, esg_weight=calculation.esg_weight)
     db.add(db_calculation)
+    db.commit()
+    db.refresh(db_calculation)
+    
     return db_calculation
 
 
 def create_result(db: Session, result: schemas.ResultCreate, id: int):
-    db_result = models.Result(calculation_id=id, rate_of_return=result.rate_of_return, esg_rating=result.esg_rating,
-                              volatility=result.volatility, objective_value=result.objective_value,
-                              rate_of_return_value=result.rate_of_return_value, variance=result.variance, esg_value=result.esg_value)
-    #db_result = models.Result(**result.dict())
+    db_result = models.Result(calculation_id=id, **result.dict())
     db.add(db_result)
+    db.commit()
+
     return db_result

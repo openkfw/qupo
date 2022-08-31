@@ -1,5 +1,5 @@
-from pydantic import BaseModel
 from typing import Any, Dict, List
+from pydantic import BaseModel
 
 
 class ResultBase(BaseModel):

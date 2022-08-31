@@ -60,16 +60,14 @@ const PortfolioChart = ({ data }) => {
     const labels = new Set([]);
     const colors = ["#c6e6f5", "#87bbd0", "#417670", "#336a7e", "#002d3c"];
 
-    Object.keys(dataToProcess).forEach((model, index) => {
+    dataToProcess.forEach(({ Calculation, Result }, index) => {
       const dataset = {
-        label: `${model}`,
+        label: `${Calculation.model}`,
         data: [],
         backgroundColor: colors[index],
       };
 
-      for (const [key, value] of Object.entries(
-        dataToProcess[model].RateOfReturn
-      )) {
+      for (const [key, value] of Object.entries(Result.rate_of_return)) {
         labels.add(key);
         dataset.data.push(value);
       }

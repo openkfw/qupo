@@ -61,7 +61,7 @@ const Performance = ({ model, modelName }) => {
       <Box className={classes.box}>
         <ValueBox value={model.variance} kind="Risk" />
         <ValueBox value={model.esg_value} kind="Sustainability" />
-        <ValueBox value={model.rate_of_return} kind="Return" fixed={2} />
+        <ValueBox value={model.rate_of_return_value} kind="Return" fixed={2} />
       </Box>
     </Box>
   );
