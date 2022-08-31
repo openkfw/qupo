@@ -5,7 +5,9 @@ from .finance_utilities import convert_business_to_osqp_model
 from .optimization_backend.backend_runner import Providers, run_job
 from .optimization_backend.optimization_classes import Problem, Job, Solver
 
-import qupo_backend.db.schemas as schemas
+import qupo_backend.db.calculations.schemas as calc_schemas
+import qupo_backend.db.calculations.crud as crud
+import qupo_backend.db.stocks.schemas as stock_schemas
 from qupo_backend.tickers_utilities import get_data_of_symbol, stock_data_to_dataframe
 
 
@@ -14,7 +16,7 @@ def portfolio_df_from_stock_data(db, symbols, start='2018-01-01', end='2018-02-2
     stocks = []
 
     for symbol in symbols:
-        stock_data = get_data_of_symbol(schemas.StockBase(symbol=symbol, start=start, end=end), db)
+        stock_data = get_data_of_symbol(stock_schemas.StockBase(symbol=symbol, start=start, end=end), db)
         if (stock_data):
             close_values = [h.close for h in stock_data.history]
             stock = Stock(pd.Series(data=close_values), ticker=symbol, full_name=stock_data.info[0].name,
@@ -62,3 +64,24 @@ def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
         'variance': job.result.variance,
         'esg_value': job.result.esg_value
     }
+
+
+def get_model_calculations(db, models, metadata):
+    results = []
+    for model in models:
+        calculation = calc_schemas.CalculationBase(model=model, **metadata)
+        db_calculation = crud.get_calculation(db, calculation)
+
+        if db_calculation is None:
+            result = calculate_model(db, model=model, **metadata)
+            calculation_saved = crud.create_calculation(db, calculation)
+            result_to_save = calc_schemas.ResultCreate(rate_of_return=result['RateOfReturn'], esg_rating=result['ESGRating'],
+                                                       volatility=result['Volatility'], objective_value=result['objective_value'],
+                                                       rate_of_return_value=result['rate_of_return'], variance=result['variance'],
+                                                       esg_value=result['esg_value'])
+            crud.create_result(db, result_to_save, calculation_saved.id)
+            db_calc = crud.get_calculation(db, calculation)
+            results.append(db_calc)
+        else:
+            results.append(db_calculation)
+    return results

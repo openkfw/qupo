@@ -62,7 +62,7 @@ class ApiClient {
         esg_weight: esgWeight,
       })
       .then(({ data }) => {
-        return data;
+        return data ? data : [];
       })
       .catch((error) => console.error(error));
   }

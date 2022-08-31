@@ -8,7 +8,8 @@ from typing import List
 
 from . import tickers_api
 from .db.database import get_db
-from .models.portfolio_model import calculate_model
+from .db.calculations import schemas
+from .models.portfolio_model import get_model_calculations
 
 
 app = FastAPI()
@@ -40,6 +41,11 @@ class Parameters(BaseModel):
     esg_weight: float
 
 
+class Calculation(BaseModel):
+    Calculation: schemas.Calculation
+    Result: schemas.Result
+
+
 @app.get('/')
 async def root():
     return {'message': 'Hello from qupo'}
@@ -50,14 +56,12 @@ async def health():
     return {'status': 'ok'}
 
 
-@app.post('/models')
+@app.post('/models', response_model=List[Calculation])
 async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
     try:
-        results = {}
-        for model in params.models:
-            results[model] = calculate_model(db, model=model, symbols=params.symbols,
-                                             risk_weight=params.risk_weight, esg_weight=params.esg_weight)
-        return results
+        return get_model_calculations(db, params.models, {'symbols': params.symbols,
+                                                          'risk_weight': params.risk_weight,
+                                                          'esg_weight': params.esg_weight})
     except Exception as e:
         logging.error(e)
         raise HTTPException(status_code=500, detail='Could not calculate portfolio.')

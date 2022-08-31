@@ -49,7 +49,7 @@ const Portfolio = ({ client, data, setData, weights, setWeights }) => {
         setWeights={setWeights}
       />
       <Grid item xs={9}>
-        {loading && !data && (
+        {loading && !data.length && (
           <Grid
             container
             justifyContent="center"
@@ -59,23 +59,23 @@ const Portfolio = ({ client, data, setData, weights, setWeights }) => {
             <CircularProgress size="7rem" />
           </Grid>
         )}
-        {data && (
+        {data.length && (
           <Card variant="outlined">
             <Grid sx={{ p: 1 }}>
               <PortfolioChart data={data} />
             </Grid>
             <Box className={classes.box}>
-              {Object.keys(data).map((modelName) => (
+              {data.map(({ Calculation, Result }) => (
                 <Performance
-                  key={modelName}
-                  model={data[modelName]}
-                  modelName={modelName}
+                  key={Calculation.model}
+                  model={Result}
+                  modelName={Calculation.model}
                 />
               ))}
             </Box>
           </Card>
         )}
-        {!loading && !data && (
+        {!loading && !data.length && (
           <Stack alignItems="center">
             <BarChartIcon sx={{ fontSize: 300, color: "whitesmoke" }} />
             <Typography sx={{ color: "#42424238", fontSize: 30 }}>

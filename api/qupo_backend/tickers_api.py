@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pytickersymbols import PyTickerSymbols
 from sqlalchemy.orm import Session
 
-from .db import schemas
+from .db.stocks import schemas
 from .tickers_utilities import filter_stocks, get_all_symbols, get_data_of_symbol, replace_to_yahoo_symbols
 from .db.database import get_db
 
