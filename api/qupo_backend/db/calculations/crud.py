@@ -26,7 +26,7 @@ def create_calculation(db: Session, calculation: schemas.CalculationCreate):
     db.add(db_calculation)
     db.commit()
     db.refresh(db_calculation)
-    
+
     return db_calculation
 
 
