@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
   model: {
     fontSize: "16px !important",
     fontWeight: "bold !important",
+    paddingBottom: theme.spacing(1),
   },
   valueBox: {
     flexDirection: "column",
@@ -59,7 +60,7 @@ const Performance = ({ model, modelName }) => {
       <ValueBox value={model.objective_value} kind="Performance" fixed={2} />
       <Divider sx={{ mx: 2 }} />
       <Box className={classes.box}>
-        <ValueBox value={model.variance} kind="Risk" />
+        <ValueBox value={model.risk} kind="Risk" />
         <ValueBox value={model.esg_value} kind="Sustainability" />
         <ValueBox value={model.rate_of_return_value} kind="Return" fixed={2} />
       </Box>

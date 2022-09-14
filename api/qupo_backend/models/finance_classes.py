@@ -47,6 +47,8 @@ class PortfolioModel():
             stocks_expected_rate_of_return_pa = np.concatenate(
                 (stocks_expected_rate_of_return_pa, finance_utilities.calc_historic_rate_of_return_pa(stocks_time_series[stock.ticker])))
 
+        self.stocks = stocks
+        self.risk_free_return_pa = risk_free_return_pa
         self.stocks_full_names = stocks_full_names
         self.stocks_tickers = stocks_tickers
         self.price_time_series = stocks_time_series
@@ -54,6 +56,18 @@ class PortfolioModel():
         self.expected_esg_ratings = stocks_esg_data
         self.expected_covariance_pa = finance_utilities.calc_expected_covariance_pa(self.price_time_series)
         self.expected_volatilities_pa = finance_utilities.calc_historic_volatility_pa(self.price_time_series)
-        expected_sharpe_ratios = finance_utilities.calc_historic_sharpe_ratio(
-            np.array(self.expected_rates_of_return_pa[1:]), risk_free_return_pa, np.array(self.expected_volatilities_pa[1:]))
-        self.expected_sharpe_ratios = np.append(0, expected_sharpe_ratios)
+        self.expected_sharpe_ratios = finance_utilities.calc_historic_sharpe_ratio(
+            np.array(self.expected_rates_of_return_pa), risk_free_return_pa, np.array(self.expected_volatilities_pa))
+
+    def get_historic_values(self, stock_weights=[]):
+        if(len(stock_weights) == 0):
+            weight = 100 / len(self.stocks_tickers)
+            stock_weights = np.full(len(self.stocks_tickers), weight)
+        price_time_series_weightend = np.dot([weight / 100 for weight in stock_weights], np.array(
+            [stock.price_time_series for stock in self.stocks]))  # sum of weighted stock price time series
+        historic_rate_of_return_pa = finance_utilities.calc_historic_rate_of_return_pa(price_time_series_weightend)
+        historic_volatility_pa = finance_utilities.calc_historic_volatility_pa(price_time_series_weightend)
+        historic_sharpe_ratio = finance_utilities.calc_historic_sharpe_ratio(historic_rate_of_return_pa,
+                                                                             self.risk_free_return_pa, historic_volatility_pa)
+
+        return historic_rate_of_return_pa, historic_sharpe_ratio

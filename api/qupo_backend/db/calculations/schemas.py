@@ -8,7 +8,7 @@ class ResultBase(BaseModel):
     volatility: Dict[Any, Any] = None
     objective_value: float
     rate_of_return_value: float
-    variance: float
+    risk: float
     esg_value: float
 
 

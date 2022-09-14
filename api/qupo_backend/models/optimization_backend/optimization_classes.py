@@ -13,7 +13,7 @@ from .model_converter import convert_osqp_to_docplex_model, approximate_docplex_
 
 @dataclass
 class Result:
-    variables_values: float
+    variable_values: float
     objective_value: float
     time_to_solution: float
     valid: bool = False

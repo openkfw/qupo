@@ -27,7 +27,7 @@ class Result(Base):
     volatility = Column(JSON)
     objective_value = Column(Float)
     rate_of_return_value = Column(Float)
-    variance = Column(Float)
+    risk = Column(Float)
     esg_value = Column(Float)
 
     calculations = relationship('Calculation', back_populates='results')

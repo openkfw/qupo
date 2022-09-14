@@ -24,7 +24,7 @@ def main():
     job_pypo = Job(problem, solver_pypo)
     backend_runner.run_job(job_pypo)
 
-    solution_output_percent = dict(zip(job_pypo.problem.dataframe.index, job_pypo.result.variables_values.round(2)))
+    solution_output_percent = dict(zip(job_pypo.problem.dataframe.index, job_pypo.result.variable_values.round(2)))
     print(f'PyPO suggested portfolio composition[%]: {solution_output_percent}')
     print(f'PyPO objective value: {job_pypo.result.objective_value}')
 
@@ -33,7 +33,7 @@ def main():
     job_osqp = Job(problem, solver_osqp)
     backend_runner.run_job(job_osqp)
 
-    solution_output_percent = dict(zip(job_osqp.problem.dataframe.index, job_osqp.result.variables_values.round(2)))
+    solution_output_percent = dict(zip(job_osqp.problem.dataframe.index, job_osqp.result.variable_values.round(2)))
     print(f'OSQP suggested portfolio composition[%]: {solution_output_percent}')
     print(f'OSQP objective value: {job_osqp.result.objective_value}')
 
@@ -47,7 +47,7 @@ def main():
                 job_qio = Job(quantum_problem, solver_qio)
                 backend_runner.run_job(job_qio)
 
-                solution_output_percent = dict(zip(job_pypo.problem.dataframe.index, job_pypo.result.variables_values.round(2)))
+                solution_output_percent = dict(zip(job_pypo.problem.dataframe.index, job_pypo.result.variable_values.round(2)))
                 print(f'Azure QIO suggested portfolio composition[%]: {solution_output_percent}')
                 print(f'Azure QIO objective value: {job_pypo.result.objective_value}')
 
@@ -58,7 +58,7 @@ def main():
     job_qiskit = backend_runner.Job(quantum_problem, solver_qiskit)
     backend_runner.run_job(job_qiskit)
 
-    solution_output_percent = dict(zip(job_qiskit.problem.dataframe.index, job_qiskit.result.variables_values.round(2)))
+    solution_output_percent = dict(zip(job_qiskit.problem.dataframe.index, job_qiskit.result.variable_values.round(2)))
     print(f'Qiskit on LocalSimulator suggested portfolio composition[%]: {solution_output_percent}')
     print(f'Qiskit on LocalSimulator objective value: {job_qiskit.result.objective_value}')
 

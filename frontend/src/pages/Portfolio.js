@@ -59,7 +59,7 @@ const Portfolio = ({ client, data, setData, weights, setWeights }) => {
             <CircularProgress size="7rem" />
           </Grid>
         )}
-        {data.length && (
+        {data.length ? (
           <Card variant="outlined">
             <Grid sx={{ p: 1 }}>
               <PortfolioChart data={data} />
@@ -74,7 +74,7 @@ const Portfolio = ({ client, data, setData, weights, setWeights }) => {
               ))}
             </Box>
           </Card>
-        )}
+        ) : null}
         {!loading && !data.length && (
           <Stack alignItems="center">
             <BarChartIcon sx={{ fontSize: 300, color: "whitesmoke" }} />

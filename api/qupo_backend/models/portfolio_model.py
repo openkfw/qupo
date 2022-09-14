@@ -52,7 +52,8 @@ def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
     job = Job(problem, solver)
     run_job(job)
 
-    solution_output_percent = dict(zip(list(job.problem.dataframe.index), job.result.variables_values.round(2)))
+    solution_output_percent = dict(zip(list(job.problem.dataframe.index), job.result.variable_values.round(2)))
+    rate_of_return_value, risk = portfolio_model.get_historic_values(list(solution_output_percent.values()))
     portfolio_model_df['RateOfReturn'].update(pd.Series(solution_output_percent))
     data = portfolio_model_df.iloc[:, 0:3]
 
@@ -60,8 +61,8 @@ def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
         **data,
         'stock_names': portfolio_model.stocks_full_names,
         'objective_value': job.result.objective_value,
-        'rate_of_return': job.result.rate_of_return,
-        'variance': job.result.variance,
+        'rate_of_return_value': rate_of_return_value,
+        'risk': risk,
         'esg_value': job.result.esg_value
     }
 
@@ -77,7 +78,7 @@ def get_model_calculations(db, models, metadata):
             calculation_saved = crud.create_calculation(db, calculation)
             result_to_save = calc_schemas.ResultCreate(rate_of_return=result['RateOfReturn'], esg_rating=result['ESGRating'],
                                                        volatility=result['Volatility'], objective_value=result['objective_value'],
-                                                       rate_of_return_value=result['rate_of_return'], variance=result['variance'],
+                                                       rate_of_return_value=result['rate_of_return_value'], risk=result['risk'],
                                                        esg_value=result['esg_value'])
             crud.create_result(db, result_to_save, calculation_saved.id)
             db_calc = crud.get_calculation(db, calculation)
