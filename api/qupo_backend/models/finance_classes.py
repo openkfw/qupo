@@ -60,7 +60,7 @@ class PortfolioModel():
             np.array(self.expected_rates_of_return_pa), risk_free_return_pa, np.array(self.expected_volatilities_pa))
 
     def get_historic_values(self, stock_weights=[]):
-        if(len(stock_weights) == 0):
+        if (len(stock_weights) == 0):
             weight = 100 / len(self.stocks_tickers)
             stock_weights = np.full(len(self.stocks_tickers), weight)
         price_time_series_weightend = np.dot([weight / 100 for weight in stock_weights], np.array(
