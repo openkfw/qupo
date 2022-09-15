@@ -65,8 +65,8 @@ function App() {
 
   useEffect(() => {
     store.set("loading", false);
+
     const fetchIndices = async () => {
-      setLoading(true);
       const indices = await getIndices();
       store.set("indices", indices);
       indices.map(async (index) => {
@@ -91,13 +91,13 @@ function App() {
         const symbolsOfIndustry = await getIndustries(industry);
         store.set(industry, symbolsOfIndustry);
       });
-      setLoading(false);
     };
 
     if (!store.get("industries")) {
+      setLoading(true);
       fetchIndices();
       fetchCountries();
-      fetchIndustries();
+      fetchIndustries().then(() => setLoading(false));
     }
   }, []);
 
