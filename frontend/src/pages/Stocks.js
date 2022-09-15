@@ -33,9 +33,11 @@ const Stocks = () => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    setItems(store.get(view).slice(0, 8));
-    setFilterValue(null);
-    setFilter(store.get(view));
+    if (store.get(view)) {
+      setItems(store.get(view).slice(0, 8));
+      setFilterValue(null);
+      setFilter(store.get(view));
+    }
   }, [view]);
 
   const filterItems = (items) => {
@@ -57,11 +59,7 @@ const Stocks = () => {
         <TransitionGroup>
           {filterItems(items).map((item) => (
             <Collapse key={item} className={classes.item}>
-              <SymbolsListItem
-                key={item}
-                name={item}
-                symbols={store.get(item)}
-              />
+              <SymbolsListItem key={item} name={item} />
             </Collapse>
           ))}
         </TransitionGroup>

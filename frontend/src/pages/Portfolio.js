@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Portfolio = ({ client, data, setData, weights, setWeights }) => {
+const Portfolio = ({ data, setData, weights, setWeights }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(store.get("loading"));
 
@@ -43,7 +43,6 @@ const Portfolio = ({ client, data, setData, weights, setWeights }) => {
       spacing={1}
     >
       <PortfolioController
-        client={client}
         setData={setData}
         weights={weights}
         setWeights={setWeights}

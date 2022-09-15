@@ -1,6 +1,6 @@
 # QUPO
 
-A platform for portfolio optimization using quantum and non quantum (classical) algorithms.
+A platform for portfolio optimization using quantum and non quantum (classical) algorithms. The repository includes an `api` folder which contains the python backend that is responsible for the portfolio calculations. It is connected to a ReactJs frontend.
 
 ## Getting started
 
@@ -25,6 +25,8 @@ openblas on MacOS (via homebrew):
 
 and follow the instructions to configure compilers
 
+## Start locally
+
 ### Backend
 
 Navigate into the api folder: `cd api`.
@@ -34,7 +36,7 @@ Navigate into the api folder: `cd api`.
 1. Create a virtual env with the right python version and activate the environment:
 
    ```bash
-   python3.10 -m venv venv
+   python3 -m venv venv
    source venv/bin/activate
    python --version  # Python 3.10.4
    ```
@@ -113,11 +115,53 @@ Navigate into the api folder: `cd api`.
 
 ### Frontend
 
-From your bash navigate into the frontend folder: `cd ../frontend`. It is a create-react-app and contains all the files that are needed to run the web application. On initial start-up, first install all required packages from the `package.json` file. Then you can run the app with:
+From your bash navigate into the frontend folder: `cd ../frontend`. It is a create-react-app and contains all the files that are needed to run the web application.
 
-```bash
-npm install
-npm start
-```
+1. Set environment variables
+
+   ```(bash)
+   cp .env_example .env
+   ```
+
+   For local development set the `REACT_APP_API_URL` env variable to `http://localhost:8000`.
+
+1. On initial start-up, first install all required packages from the `package.json` file. Then you can run the app with:
+
+   ```bash
+   npm install
+   npm start
+   ```
 
 In your browser visit [http://localhost:3000](http://localhost:3000) to see the app up and running.
+
+## Start app with docker files
+
+The repository includes docker files for the api service as well as for the frontend. You can either start them individually (see respective READMEs) or use the `docker-compose.yml` file to start them together.
+
+1. Make sure to navigate to the root folder, where the `docker-compose.yml` file is located.
+
+1. Set environment variables:
+
+   For the frontend:
+
+   ```(bash)
+   cp ./frontend/.env_example frontend.env
+   ```
+
+   For running the application within docker container set the `REACT_APP_API_URL` environment variable to `http://api:8000`.
+
+   For the backend:
+
+   ```(bash)
+   cp ./api/.env_example api.env
+   ```
+
+   The environemt variables for the backend are the same as for the local deployment.
+
+1. In your bash run the docker containers with:
+
+   ```(bash)
+   docker compose up
+   ```
+
+Now the application should be up and running. You can view it on your browser at [http://localhost:8001](http://localhost:8001).

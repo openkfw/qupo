@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProcessOverview = ({ client, weights, setWeights }) => {
+const ProcessOverview = ({ weights, setWeights }) => {
   const classes = useStyles();
 
   return (
@@ -21,7 +21,7 @@ const ProcessOverview = ({ client, weights, setWeights }) => {
       <Typography variant="h5" className={classes.heading}>
         Selected Symbols:
       </Typography>
-      <StocksCollection client={client} />
+      <StocksCollection />
       <Typography variant="h5" className={classes.heading}>
         Answers:
       </Typography>

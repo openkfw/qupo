@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { getIndices, getCountries, getIndustries } from "./api";
 
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -9,7 +10,6 @@ import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 
 import "./App.css";
-import ApiClient from "./client";
 import Process from "./pages//Process/Process";
 import Portfolio from "./pages/Portfolio";
 import Stocks from "./pages/Stocks";
@@ -17,8 +17,6 @@ import Stocks from "./pages/Stocks";
 import store from "store-js";
 import eventsPlugin from "store-js/plugins/events";
 store.addPlugin(eventsPlugin);
-
-const client = new ApiClient();
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -67,39 +65,39 @@ function App() {
 
   useEffect(() => {
     store.set("loading", false);
+
     const fetchIndices = async () => {
-      setLoading(true);
-      const indices = await client.getIndices();
+      const indices = await getIndices();
       store.set("indices", indices);
       indices.map(async (index) => {
-        const symbolsOfIndex = await client.getIndices(index);
+        const symbolsOfIndex = await getIndices(index);
         store.set(index, symbolsOfIndex);
       });
     };
 
     const fetchCountries = async () => {
-      const countries = await client.getCountries();
+      const countries = await getCountries();
       store.set("countries", countries);
       countries.map(async (country) => {
-        const symbolsOfCountry = await client.getCountries(country);
+        const symbolsOfCountry = await getCountries(country);
         store.set(country, symbolsOfCountry);
       });
     };
 
     const fetchIndustries = async () => {
-      const industries = await client.getIndustries();
+      const industries = await getIndustries();
       store.set("industries", industries);
       industries.map(async (industry) => {
-        const symbolsOfIndustry = await client.getIndustries(industry);
+        const symbolsOfIndustry = await getIndustries(industry);
         store.set(industry, symbolsOfIndustry);
       });
-      setLoading(false);
     };
 
     if (!store.get("industries")) {
+      setLoading(true);
       fetchIndices();
       fetchCountries();
-      fetchIndustries();
+      fetchIndustries().then(() => setLoading(false));
     }
   }, []);
 
@@ -117,7 +115,6 @@ function App() {
               path="/process"
               element={
                 <Process
-                  client={client}
                   setData={setData}
                   weights={weights}
                   setWeights={setWeights}
@@ -128,7 +125,6 @@ function App() {
               path="/portfolio"
               element={
                 <Portfolio
-                  client={client}
                   data={data}
                   setData={setData}
                   weights={weights}
