@@ -16,6 +16,7 @@ import { green } from "@mui/material/colors";
 
 import store from "store-js";
 
+import { getSymbols } from "../api";
 import CollapsedSection from "./CollapsedSection";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StocksCollection = ({ client, size = "medium" }) => {
+const StocksCollection = ({ size = "medium" }) => {
   const classes = useStyles();
   const [selectedSymbols, setSelectedSymbols] = useState(
     store.get("selected_symbols")
@@ -53,7 +54,7 @@ const StocksCollection = ({ client, size = "medium" }) => {
 
   useEffect(() => {
     const fetchAllSymbols = async () => {
-      const symbols = await client.getSymbols();
+      const symbols = await getSymbols();
       setAllSymbols(
         filterUniqueSymbols(symbols).sort((a, b) =>
           a.symbol > b.symbol ? 1 : -1
@@ -63,7 +64,7 @@ const StocksCollection = ({ client, size = "medium" }) => {
 
     fetchAllSymbols();
     setLoading(false);
-  }, [client]);
+  }, []);
 
   const onDeleteSymbol = (symbol) => {
     const filteredSymbols = selectedSymbols.filter(

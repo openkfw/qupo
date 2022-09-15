@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import store from "store-js";
 
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
-import store from "store-js";
+import { getModelCalculations } from "../api";
 import questions from "../utils/questions.json";
 
-const CalculateButton = ({ client, weights, setData }) => {
+const CalculateButton = ({ weights, setData }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(store.get("loading"));
   const [disabled, setDisabled] = useState(
@@ -42,7 +43,7 @@ const CalculateButton = ({ client, weights, setData }) => {
     store.set("loading", true);
     const symbols = store.get("selected_symbols");
     const models = store.get("selected_models");
-    const data = await client.getModelCalculations(
+    const data = await getModelCalculations(
       models,
       symbols.slice(0, 10).map((symbol) => symbol.symbol),
       getWeightValue("risk_weight", weights.risk_weight.value),

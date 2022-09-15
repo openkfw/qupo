@@ -1,6 +1,19 @@
 version: "3"
 services:
-  app:
+  api:
     build:
       context: ./api
       dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - db:/app/qupo_backend/db
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8001:3000"
+
+volumes:
+  db: {}
