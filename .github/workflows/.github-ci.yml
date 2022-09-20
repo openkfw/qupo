@@ -35,6 +35,17 @@ jobs:
       IMAGE_NAME: ${{ matrix.image_name}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: docker-practice/actions-setup-docker@master
       - uses: ./.github/workflows/build
+
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Stage
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.DEPLOY_URL }}
+          method: "POST"
+          customHeaders: '{"Content-Type": "application/x-www-form-urlencoded"}'
+          data: "ref=main&token=${{ secrets.DEPLOY_TOKEN }}"
