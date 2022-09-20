@@ -7,7 +7,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
 import { getModelCalculations } from "../api";
-import questions from "../utils/questions.json";
 
 const CalculateButton = ({ weights, setData }) => {
   const navigate = useNavigate();
@@ -32,12 +31,6 @@ const CalculateButton = ({ weights, setData }) => {
     store.watch("loading", () => setLoading(store.get("loading")));
   });
 
-  const getWeightValue = (weight, value) => {
-    return questions
-      .find((question) => question.name === weight)
-      .options.find((option) => option.percentage === value).weight;
-  };
-
   const calculateModels = async () => {
     navigate("/portfolio");
     store.set("loading", true);
@@ -46,8 +39,8 @@ const CalculateButton = ({ weights, setData }) => {
     const data = await getModelCalculations(
       models,
       symbols.slice(0, 10).map((symbol) => symbol.symbol),
-      getWeightValue("risk_weight", weights.risk_weight.value),
-      getWeightValue("esg_weight", weights.esg_weight.value)
+      weights.risk_weight.value,
+      weights.esg_weight.value
     );
     setData(data);
     store.set("loading", false);

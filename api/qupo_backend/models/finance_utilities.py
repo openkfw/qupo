@@ -30,7 +30,7 @@ def convert_business_to_osqp_model(dataframe, risk_weight, esg_weight):
     n_portfolio = len(dataframe.index)
     covariance = dataframe.iloc[:, -n_portfolio:].to_numpy()
     P = sparse.csc_matrix(covariance) * risk_weight
-    q = dataframe.RateOfReturn.to_numpy() * risk_weight + dataframe.ESGRating.to_numpy() * esg_weight
+    q = (-0.5 / risk_weight) * dataframe.RateOfReturn.to_numpy() + (-0.5 / esg_weight) * dataframe.ESGRating.to_numpy()
     A = sparse.vstack([sparse.eye(n_portfolio), sparse.csc_matrix(np.ones((1, n_portfolio)))], format='csc')
     l = np.hstack([np.zeros(n_portfolio), 1])
     u = np.hstack([np.ones(n_portfolio), 1])

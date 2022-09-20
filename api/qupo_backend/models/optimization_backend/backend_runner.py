@@ -85,8 +85,7 @@ def run_qio_job(job):
     try:
         if job.solver.algorithm == 'SA':
             qio_solver = SimulatedAnnealing(provider, timeout=job.solver.config['timeout'],
-                                            sweeps=2, beta_start=0.1, beta_stop=1, restarts=72, seed=22,
-                                            platform=HardwarePlatform.FPGA)
+                                            sweeps=2, beta_start=0.1, beta_stop=1, restarts=72, seed=22)
         elif job.solver.algorithm == 'PA':
             qio_solver = PopulationAnnealing(provider, timeout=job.solver.config['timeout'],
                                              seed=48)

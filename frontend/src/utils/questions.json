@@ -2,77 +2,68 @@
     {
         "id": 1,
         "name": "risk_weight",
-        "question": "How risk afine are you? Consider the following situation: A lottery ticket kiosk at a funfair offers 5 types of 1 € tickets, with varing prices and chances to win. Which type would you choose? Now scale the amount of tickets to your investment budget and choose a ticket.",
+        "question": "How risk afine are you? Consider the following situation: A lottery ticket kiosk at a funfair offers 5 types of € 1 tickets, with varing rewards and chances to win. Which type of ticket would you choose?",
         "options": [
             {
                 "scenario": "Blue",
                 "characteristic": "averse",
-                "label": "100% to win a prize of € 1",
-                "weight": 2E-04,
-                "percentage": 0
+                "label": "100% chance of winning a prize of € 1",
+                "value": 0
             },
             {
                 "scenario": "Green",
                 "characteristic": "disinclined",
-                "label": "80% to win a prize of € 1.25",
-                "weight": 1.88E-04,
-                "percentage": 20
+                "label": "80% chance of winning a prize of € 1.25",
+                "value": 20
             },
             {
                 "scenario": "Yellow",
                 "characteristic": "neutral",
-                "label": "50% to win a prize of € 2",
-                "weight": 1E-04,
-                "percentage": 50
+                "label": "50% chance of winning a prize of € 2",
+                "value": 50
             },
             {
                 "scenario": "Orange",
                 "characteristic": "inclined",
-                "label": "10% to win a prize of € 10",
-                "weight": 2.44E-08,
-                "percentage": 90
+                "label": "10% chance of winning a prize of € 10",
+                "value": 90
             },
             {
                 "scenario": "Red",
                 "characteristic": "afine",
-                "label": "1% to win a prize of € 100",
-                "weight": 2.04E-08,
-                "percentage": 100
+                "label": "1% chance of winning a prize of € 100",
+                "value": 100
             }
         ]
     },
     {
         "id": 2,
         "name": "esg_weight",
-        "question": "How sustainability afine are you? Assume an forward auction (like on ebay) to buy a portfolio with better net impact ratio (net impact on society, knowledge, health, environment as defined by Upright Project https://netimpactreport.com/chapter-2). Only the bidder with the highest bid will win. Your overall portfolio budget is € 10.000. By how much would you decrease your investment to bid at the action?",
+        "question": "How sustainability afine are you? Assume an forward auction (like on ebay) to buy a portfolio with better net impact ratio (net impact on society, knowledge, health, environment as defined by Upright Project https://netimpactreport.com/chapter-2). Only the bidder with the highest bid will win. Your overall portfolio budget is € 10.000. By how much would you decrease your investment to bid at the auction?",
         "options": [
             {
                 "scenario": "Green",
                 "characteristic": "afine",
-                "label": "By 1 € for additional 10%-points net impact ratio",
-                "weight": 1E-1,
-                "percentage": 100
+                "label": "By 1 € for additional 10% net impact ratio points",
+                "value": 100
             },
             {
                 "scenario": "Yellow",
                 "characteristic": "inclined",
-                "label": "By 10 € for additional 1%-points net impact ratio points",
-                "weight": 1E1,
-                "percentage": 40
+                "label": "By 10 € for additional 1% net impact ratio points",
+                "value": 40
             },
             {
                 "scenario": "Orange",
                 "characteristic": "disinclined",
-                "label": "By 100 € for additional 0,1%-points net impact ratio points",
-                "weight": 1E3,
-                "percentage": 70
+                "label": "By 100 € for additional 0,1% net impact ratio points",
+                "value": 70
             },
             {
                 "scenario": "Red",
                 "characteristic": "averse",
-                "label": "By 1000 € for additional 0,01%-points net impact ratio points",
-                "weight": 1E5,
-                "percentage": 0
+                "label": "By 1000 € for additional 0,01% net impact ratio points",
+                "value": 0
             }
         ]
     }

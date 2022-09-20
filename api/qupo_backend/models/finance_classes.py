@@ -59,15 +59,17 @@ class PortfolioModel():
         self.expected_sharpe_ratios = finance_utilities.calc_historic_sharpe_ratio(
             np.array(self.expected_rates_of_return_pa), risk_free_return_pa, np.array(self.expected_volatilities_pa))
 
-    def get_historic_values(self, stock_weights=[]):
+    def get_evaluation(self, stock_weights=[]):
         if (len(stock_weights) == 0):
             weight = 100 / len(self.stocks_tickers)
             stock_weights = np.full(len(self.stocks_tickers), weight)
-        price_time_series_weightend = np.dot([weight / 100 for weight in stock_weights], np.array(
+        relative_weights = [weight / 100 for weight in stock_weights]
+        price_time_series_weightend = np.dot(relative_weights, np.array(
             [stock.price_time_series for stock in self.stocks]))  # sum of weighted stock price time series
-        historic_rate_of_return_pa = finance_utilities.calc_historic_rate_of_return_pa(price_time_series_weightend)
-        historic_volatility_pa = finance_utilities.calc_historic_volatility_pa(price_time_series_weightend)
-        historic_sharpe_ratio = finance_utilities.calc_historic_sharpe_ratio(historic_rate_of_return_pa,
-                                                                             self.risk_free_return_pa, historic_volatility_pa)
+        rate_of_return_pa = finance_utilities.calc_historic_rate_of_return_pa(price_time_series_weightend)
+        volatility_pa = finance_utilities.calc_historic_volatility_pa(price_time_series_weightend)
+        sharpe_ratio = finance_utilities.calc_historic_sharpe_ratio(rate_of_return_pa, self.risk_free_return_pa,
+                                                                    volatility_pa)
+        esg_value = np.dot(relative_weights, self.expected_esg_ratings)
 
-        return historic_rate_of_return_pa, historic_sharpe_ratio
+        return rate_of_return_pa, sharpe_ratio, esg_value

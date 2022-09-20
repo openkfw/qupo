@@ -30,7 +30,7 @@ def portfolio_df_from_stock_data(db, symbols, start='2018-01-01', end='2018-02-2
     return portfolio_model_df, portfolio_model
 
 
-def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
+def calculate_model(db, model, symbols, risk_weight, esg_weight):
     portfolio_model_df, portfolio_model = portfolio_df_from_stock_data(db, symbols)
     # create abstract representation of problem (to identify and leverage hidden structure)
     P, q, A, l, u = convert_business_to_osqp_model(portfolio_model_df, risk_weight, esg_weight)
@@ -52,8 +52,9 @@ def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
     job = Job(problem, solver)
     run_job(job)
 
+    rate_of_return_value, risk, esg_value = portfolio_model.get_evaluation(job.result.variable_values)
+
     solution_output_percent = dict(zip(list(job.problem.dataframe.index), job.result.variable_values.round(2)))
-    rate_of_return_value, risk = portfolio_model.get_historic_values(list(solution_output_percent.values()))
     portfolio_model_df['RateOfReturn'].update(pd.Series(solution_output_percent))
     data = portfolio_model_df.iloc[:, 0:3]
 
@@ -63,12 +64,21 @@ def calculate_model(db, model, symbols, risk_weight=0.0001, esg_weight=0.0001):
         'objective_value': job.result.objective_value,
         'rate_of_return_value': rate_of_return_value,
         'risk': risk,
-        'esg_value': job.result.esg_value
+        'esg_value': esg_value
     }
+
+
+def check_weights(metadata):
+    if(metadata["risk_weight"] == 0):
+        metadata["risk_weight"] = 1E-6
+    if(metadata["esg_weight"] == 0):
+        metadata["esg_weight"] = 1E-6
+    return metadata
 
 
 def get_model_calculations(db, models, metadata):
     results = []
+    metadata = check_weights(metadata)
     for model in models:
         calculation = calc_schemas.CalculationBase(model=model, **metadata)
         db_calculation = crud.get_calculation(db, calculation)

@@ -12,18 +12,28 @@ const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium" }) => {
     },
   };
 
-  const marks = questions
-    .find((question) => question.name === keyWeight)
-    .options.map((option) => {
-      return {
-        value: option.percentage,
-        label: `${option.percentage}%`,
-        characteristic: option.characteristic,
-      };
-    });
+  const marks = [
+    {
+      value: 0,
+      label: "0%",
+    },
+    {
+      value: 100,
+      label: "100%",
+    },
+  ];
 
   const handleChange = (value) => {
     setWeights((prevState) => weights.setValues(prevState, keyWeight, value));
+  };
+
+  const formatLabel = (value) => {
+    const characteristic = questions
+      .find((question) => question.name === keyWeight)
+      ?.options.find((scenario) => scenario.value === value)?.characteristic;
+    return characteristic && size !== "small"
+      ? `${characteristic}: ${value}%`
+      : `${value}%`;
   };
 
   return (
@@ -38,16 +48,12 @@ const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium" }) => {
         value={weights[keyWeight].value}
         onChange={(_, newValue) => handleChange(newValue)}
         valueLabelDisplay="auto"
-        valueLabelFormat={(value) =>
-          marks.find((mark) => mark.value === value).characteristic
-        }
+        valueLabelFormat={formatLabel}
         sx={size === "small" ? styles : null}
-        step={null}
+        step={10}
         min={0}
         max={100}
-        marks={marks.map((mark) => {
-          return { value: mark.value, label: mark.label };
-        })}
+        marks={marks}
       />
     </Grid>
   );
