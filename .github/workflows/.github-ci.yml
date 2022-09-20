@@ -41,6 +41,7 @@ jobs:
 
   deployment:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - name: Deploy Stage
         uses: fjogeleit/http-request-action@v1
