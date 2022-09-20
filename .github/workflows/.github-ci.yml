@@ -1,0 +1,40 @@
+name: Test & Build Qupo
+on:
+  push:
+    branches:
+      - main
+      - gh_actions
+  release:
+    types: [published]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    needs: []
+    strategy:
+      matrix:
+        project: [frontend, api]
+        include:
+          - project: frontend
+            image_name: kfwopensource/qupo-frontend
+          - project: api
+            image_name: kfwopensource/qupo-api
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+
+    env:
+      GITHUB_PR_NUMBER: ${{ github.event.number}}
+      GITHUB_BASE_REF: ${{ github.base_ref}}
+      GITHUB_HEAD_REF: ${{ github.head_ref}}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
+      IMAGE_NAME: ${{ matrix.image_name}}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker-practice/actions-setup-docker@master
+      - uses: ./.github/workflows/build
