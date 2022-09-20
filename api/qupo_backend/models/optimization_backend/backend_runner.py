@@ -8,7 +8,7 @@ from azure.quantum import Workspace
 from azure.quantum.qiskit import AzureQuantumProvider
 from azure.identity import ClientSecretCredential
 from azure.quantum.optimization import (SimulatedAnnealing, PopulationAnnealing, ParallelTempering, Tabu,
-                                        QuantumMonteCarlo, SubstochasticMonteCarlo, HardwarePlatform)
+                                        QuantumMonteCarlo, SubstochasticMonteCarlo)
 import numpy as np
 import osqp
 import pypfopt
