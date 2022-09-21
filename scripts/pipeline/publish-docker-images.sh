@@ -78,6 +78,14 @@ then
     docker push "$TAG"
 fi
 
+# Delete this before merging into main
+if [[ "$GITHUB_BRANCH" = "gh_actions" ]] && [[ "$GITHUB_EVENT_NAME" = "push" ]];
+then
+    # log into docker hub
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    docker push "$TAG"
+fi
+
 # if new release is published push 2 images:
 # - :latest
 # - :RELEASE_VERSION (e.g. :v1.10.0)
