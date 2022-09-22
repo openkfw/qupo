@@ -14,6 +14,7 @@ import Process from "./pages//Process/Process";
 import Portfolio from "./pages/Portfolio";
 import Stocks from "./pages/Stocks";
 
+import dayjs from "dayjs";
 import store from "store-js";
 import eventsPlugin from "store-js/plugins/events";
 store.addPlugin(eventsPlugin);
@@ -54,6 +55,12 @@ function App() {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [timeframe, setTimeframe] = useState({
+    start: dayjs().subtract(1, "month").format("YYYY-MM-DD"),
+    end: dayjs().format("YYYY-MM-DD"),
+    format: "YYYY-MM-DD",
+    isValid: true,
+  });
   const [weights, setWeights] = useState({
     risk_weight: { label: "Risk Weight", value: 50 },
     esg_weight: { label: "ESG Weight", value: 40 },
@@ -116,6 +123,8 @@ function App() {
               element={
                 <Process
                   setData={setData}
+                  timeframe={timeframe}
+                  setTimeframe={setTimeframe}
                   weights={weights}
                   setWeights={setWeights}
                 />
@@ -127,6 +136,7 @@ function App() {
                 <Portfolio
                   data={data}
                   setData={setData}
+                  timeframe={timeframe}
                   weights={weights}
                   setWeights={setWeights}
                 />

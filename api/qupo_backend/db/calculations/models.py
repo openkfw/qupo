@@ -1,4 +1,4 @@
-from sqlalchemy import PickleType, Column, Float, ForeignKey, Integer, JSON, String
+from sqlalchemy import PickleType, Column, Date, Float, ForeignKey, Integer, JSON, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.mutable import MutableList
 
@@ -13,6 +13,8 @@ class Calculation(Base):
     symbols = Column(MutableList.as_mutable(PickleType), default=[])
     risk_weight = Column(Float)
     esg_weight = Column(Float)
+    start = Column(Date)
+    end = Column(Date)
 
     results = relationship('Result', back_populates='calculations')
 
