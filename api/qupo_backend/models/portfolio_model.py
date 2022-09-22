@@ -16,7 +16,7 @@ def portfolio_df_from_stock_data(db, symbols, start, end):
     stocks = []
 
     for symbol in symbols:
-        stock_data = get_data_of_symbol(stock_schemas.StockBase(symbol=symbol, start=start, end=end), db)
+        stock_data = get_data_of_symbol(stock_schemas.StockBase(symbol=symbol), start, end, db)
         if (stock_data):
             close_values = [h.close for h in stock_data.history]
             stock = Stock(pd.Series(data=close_values), ticker=symbol, full_name=stock_data.info[0].name,

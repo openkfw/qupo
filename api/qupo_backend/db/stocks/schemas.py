@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import List
 from pydantic import BaseModel
 
@@ -48,8 +48,6 @@ class Info(InfoBase):
 
 class StockBase(BaseModel):
     symbol: str
-    start: date
-    end: date
 
 
 class StockCreate(StockBase):
@@ -58,6 +56,7 @@ class StockCreate(StockBase):
 
 class Stock(StockBase):
     id: int
+    timestamp: datetime
     info: List[Info] = []
     history: List[History] = []
 
