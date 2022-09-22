@@ -170,66 +170,6 @@ openblas on MacOS (via homebrew):
 
 and follow the instructions to configure compilers
 
-## Start locally
-
-### Backend
-
-Navigate into the api folder: `cd api`.
-
-### Installation with Requirements.txt
-
-1. Create a virtual env with the right python version and activate the environment:
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   python --version  # Python 3.10.4
-   ```
-
-1. Install the requirements via the `requirements.txt` file:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-1. Set environment variables:
-
-   ```(bash)
-   cp .env_example .env
-   ```
-
-   This creates the `.env` file, containing all environment variables that have to be set.
-
-1. Run the python backend with the run script:
-
-   ```(bash)
-   ./start_dev.sh
-   ```
-
-   The backend is now running at [http://localhost:8000](http://localhost:8000/health).
-
-
-### Frontend
-
-From your bash navigate into the frontend folder: `cd ../frontend`. It is a create-react-app and contains all the files that are needed to run the web application.
-
-1. Set environment variables
-
-   ```(bash)
-   cp .env_example .env
-   ```
-
-   For local development set the `REACT_APP_API_URL` env variable to `http://localhost:8000`.
-
-1. On initial start-up, first install all required packages from the `package.json` file. Then you can run the app with:
-
-   ```bash
-   npm install
-   npm start
-   ```
-
-In your browser visit [http://localhost:3000](http://localhost:3000) to see the app up and running.
-
 ## Start app with docker files
 
 The repository includes docker files for the api service as well as for the frontend. You can either start them individually (see respective READMEs) or use the `docker-compose.yml` file to start them together.
