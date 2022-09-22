@@ -11,7 +11,7 @@ import qupo_backend.db.stocks.schemas as stock_schemas
 from qupo_backend.tickers_utilities import get_data_of_symbol, stock_data_to_dataframe
 
 
-def portfolio_df_from_stock_data(db, symbols, start='2018-01-01', end='2018-02-28'):
+def portfolio_df_from_stock_data(db, symbols, start, end):
     # create stock and portfolio objects for frontend
     stocks = []
 
@@ -30,8 +30,8 @@ def portfolio_df_from_stock_data(db, symbols, start='2018-01-01', end='2018-02-2
     return portfolio_model_df, portfolio_model
 
 
-def calculate_model(db, model, symbols, risk_weight, esg_weight):
-    portfolio_model_df, portfolio_model = portfolio_df_from_stock_data(db, symbols)
+def calculate_model(db, model, symbols, risk_weight, esg_weight, start, end):
+    portfolio_model_df, portfolio_model = portfolio_df_from_stock_data(db, symbols, start, end)
     # create abstract representation of problem (to identify and leverage hidden structure)
     P, q, A, l, u = convert_business_to_osqp_model(portfolio_model_df, risk_weight, esg_weight)
 
@@ -84,7 +84,7 @@ def get_model_calculations(db, models, metadata):
         db_calculation = crud.get_calculation(db, calculation)
 
         if db_calculation is None:
-            result = calculate_model(db, model=model, **metadata)
+            result = calculate_model(db, model, **metadata)
             calculation_saved = crud.create_calculation(db, calculation)
             result_to_save = calc_schemas.ResultCreate(rate_of_return=result['RateOfReturn'], esg_rating=result['ESGRating'],
                                                        volatility=result['Volatility'], objective_value=result['objective_value'],

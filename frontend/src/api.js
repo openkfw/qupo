@@ -26,8 +26,8 @@ export const getIndustries = async (industry = "") => {
 export const getModelCalculations = async (
   models,
   symbols,
-  riskWeight,
-  esgWeight
+  weights,
+  timeframe
 ) => {
   const response = await fetch("/api/models", {
     method: "POST",
@@ -35,8 +35,10 @@ export const getModelCalculations = async (
     body: JSON.stringify({
       models: models,
       symbols: symbols,
-      risk_weight: riskWeight,
-      esg_weight: esgWeight,
+      risk_weight: weights.risk_weight.value,
+      esg_weight: weights.esg_weight.value,
+      start: timeframe.start,
+      end: timeframe.end,
     }),
   });
   return await response.json();

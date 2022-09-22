@@ -8,7 +8,7 @@ import SelectModels from "./SelectModels";
 import StocksCollection from "./StocksCollection";
 import WeightSlider from "./WeightSlider";
 
-const PortfolioController = ({ setData, weights, setWeights }) => {
+const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
   return (
     <Grid item xs={3}>
       <Card variant="outlined" sx={{ p: 2, mb: 1 }}>
@@ -29,7 +29,11 @@ const PortfolioController = ({ setData, weights, setWeights }) => {
         <StocksCollection size="small" />
         <SelectModels defaultModels={store.get("selected_models")} />
       </Card>
-      <CalculateButton weights={weights} setData={setData} />
+      <CalculateButton
+        timeframe={timeframe}
+        weights={weights}
+        setData={setData}
+      />
     </Grid>
   );
 };
