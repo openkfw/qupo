@@ -27,10 +27,6 @@ jobs:
         working-directory: ${{ matrix.project }}
 
     env:
-      GITHUB_PR_NUMBER: ${{ github.event.number}}
-      GITHUB_BASE_REF: ${{ github.base_ref}}
-      GITHUB_HEAD_REF: ${{ github.head_ref}}
-      GITHUB_REF_NAME: ${{ github.ref_name}}
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
       IMAGE_NAME: ${{ matrix.image_name}}
@@ -43,16 +39,15 @@ jobs:
   deployment:
     runs-on: ubuntu-latest
     needs: [build]
+    env:
+      WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
     steps:
       - name: Trigger Deployment
         run: curl -sX POST -F token=$WEBHOOK_TOKEN
           -F ref=main
-          -F "variables[GITHUB_HEAD_BRANCH]=$GITHUB_HEAD_BRANCH"
-          -F "variables[GITHUB_BASE_BRANCH]=$GITHUB_BASE_BRANCH"
           -F "variables[GITHUB_REF_NAME]=$GITHUB_REF_NAME"
           -F "variables[GITHUB_RUN_ID]=$GITHUB_RUN_ID"
-          -F "variables[GITHUB_EVENT_NAME]=$GITHUB_EVENT_NAME-$GITHUB_BASE_BRANCH"
-          -F "variables[GITHUB_PULL_REQUEST]=$GITHUB_PR_NUMBER"
           -F "variables[GITHUB_REPOSITORY]=$GITHUB_REPOSITORY"
           $WEBHOOK_URL > /dev/null
         shell: bash
