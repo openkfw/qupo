@@ -10,6 +10,8 @@ This raises the question whether the optimization of a stock portfolio with the 
 
 **Proposed solution**
 
+![Screenshot of the application](./docs/arch/screenshot_1.png)
+
 The prototype uses a portfolio of assets that can be chosen arbitrarily. In addition to the dimensions "turnover" and "risk" (variance), the dimension "sustainability" is added. For this, a sustainability score from the ESG database is added for each asset. Thus, there are significantly more options for the composition of an optimal portfolio. The solution includes the following aspects:
 
 - How do quantum solvers from IBM (Qiskit), Microsoft (Azure Quantum) and IonQ perform compared to a classical solver using the PyPortfolio library?
