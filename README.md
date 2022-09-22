@@ -26,6 +26,8 @@ The application is composed of two parts which are required to be started separa
 
 First we clone the repository and get the API/backend running using python. Afterwards, we take care about the frontend. Make sure that the server is accessible and port 8000 open in the firewall.
 
+#### Installation of the API / Backend
+
 ```(bash)
 git clone https://github.com/openkfw/qupo.git
 ````
@@ -47,7 +49,7 @@ Make sure the python 10 repository is available:
 sudo add-apt-repository ppa:deadsnakes/ppa
 ```
 
-Update the repo and upgrad if needed
+Update the repo and upgrade if needed
 
 ```(bash)
 sudo apt update && sudo apt upgrade
@@ -106,6 +108,49 @@ The API should be available now, which you can test with
 wget <server>:8000/health
 ```
 
+#### Installation of the frontend
+
+The frontend is a react application which can be compiled into a static web page. For a simple setup, which is also suitable for development (hot-reload) and changes, the following steps can be done. This should **not** be used in a productive setup, but should illustrate the steps required to run the architecture.
+
+Install the node version manager to be able to use the respective node version:
+
+Change into the frontend folder of the project
+```(bash)
+cd ./frontend
+```
+
+Copy the example environment file. It points the frontend UI to the respective API server, for simplicity, we assume that it is running on the same server. In this case, no change is needed
+
+```(bash)
+cp .env_example .env
+```
+
+Install the node version manager
+
+```(bash)
+curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
+```
+
+Restart the shell session or reload bashrc.
+
+Install node server version 17.x
+
+```(bash)
+nvm install 17.8.0
+````
+
+On initial start-up, first install all required packages from the `package.json` file. Then you can run the app with:
+
+   ```bash
+   npm install
+   npm start
+   ```
+
+In your server visit [http://localhost:3000](http://localhost:3000) to see the app up and running. If the frontend is running on another server, replace the respective server name.
+
+
+
+
 ### Install Python >3.9 and openblas using MacOS
 
 https://www.python.org/downloads/
@@ -163,55 +208,6 @@ Navigate into the api folder: `cd api`.
 
    The backend is now running at [http://localhost:8000](http://localhost:8000/health).
 
-### Installation with Poetry
-
-1. [Install and register Poetry Package Manager](https://python-poetry.org/docs/#installation):
-
-   ```(bash)
-   curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-   ```
-
-   Open a new terminal and register poetry
-
-   ```(bash)
-   source ~/.poetry/env
-   ```
-
-1. Install the requirements via poetry
-
-   ```(bash)
-   poetry install
-   ```
-
-1. Activate poetry shell
-
-   ```(bash)
-   poetry shell
-   ```
-
-1. Set environment variables
-
-   ```(bash)
-   cp .env_example .env
-   ```
-
-   This creates the `.env` file, containing all environment variables that have to be set.
-
-1. Run the python API:
-
-   ```(bash)
-   ./start_dev.sh
-   ```
-
-   The backend is now running at [http://localhost:8000](http://localhost:8000/health).
-
-   After startup the API URL can be accessed at: <http://127.0.0.1:8000/docs>
-
-   It is possible also to run other scripts in the poetry environment:
-
-   ```(bash)
-   poetry run python qupo_backend/test/opti_backend_runscript.py
-   ```
 
 ### Frontend
 
