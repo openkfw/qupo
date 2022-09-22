@@ -107,3 +107,4 @@ dist
 .vscode/
 api/env.json
 api/qupo_backend/config.py
+.DS_Store

@@ -1,4 +1,20 @@
-# QUPO
+# Quantum Portfolio Optimization (QUPO)
+
+This prototype addresses two questions:
+
+- Quantum computers are often described as a more efficient way to solve complex problems. But are they really capable of doing so or is this still a dream of the future?
+
+- Optimizing the composition of a stock portfolio according to parameters like turnover or risk is a non-linear problem and usually can only be solved by approximation methods ("Monte Carlo"). The reason is the combinatorial explosion of the many possibilities how the portfolio could be composed, so that a classical computer would have to calculate all possibilities for the optimal solution - the number of possibilities is so huge that this is not possible in a manageable time. This is comparable to calculating all possible chess positions with a computer opponent - strategies and approximate solutions are also used there. Quantum computers promise to evaluate the numerous possible solutions in a fraction of the time.
+
+This raises the question whether the optimization of a stock portfolio with the help of a quantum computer could include further parameters, which are currently not included due to the explosion of possibilities.
+
+**Proposed solution**
+
+The prototype uses a portfolio of assets that can be chosen arbitrarily. In addition to the dimensions "turnover" and "risk" (variance), the dimension "sustainability" is added. For this, a sustainability score from the ESG database is added for each asset. Thus, there are significantly more options for the composition of an optimal portfolio. The solution includes the following aspects:
+
+- How do quantum solvers from IBM (Qiskit), Microsoft (Azure Quantum) and IonQ perform compared to a classical solver using the PyPortfolio library?
+- How can the result be appealing and interactive in a user interface that invites experimentation?
+Can the prototype be extended as a platform that is made available as open source and can thus be used for co-creation?
 
 A platform for portfolio optimization using quantum and non quantum (classical) algorithms. The repository includes an `api` folder which contains the python backend that is responsible for the portfolio calculations. It is connected to a ReactJs frontend.
 
@@ -6,7 +22,78 @@ A platform for portfolio optimization using quantum and non quantum (classical) 
 
 The application is composed of two parts which are required to be started separately. Before starting, please make sure you have at least Python 3.9 installed and your `python3` command points to the version 3.9 or higher:
 
-### Install Python >3.9 and openblas
+### Install from scratch on an empty Ubuntu OS
+
+First we clone the repository and get the API/backend running using python. Afterwards, we take care about the frontend. Make sure that the server is accessible and port 8000 open in the firewall.
+
+git clone https://github.com/openkfw/qupo.git
+cd qupo/api
+
+Make sure the python 10 repository is available:
+```(bash)
+sudo add-apt-repository ppa:deadsnakes/ppa
+```
+
+Update the repo and upgrad if needed
+
+```(bash)
+sudo apt update && sudo apt upgrade
+```
+
+Install python version 10
+
+```(bash)
+sudo apt install software-properties-common -y
+```
+
+```(bash)
+sudo apt install python3.10
+```
+
+Python should be installed now, which you can check with the version flag
+```(bash)
+python3.10 --version
+````
+
+Now install the pip package manager
+```(bash)
+sudo apt install python3-pip
+````
+
+To use a virtual environment (important for python, which is a mess without virtual environments), use this command
+
+```(bash)
+sudo pip3 install virtualenv 
+````
+
+Create a virtual environment with the respective python version
+```(bash)
+virtualenv --python="/usr/bin/python3.10" "./venv"
+````
+
+Activate the environment
+```(bash)
+source venv/bin/activate
+````
+
+Now install all required packages
+```(bash)
+pip install -r requirements.txt
+```
+
+Using uvicorn, the API should be able to start now
+
+```(bash)
+uvicorn qupo_backend.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+The API should be available now, which you can test with
+
+```(bash)
+wget <server>:8000/health
+```
+
+### Install Python >3.9 and openblas using MacOS
 
 https://www.python.org/downloads/
 openblas on MacOS (via homebrew):
