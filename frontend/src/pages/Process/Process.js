@@ -19,7 +19,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProcessFlow = ({ setData, weights, setWeights }) => {
+const ProcessFlow = ({
+  setData,
+  timeframe,
+  setTimeframe,
+  weights,
+  setWeights,
+}) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -32,7 +38,15 @@ const ProcessFlow = ({ setData, weights, setWeights }) => {
   const getContent = () => {
     if (currentStep === 1)
       return <ProcessQuestionaire setWeights={setWeights} />;
-    else return <ProcessOverview weights={weights} setWeights={setWeights} />;
+    else
+      return (
+        <ProcessOverview
+          weights={weights}
+          timeframe={timeframe}
+          setTimeframe={setTimeframe}
+          setWeights={setWeights}
+        />
+      );
   };
 
   const onBack = () => {
@@ -71,7 +85,11 @@ const ProcessFlow = ({ setData, weights, setWeights }) => {
               </Button>
             ) : (
               <Grid>
-                <CalculateButton weights={weights} setData={setData} />
+                <CalculateButton
+                  timeframe={timeframe}
+                  weights={weights}
+                  setData={setData}
+                />
               </Grid>
             )}
           </Grid>

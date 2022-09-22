@@ -15,7 +15,6 @@ pytickersymbols==1.8.78
 python-dotenv==0.20.0
 qiskit[optimization]==0.36.1
 qiskit-ionq==0.3.3
-qiskit-qir==0.1.0b12
 quandl==3.7.0
 scipy==1.9.1
 SQLAlchemy==1.4.36

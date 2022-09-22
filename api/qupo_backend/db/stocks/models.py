@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 from ..database import Base
 
@@ -9,8 +10,7 @@ class Stock(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     symbol = Column(String, unique=True)
-    start = Column(Date)
-    end = Column(Date)
+    timestamp = Column(DateTime(timezone=True), default=func.current_timestamp())
 
     info = relationship('Info', back_populates='stock')
     history = relationship('History', back_populates='stock')

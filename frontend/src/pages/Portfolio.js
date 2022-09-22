@@ -14,6 +14,7 @@ import PortfolioChart from "../components/PortfolioChart";
 import Performance from "../components/Performance";
 
 import store from "store-js";
+import dayjs from "dayjs";
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -24,11 +25,15 @@ const useStyles = makeStyles((theme) => ({
     padding: `${theme.spacing(1)} 0`,
     marginTop: theme.spacing(2),
   },
+  timeframe: {
+    color: theme.palette.grey.main,
+  },
 }));
 
-const Portfolio = ({ data, setData, weights, setWeights }) => {
+const Portfolio = ({ data, setData, timeframe, weights, setWeights }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(store.get("loading"));
+  const dateFormat = "DD MMM YYYY";
 
   useEffect(() => {
     store.watch("loading", () => setLoading(store.get("loading")));
@@ -44,6 +49,7 @@ const Portfolio = ({ data, setData, weights, setWeights }) => {
     >
       <PortfolioController
         setData={setData}
+        timeframe={timeframe}
         weights={weights}
         setWeights={setWeights}
       />
@@ -60,7 +66,13 @@ const Portfolio = ({ data, setData, weights, setWeights }) => {
         )}
         {data.length ? (
           <Card variant="outlined">
-            <Grid sx={{ p: 1 }}>
+            <Grid sx={{ p: 2 }} container justifyContent="flex-end">
+              <Typography variant="caption" className={classes.timeframe}>
+                {dayjs(timeframe.start, timeframe.format).format(dateFormat)} to{" "}
+                {dayjs(timeframe.end, timeframe.format).format(dateFormat)}
+              </Typography>
+            </Grid>
+            <Grid sx={{ px: 1, pb: 3.5 }}>
               <PortfolioChart data={data} />
             </Grid>
             <Box className={classes.box}>

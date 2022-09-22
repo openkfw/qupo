@@ -8,7 +8,7 @@ import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
 import { getModelCalculations } from "../api";
 
-const CalculateButton = ({ weights, setData }) => {
+const CalculateButton = ({ timeframe, weights, setData }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(store.get("loading"));
   const [disabled, setDisabled] = useState(
@@ -39,8 +39,8 @@ const CalculateButton = ({ weights, setData }) => {
     const data = await getModelCalculations(
       models,
       symbols.slice(0, 10).map((symbol) => symbol.symbol),
-      weights.risk_weight.value,
-      weights.esg_weight.value
+      weights,
+      timeframe
     );
     setData(data);
     store.set("loading", false);
@@ -50,7 +50,7 @@ const CalculateButton = ({ weights, setData }) => {
     <Button
       sx={{ width: "100%" }}
       variant="contained"
-      disabled={loading || disabled}
+      disabled={loading || disabled || !timeframe.isValid}
       onClick={calculateModels}
       startIcon={
         loading ? (

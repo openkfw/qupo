@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Any, Dict, List
 from pydantic import BaseModel
 
@@ -29,6 +30,8 @@ class CalculationBase(BaseModel):
     symbols: List[str]
     risk_weight: float
     esg_weight: float
+    start: date
+    end: date
 
 
 class CalculationCreate(CalculationBase):
