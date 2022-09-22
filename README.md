@@ -26,8 +26,21 @@ The application is composed of two parts which are required to be started separa
 
 First we clone the repository and get the API/backend running using python. Afterwards, we take care about the frontend. Make sure that the server is accessible and port 8000 open in the firewall.
 
+```(bash)
 git clone https://github.com/openkfw/qupo.git
+````
+
+Change to the api folder first, we do frontend later
+```(bash)
 cd qupo/api
+````
+
+Copy the example env file and edit the respective keys if you have them:
+
+```(bash)
+cp .env_example .env
+````
+
 
 Make sure the python 10 repository is available:
 ```(bash)
