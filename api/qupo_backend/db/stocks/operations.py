@@ -7,10 +7,11 @@ from sqlalchemy.orm import Session
 from . import crud, schemas
 
 
-def get_data_in_timeframe(db: Session, stock: schemas.StockBase):
+def get_data_in_timeframe(db: Session, stock: schemas.StockBase, start, end):
     info = crud.get_info(db, stock)
-    history = crud.get_history(db, stock)
-    return schemas.Stock(id=0, symbol=stock.symbol, start=stock.start, end=stock.end,
+    history = crud.get_history(db, stock, start, end)
+    created_stock = crud.get_stock(db, stock)
+    return schemas.Stock(id=created_stock.id, symbol=stock.symbol, timestamp=created_stock.timestamp,
                          info=[info], history=history)
 
 
@@ -43,7 +44,7 @@ def deconstruct_yhistory(yhistory):
     return history
 
 
-def save_finance_data(db: Session, stock: schemas.StockBase):
+def save_finance_data(db: Session, stock: schemas.StockBase, start, end):
     data, yhistory = get_data_from_yahoo(stock.symbol, 'max')
 
     if (len(yhistory['data']) > 0):
@@ -57,12 +58,12 @@ def save_finance_data(db: Session, stock: schemas.StockBase):
         crud.create_stock_history(db, history, stock.symbol)
         db.commit()
 
-        return get_data_in_timeframe(db, stock)
+        return get_data_in_timeframe(db, stock, start, end)
 
     return None
 
 
-def update_history(db: Session, stock: schemas.BaseModel, last_date):
+def update_history(db: Session, stock: schemas.StockBase, last_date, start, end):
     _, yhistory = get_data_from_yahoo(stock.symbol, 'max')
 
     if (len(yhistory['data']) > 0):
@@ -75,6 +76,6 @@ def update_history(db: Session, stock: schemas.BaseModel, last_date):
 
         crud.create_stock_history(db, history, stock.symbol)
         db.commit()
-        return get_data_in_timeframe(db, stock)
+        return get_data_in_timeframe(db, stock, start, end)
 
     return None
