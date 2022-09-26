@@ -21,7 +21,7 @@ def get_result(db: Session, id: int):
 
 
 def create_calculation(db: Session, calculation: schemas.CalculationCreate):
-    db_calculation = models.Calculation(model=calculation.model, symbols=calculation.symbols,
+    db_calculation = models.Calculation(model=calculation.model, symbols=calculation.symbols, symbol_names=calculation.symbol_names,
                                         risk_weight=calculation.risk_weight, esg_weight=calculation.esg_weight)
     db.add(db_calculation)
     db.commit()

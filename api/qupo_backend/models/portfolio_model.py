@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 
 from .finance_classes import Stock, PortfolioModel
 from .finance_utilities import convert_business_to_osqp_model
@@ -9,6 +10,9 @@ import qupo_backend.db.calculations.schemas as calc_schemas
 import qupo_backend.db.calculations.crud as crud
 import qupo_backend.db.stocks.schemas as stock_schemas
 from qupo_backend.tickers_utilities import get_data_of_symbol, stock_data_to_dataframe
+from pytickersymbols import PyTickerSymbols
+
+stock_data = PyTickerSymbols()
 
 
 def portfolio_df_from_stock_data(db, symbols, start='2018-01-01', end='2018-02-28'):
@@ -81,6 +85,8 @@ def get_model_calculations(db, models, metadata):
     metadata = check_weights(metadata)
     for model in models:
         calculation = calc_schemas.CalculationBase(model=model, **metadata)
+        # get also the symbol names and store them into the database
+        calculation.symbol_names = [stock_data.get_stock_name_by_yahoo_symbol(symbol) for symbol in calculation.symbols]
         db_calculation = crud.get_calculation(db, calculation)
 
         if db_calculation is None:
@@ -95,4 +101,5 @@ def get_model_calculations(db, models, metadata):
             results.append(db_calc)
         else:
             results.append(db_calculation)
+
     return results

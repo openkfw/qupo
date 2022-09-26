@@ -11,6 +11,7 @@ class Calculation(Base):
     id = Column(Integer, primary_key=True, index=True)
     model = Column(String)
     symbols = Column(MutableList.as_mutable(PickleType), default=[])
+    symbol_names = Column(MutableList.as_mutable(PickleType), default=[])
     risk_weight = Column(Float)
     esg_weight = Column(Float)
 

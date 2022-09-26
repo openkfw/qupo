@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 
 
@@ -27,6 +27,8 @@ class Result(ResultBase):
 class CalculationBase(BaseModel):
     model: str
     symbols: List[str]
+    # the symbol names are optional, as we fill them in the API
+    symbol_names: Optional[List[str]] = None
     risk_weight: float
     esg_weight: float
 

@@ -37,6 +37,7 @@ def replace_to_yahoo_symbols(stocks):
 
 
 def get_all_symbols(stock_data, symbols_only: bool):
+    # Get the symbols from external symbol library
     indices = stock_data.get_all_indices()
     symbols = []
 
