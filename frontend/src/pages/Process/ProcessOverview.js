@@ -5,6 +5,7 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import SelectModels from "../../components/SelectModels";
 import StocksCollection from "../../components/StocksCollection";
+import SelectTimeframe from "../../components/SelectTimeframe";
 import WeightSlider from "../../components/WeightSlider";
 
 const useStyles = makeStyles((theme) => ({
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProcessOverview = ({ weights, setWeights }) => {
+const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
   const classes = useStyles();
 
   return (
@@ -44,6 +45,16 @@ const ProcessOverview = ({ weights, setWeights }) => {
         Models:
       </Typography>
       <SelectModels defaultModels={["osqp", "qio"]} />
+      <Grid sx={{ pt: 2 }}>
+        <Typography variant="h5" className={classes.heading}>
+          Time Period:
+        </Typography>
+        <Typography>
+          Select the timeframe in which the stock prices should be taken in
+          consideration:
+        </Typography>
+        <SelectTimeframe timeframe={timeframe} setTimeframe={setTimeframe} />
+      </Grid>
     </Box>
   );
 };

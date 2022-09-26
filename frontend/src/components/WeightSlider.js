@@ -39,7 +39,9 @@ const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium" }) => {
   return (
     <Grid sx={{ pb: 2 }}>
       <Typography id={`input-${keyWeight}`} variant="button">
-        <b>{weights[keyWeight].label}</b>
+        <b>
+          {weights[keyWeight].label}: {weights[keyWeight].value}%
+        </b>
       </Typography>
       <Slider
         key={`slider-${keyWeight}`}

@@ -37,6 +37,8 @@ app.include_router(apiRouter)
 class Parameters(BaseModel):
     models: List[str]
     symbols: List[str]
+    start: str
+    end: str
     risk_weight: float
     esg_weight: float
 
@@ -59,9 +61,9 @@ async def health():
 @app.post('/models', response_model=List[Calculation])
 async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
     try:
-        return get_model_calculations(db, params.models, {'symbols': params.symbols,
-                                                          'risk_weight': params.risk_weight,
-                                                          'esg_weight': params.esg_weight})
+        return get_model_calculations(db, params.models, {'symbols': params.symbols, 'risk_weight': params.risk_weight,
+                                                          'esg_weight': params.esg_weight, 'start': params.start,
+                                                          'end': params.end})
     except Exception as e:
         logging.error(e)
         raise HTTPException(status_code=500, detail='Could not calculate portfolio.')

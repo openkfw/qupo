@@ -16,16 +16,15 @@ def get_info(db: Session, stock: schemas.StockBase):
         first()
 
 
-def get_history(db: Session, stock: schemas.StockBase):
+def get_history(db: Session, stock: schemas.StockBase, start, end):
     return db.query(models.History). \
         where(models.History.symbol == stock.symbol). \
-        filter(models.History.date.between(stock.start, stock.end)). \
+        filter(models.History.date.between(start, end)). \
         all()
 
 
 def create_stock(db: Session, stock: schemas.StockCreate):
-    db_stock = models.Stock(symbol=stock.symbol, start=stock.start,
-                            end=stock.end)
+    db_stock = models.Stock(symbol=stock.symbol)
     db.add(db_stock)
     return db_stock
 
