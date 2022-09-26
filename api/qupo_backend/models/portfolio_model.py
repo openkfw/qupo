@@ -1,5 +1,4 @@
 import pandas as pd
-import json
 
 from .finance_classes import Stock, PortfolioModel
 from .finance_utilities import convert_business_to_osqp_model
