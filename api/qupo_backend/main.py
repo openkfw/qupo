@@ -65,5 +65,5 @@ async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
                                                           'esg_weight': params.esg_weight, 'start': params.start,
                                                           'end': params.end})
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail='Could not calculate portfolio.')
