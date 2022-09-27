@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import Autocomplete from "@mui/material/Autocomplete";
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
@@ -36,6 +36,13 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(1),
   },
 }));
+
+// supply filter options to autocomplete component to customize searching
+const symbolFilterOptions = createFilterOptions({
+  limit: 20,
+  // provide both symbol and name to the search, so it matches both
+  stringify: (option) => `${option.symbol} ${option.name}`,
+});
 
 const StocksCollection = ({ size = "medium" }) => {
   const classes = useStyles();
@@ -99,6 +106,8 @@ const StocksCollection = ({ size = "medium" }) => {
     </Box>
   );
 
+  const addButtonDisabled = selectedSymbols.length > 9;
+
   return (
     <Grid className={classes.spacing}>
       <Grid className={classes.collapsed}>
@@ -144,16 +153,17 @@ const StocksCollection = ({ size = "medium" }) => {
           loading={loading}
           filterSelectedOptions
           onChange={(_, value) => setSymbolsToAdd(value)}
+          filterOptions={symbolFilterOptions}
           renderInput={(params) => (
             <TextField {...params} size="small" label="Symbols" />
           )}
         />
         <Button
-          disabled={selectedSymbols.length > 9 ? true : false}
+          disabled={addButtonDisabled}
           variant="contained"
           onClick={onAddSymbols}
         >
-          Add
+          {addButtonDisabled ? "More than 10 symbols selected" : "Add"}
         </Button>
       </Stack>
     </Grid>
