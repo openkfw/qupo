@@ -12,15 +12,21 @@ const Controllers = ({ view, setView }) => {
       indicatorColor="secondary"
       sx={{
         backgroundColor: "primary.light",
-        "&.MuiButtonBase-root.Mui-selected": {
-          color: "common.white",
-        },
         boxShadow: "1px 1px 3px #607d8b",
       }}
       centered
     >
       {views.map((v) => (
-        <Tab key={v.value} label={v.label} value={v.value} />
+        <Tab
+          key={v.value}
+          label={v.label}
+          value={v.value}
+          sx={{
+            "&.MuiButtonBase-root.Mui-selected": {
+              color: "white",
+            },
+          }}
+        />
       ))}
     </Tabs>
   );
