@@ -1,4 +1,6 @@
+import math
 import pandas as pd
+import logging
 
 from .finance_classes import Stock, PortfolioModel
 from .finance_utilities import convert_business_to_osqp_model
@@ -57,6 +59,11 @@ def calculate_model(db, model, symbols, risk_weight, esg_weight, start, end):
 
     rate_of_return_value, risk, esg_value = portfolio_model.get_evaluation(job.result.variable_values)
 
+    # In some cases the external library for risk calculations gives 0, which results in division by 0
+    # still needs some investigation to get fixed ... this check is here to avoid the service to return an exception
+    if (math.isnan(risk[0])):
+        logging.warn("The risk for portfolio {} is not a number".format(symbols))
+        risk[0] = -1
     solution_output_percent = dict(zip(list(job.problem.dataframe.index), job.result.variable_values.round(2)))
     portfolio_model_df['RateOfReturn'].update(pd.Series(solution_output_percent))
     data = portfolio_model_df.iloc[:, 0:3]
@@ -90,6 +97,7 @@ def get_model_calculations(db, models, metadata):
 
         if db_calculation is None:
             result = calculate_model(db, model, **metadata)
+            
             calculation_saved = crud.create_calculation(db, calculation)
             result_to_save = calc_schemas.ResultCreate(rate_of_return=result['RateOfReturn'], esg_rating=result['ESGRating'],
                                                        volatility=result['Volatility'], objective_value=result['objective_value'],
