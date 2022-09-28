@@ -8,21 +8,24 @@ import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
 import { getModelCalculations } from "../api";
 
+// helper function to check the disabled button, but just for the "disabled" state variable
+// based on selected models / symbols
+const isCalculateDisabled = () => {
+  return store.get("selected_symbols")?.length < 2 ||
+    store.get("selected_models")?.length < 1
+    ? true
+    : false;
+};
+
 const CalculateButton = ({ timeframe, weights, setData }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(store.get("loading"));
-  const [disabled, setDisabled] = useState(
-    store.get("selected_symbols")?.length < 2 ||
-      store.get("selected_models")?.length < 2
-      ? true
-      : false
-  );
+  const [disabled, setDisabled] = useState(isCalculateDisabled());
 
   useEffect(() => {
     ["selected_symbols", "selected_models"].map((key) =>
       store.watch(key, () => {
-        if (store.get(key).length < 2) setDisabled(true);
-        else setDisabled(false);
+        setDisabled(isCalculateDisabled());
       })
     );
   });
