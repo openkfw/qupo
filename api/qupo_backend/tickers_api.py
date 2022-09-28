@@ -21,7 +21,7 @@ async def get_symbols(symbols_only: bool = False):
     try:
         return get_all_symbols(stock_data, symbols_only)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail='Could not get any symbols.')
 
 
@@ -30,7 +30,7 @@ async def get_indices():
     try:
         return sorted(stock_data.get_all_indices())
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail='Could not fetch indices.')
 
 
@@ -41,7 +41,7 @@ async def get_symbols_of_index(index: str, symbols_only: bool = False):
             return sum(stock_data.get_yahoo_ticker_symbols_by_index(index), [])
         return replace_to_yahoo_symbols(list(stock_data.get_stocks_by_index(index)))
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail=f'Could not fetch symbols of index: {index}.')
 
 
@@ -50,7 +50,7 @@ async def get_countries():
     try:
         return stock_data.get_all_countries()
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail='Could not fetch countries.')
 
 
@@ -62,7 +62,7 @@ async def get_symbols_of_country(country: str, symbols_only: bool = False):
             return sum(filter_stocks(stocks), [])
         return replace_to_yahoo_symbols(stocks)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail=f'Could not fetch symbols of country: {country}.')
 
 
@@ -71,7 +71,7 @@ async def get_industries():
     try:
         return stock_data.get_all_industries()
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail='Could not fetch industries.')
 
 
@@ -83,7 +83,7 @@ async def get_symbols_of_industry(industry: str, symbols_only: bool = False):
             return sum(filter_stocks(stocks), [])
         return replace_to_yahoo_symbols(stocks)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail=f'Could not fetch symbols of industry: {industry}')
 
 
@@ -92,5 +92,5 @@ def stock(stock: schemas.StockBase, db: Session = Depends(get_db)):
     try:
         return get_data_of_symbol(stock, db)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise e

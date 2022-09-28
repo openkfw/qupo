@@ -1,4 +1,6 @@
+import math
 import pandas as pd
+import logging
 
 from .finance_classes import Stock, PortfolioModel
 from .finance_utilities import convert_business_to_osqp_model
@@ -9,6 +11,9 @@ import qupo_backend.db.calculations.schemas as calc_schemas
 import qupo_backend.db.calculations.crud as crud
 import qupo_backend.db.stocks.schemas as stock_schemas
 from qupo_backend.tickers_utilities import get_data_of_symbol, stock_data_to_dataframe
+from pytickersymbols import PyTickerSymbols
+
+stock_data = PyTickerSymbols()
 
 
 def portfolio_df_from_stock_data(db, symbols, start, end):
@@ -54,6 +59,11 @@ def calculate_model(db, model, symbols, risk_weight, esg_weight, start, end):
 
     rate_of_return_value, risk, esg_value = portfolio_model.get_evaluation(job.result.variable_values)
 
+    # In some cases the external library for risk calculations gives 0, which results in division by 0
+    # still needs some investigation to get fixed ... this check is here to avoid the service to return an exception
+    if (math.isnan(risk[0])):
+        logging.warn('The risk for portfolio {} is not a number'.format(symbols))
+        risk[0] = -1
     solution_output_percent = dict(zip(list(job.problem.dataframe.index), job.result.variable_values.round(2)))
     portfolio_model_df['RateOfReturn'].update(pd.Series(solution_output_percent))
     data = portfolio_model_df.iloc[:, 0:3]
@@ -81,10 +91,13 @@ def get_model_calculations(db, models, metadata):
     metadata = check_weights(metadata)
     for model in models:
         calculation = calc_schemas.CalculationBase(model=model, **metadata)
+        # get also the symbol names and store them into the database
+        calculation.symbol_names = [stock_data.get_stock_name_by_yahoo_symbol(symbol) for symbol in calculation.symbols]
         db_calculation = crud.get_calculation(db, calculation)
 
         if db_calculation is None:
             result = calculate_model(db, model, **metadata)
+
             calculation_saved = crud.create_calculation(db, calculation)
             result_to_save = calc_schemas.ResultCreate(rate_of_return=result['RateOfReturn'], esg_rating=result['ESGRating'],
                                                        volatility=result['Volatility'], objective_value=result['objective_value'],
@@ -95,4 +108,5 @@ def get_model_calculations(db, models, metadata):
             results.append(db_calc)
         else:
             results.append(db_calculation)
+
     return results

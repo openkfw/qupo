@@ -1,4 +1,5 @@
 import logging
+import uvicorn
 
 from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -65,5 +66,8 @@ async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
                                                           'esg_weight': params.esg_weight, 'start': params.start,
                                                           'end': params.end})
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise HTTPException(status_code=500, detail='Could not calculate portfolio.')
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8000)
