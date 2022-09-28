@@ -12,26 +12,12 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
 import ForwardIcon from "@mui/icons-material/ArrowForward";
-import makeStyles from "@mui/styles/makeStyles";
 
 import store from "store-js";
 
 import CollapsedSection from "./CollapsedSection";
 
-const useStyles = makeStyles((theme) => ({
-  card: { backgroundColor: theme.palette.grey.light },
-  box: {
-    fontSize: 34,
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(2),
-  },
-  symbols: {
-    display: "inline",
-  },
-}));
-
 const SymbolsListItem = ({ name }) => {
-  const classes = useStyles();
   const navigate = useNavigate();
   const [symbols, setSymbols] = useState(store.get(name));
 
@@ -41,8 +27,24 @@ const SymbolsListItem = ({ name }) => {
 
   return (
     <Card>
-      <CardContent className={classes.card}>
-        <CollapsedSection heading={<Box className={classes.box}>{name}</Box>}>
+      <CardContent
+        sx={{
+          backgroundColor: (theme) => `${theme.palette.grey.light}`,
+        }}
+      >
+        <CollapsedSection
+          heading={
+            <Box
+              sx={{
+                fontSize: 34,
+                marginTop: 1,
+                marginBottom: 2,
+              }}
+            >
+              {name}
+            </Box>
+          }
+        >
           {symbols ? (
             symbols.map((symbol, index) => {
               const expression =
@@ -53,8 +55,7 @@ const SymbolsListItem = ({ name }) => {
                 <Tooltip title={symbol.name} key={symbol.name}>
                   <Typography
                     color="text.secondary"
-                    className={classes.symbols}
-                    sx={{ fontSize: 14 }}
+                    sx={{ fontSize: 14, display: "inline" }}
                   >
                     {expression}
                   </Typography>

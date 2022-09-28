@@ -1,44 +1,25 @@
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    textAlign: "center",
-    paddingTop: theme.spacing(1),
-  },
-  box: {
-    display: "flex",
-    justifyContent: "space-around",
-  },
-  model: {
-    fontSize: "16px !important",
-    fontWeight: "bold !important",
-    paddingBottom: theme.spacing(1),
-  },
-  valueBox: {
-    flexDirection: "column",
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    padding: `${theme.spacing(1)} 0`,
-  },
-  value: {
-    fontSize: "14px !important",
-    fontWeight: "bold !important",
-  },
-}));
 
 const ValueBox = ({ value, kind, fixed = 0 }) => {
-  const classes = useStyles();
-
   return (
-    <Box className={classes.valueBox}>
-      <Typography color="primary" className={classes.value}>
+    <Box
+      sx={{
+        flexDirection: "column",
+        display: "flex",
+        justifyContent: "center",
+        width: "100%",
+        padding: `1 0`,
+      }}
+    >
+      <Typography
+        color="primary"
+        sx={{
+          fontSize: "14px !important",
+          fontWeight: "bold !important",
+        }}
+      >
         {Number(value).toFixed(fixed)}
       </Typography>
       <Typography variant="button" sx={{ fontSize: 8 }}>
@@ -49,17 +30,35 @@ const ValueBox = ({ value, kind, fixed = 0 }) => {
 };
 
 const Performance = ({ model, modelName }) => {
-  const classes = useStyles();
-
   return (
-    <Box className={classes.container}>
-      <Typography color="primary" className={classes.model}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        textAlign: "center",
+        paddingTop: 1,
+      }}
+    >
+      <Typography
+        color="primary"
+        sx={{
+          fontSize: "16px !important",
+          fontWeight: "bold !important",
+          paddingBottom: 1,
+        }}
+      >
         {modelName.toUpperCase()}
       </Typography>
       <Divider sx={{ mx: 2 }} />
       <ValueBox value={model.objective_value} kind="Performance" fixed={2} />
       <Divider sx={{ mx: 2 }} />
-      <Box className={classes.box}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-around",
+        }}
+      >
         <ValueBox value={model.risk} kind="Risk" />
         <ValueBox value={model.esg_value} kind="Sustainability" />
         <ValueBox value={model.rate_of_return_value} kind="Return" fixed={2} />

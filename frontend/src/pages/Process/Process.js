@@ -6,18 +6,10 @@ import Grid from "@mui/material/Grid";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
-import makeStyles from "@mui/styles/makeStyles";
 
 import CalculateButton from "../../components/CalculateButton";
 import ProcessOverview from "./ProcessOverview";
 import ProcessQuestionaire from "./ProcessQuestionaire";
-
-const useStyles = makeStyles((theme) => ({
-  spacing: {
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(2),
-  },
-}));
 
 const ProcessFlow = ({
   setData,
@@ -26,7 +18,6 @@ const ProcessFlow = ({
   weights,
   setWeights,
 }) => {
-  const classes = useStyles();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const steps = [
@@ -63,8 +54,21 @@ const ProcessFlow = ({
           </Step>
         ))}
       </Stepper>
-      <Grid className={classes.spacing}>{getContent()}</Grid>
-      <Grid container className={classes.spacing}>
+      <Grid
+        sx={{
+          pt: 3,
+          pb: 2,
+        }}
+      >
+        {getContent()}
+      </Grid>
+      <Grid
+        container
+        sx={{
+          pt: 3,
+          pb: 2,
+        }}
+      >
         <Grid xs={6} item>
           <Button
             variant="contained"

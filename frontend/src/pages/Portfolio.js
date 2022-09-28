@@ -6,7 +6,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
 import BarChartIcon from "@mui/icons-material/BarChart";
 
 import PortfolioController from "../components/PortfolioController";
@@ -16,22 +15,7 @@ import Performance from "../components/Performance";
 import store from "store-js";
 import dayjs from "dayjs";
 
-const useStyles = makeStyles((theme) => ({
-  box: {
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    backgroundColor: theme.palette.grey.light,
-    padding: `${theme.spacing(1)} 0`,
-    marginTop: theme.spacing(2),
-  },
-  timeframe: {
-    color: theme.palette.grey.main,
-  },
-}));
-
 const Portfolio = ({ data, setData, timeframe, weights, setWeights }) => {
-  const classes = useStyles();
   const [loading, setLoading] = useState(store.get("loading"));
   const dateFormat = "DD MMM YYYY";
 
@@ -67,7 +51,12 @@ const Portfolio = ({ data, setData, timeframe, weights, setWeights }) => {
         {data.length ? (
           <Card variant="outlined">
             <Grid sx={{ p: 2 }} container justifyContent="flex-end">
-              <Typography variant="caption" className={classes.timeframe}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: (theme) => `${theme.palette.grey.main}`,
+                }}
+              >
                 {dayjs(timeframe.start, timeframe.format).format(dateFormat)} to{" "}
                 {dayjs(timeframe.end, timeframe.format).format(dateFormat)}
               </Typography>
@@ -75,7 +64,16 @@ const Portfolio = ({ data, setData, timeframe, weights, setWeights }) => {
             <Grid sx={{ px: 1, pb: 3.5 }}>
               <PortfolioChart data={data} />
             </Grid>
-            <Box className={classes.box}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+                backgroundColor: (theme) => `${theme.palette.grey.light}`,
+                padding: `1 0`,
+                marginTop: 2,
+              }}
+            >
               {data.map(({ Calculation, Result }) => (
                 <Performance
                   key={Calculation.model}
