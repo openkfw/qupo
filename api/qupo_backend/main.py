@@ -69,5 +69,5 @@ async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
         logging.exception(e)
         raise HTTPException(status_code=500, detail='Could not calculate portfolio.')
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8000)
