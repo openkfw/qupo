@@ -9,7 +9,6 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
 import CheckIcon from "@mui/icons-material/Check";
 import CircleIcon from "@mui/icons-material/Circle";
 import { green } from "@mui/material/colors";
@@ -19,24 +18,6 @@ import store from "store-js";
 import { getSymbols } from "../api";
 import CollapsedSection from "./CollapsedSection";
 
-const useStyles = makeStyles((theme) => ({
-  spacing: {
-    marginBottom: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-  },
-  collapsed: {
-    border: "1px solid",
-    borderRadius: "2px",
-    borderColor: theme.palette.grey.middle,
-    padding: theme.spacing(1),
-    marginBottom: theme.spacing(2),
-  },
-  chipBox: {
-    paddingBottom: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-  },
-}));
-
 // supply filter options to autocomplete component to customize searching
 const symbolFilterOptions = createFilterOptions({
   limit: 20,
@@ -45,7 +26,6 @@ const symbolFilterOptions = createFilterOptions({
 });
 
 const StocksCollection = ({ size = "medium" }) => {
-  const classes = useStyles();
   const [selectedSymbols, setSelectedSymbols] = useState(
     store.get("selected_symbols")
   );
@@ -109,8 +89,21 @@ const StocksCollection = ({ size = "medium" }) => {
   const addButtonDisabled = selectedSymbols.length > 9;
 
   return (
-    <Grid className={classes.spacing}>
-      <Grid className={classes.collapsed}>
+    <Grid
+      sx={{
+        mb: 1,
+        pb: 1,
+      }}
+    >
+      <Grid
+        sx={{
+          border: "1px solid",
+          borderRadius: "2px",
+          borderColor: (theme) => `${theme.palette.grey.middle}`,
+          padding: 1,
+          marginBottom: 2,
+        }}
+      >
         <CollapsedSection
           heading={
             <Button size="small" onClick={onDeleteAll}>
@@ -122,7 +115,14 @@ const StocksCollection = ({ size = "medium" }) => {
         >
           <Grid container>
             {selectedSymbols.map((symbol, index) => (
-              <Grid key={symbol.name} className={classes.chipBox} item>
+              <Grid
+                key={symbol.name}
+                sx={{
+                  pb: 1,
+                  pr: 1,
+                }}
+                item
+              >
                 <Tooltip title={symbol.name}>
                   <Chip
                     label={symbol.symbol}
@@ -143,7 +143,14 @@ const StocksCollection = ({ size = "medium" }) => {
           </Grid>
         </CollapsedSection>
       </Grid>
-      <Typography className={classes.spacing}>Add symbols:</Typography>
+      <Typography
+        sx={{
+          mb: 1,
+          pb: 1,
+        }}
+      >
+        Add symbols:
+      </Typography>
       <Stack spacing={2}>
         <Autocomplete
           multiple

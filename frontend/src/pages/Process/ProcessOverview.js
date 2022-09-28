@@ -1,29 +1,30 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
 
 import SelectModels from "../../components/SelectModels";
 import StocksCollection from "../../components/StocksCollection";
 import SelectTimeframe from "../../components/SelectTimeframe";
 import WeightSlider from "../../components/WeightSlider";
 
-const useStyles = makeStyles((theme) => ({
-  heading: {
-    padding: `${theme.spacing(1)} 0`,
-  },
-}));
-
 const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
-  const classes = useStyles();
-
   return (
     <Box sx={{ p: 2 }}>
-      <Typography variant="h5" className={classes.heading}>
+      <Typography
+        variant="h5"
+        sx={{
+          padding: "1 0",
+        }}
+      >
         Selected Symbols:
       </Typography>
       <StocksCollection />
-      <Typography variant="h5" className={classes.heading}>
+      <Typography
+        variant="h5"
+        sx={{
+          padding: "1 0",
+        }}
+      >
         Answers:
       </Typography>
       <Typography sx={{ pb: 2 }}>
@@ -41,12 +42,22 @@ const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
           setWeights={setWeights}
         />
       </Grid>
-      <Typography variant="h5" className={classes.heading}>
+      <Typography
+        variant="h5"
+        sx={{
+          padding: "1 0",
+        }}
+      >
         Models:
       </Typography>
       <SelectModels defaultModels={["osqp", "qio"]} />
       <Grid sx={{ pt: 2 }}>
-        <Typography variant="h5" className={classes.heading}>
+        <Typography
+          variant="h5"
+          sx={{
+            padding: "1 0",
+          }}
+        >
           Time Period:
         </Typography>
         <Typography>

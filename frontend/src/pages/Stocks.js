@@ -5,7 +5,6 @@ import Collapse from "@mui/material/Collapse";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import makeStyles from "@mui/styles/makeStyles";
 
 import store from "store-js";
 import { TransitionGroup } from "react-transition-group";
@@ -15,17 +14,7 @@ import Controllers from "../components/Controllers";
 import Search from "../components/Search";
 import SymbolsListItem from "../components/SymbolsListItem";
 
-const useStyles = makeStyles((theme) => ({
-  box: {
-    padding: `${theme.spacing(2)} 0`,
-  },
-  item: {
-    paddingBottom: theme.spacing(2),
-  },
-}));
-
 const Stocks = () => {
-  const classes = useStyles();
   const [view, setView] = useState(views[0].value);
   const allItems = store.get(view);
   const [filter, setFilter] = useState([]);
@@ -55,10 +44,19 @@ const Stocks = () => {
         filterValue={filterValue}
         setFilterValue={setFilterValue}
       />
-      <Box className={classes.box}>
+      <Box
+        sx={{
+          padding: `2 0`,
+        }}
+      >
         <TransitionGroup>
           {filterItems(items).map((item) => (
-            <Collapse key={item} className={classes.item}>
+            <Collapse
+              key={item}
+              sx={{
+                bp: 2,
+              }}
+            >
               <SymbolsListItem key={item} name={item} />
             </Collapse>
           ))}

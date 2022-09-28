@@ -7,7 +7,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
 
 import "./App.css";
 import Process from "./pages//Process/Process";
@@ -19,30 +18,6 @@ import store from "store-js";
 import eventsPlugin from "store-js/plugins/events";
 store.addPlugin(eventsPlugin);
 
-const useStyles = makeStyles((theme) => ({
-  background: {
-    backgroundColor: theme.palette.grey.light,
-    paddingBottom: theme.spacing(5),
-  },
-  heading: {
-    textAlign: "center",
-    padding: "50px",
-  },
-  banner: {
-    backgroundColor: theme.palette.primary.dark,
-    height: "25vh",
-    width: "100vw",
-  },
-  container: {
-    marginTop: "-15vh",
-    backgroundColor: theme.palette.common.white,
-    color: theme.palette.grey.dark,
-    boxShadow: "1px 1px 9px #607d8b",
-    paddingBottom: theme.spacing(3),
-    borderRadius: "2px",
-  },
-}));
-
 const AppWrapper = () => {
   return (
     <Router>
@@ -52,7 +27,6 @@ const AppWrapper = () => {
 };
 
 function App() {
-  const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [timeframe, setTimeframe] = useState({
@@ -109,10 +83,36 @@ function App() {
   }, []);
 
   return (
-    <Grid className={classes.background}>
-      <Grid className={classes.banner} />
-      <Container maxWidth="md" className={classes.container}>
-        <Box className={classes.heading}>
+    <Grid
+      sx={{
+        pb: 5,
+        backgroundColor: (theme) => `${theme.palette.grey.light}`,
+      }}
+    >
+      <Grid
+        sx={{
+          backgroundColor: "primary.dark",
+          height: "25vh",
+          width: "100vW",
+        }}
+      />
+      <Container
+        maxWidth="md"
+        sx={{
+          marginTop: "-15vh",
+          backgroundColor: "common.white",
+          color: (theme) => `${theme.palette.grey.dark}`,
+          boxShadow: "1px 1px 9px #607d8b",
+          paddingBottom: 3,
+          borderRadius: "2px",
+        }}
+      >
+        <Box
+          sx={{
+            textAlign: "center",
+            padding: "50px",
+          }}
+        >
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
         {!loading ? (
