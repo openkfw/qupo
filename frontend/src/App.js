@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { getIndices, getCountries, getIndustries } from "./api";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { getCountries, getIndices, getIndustries } from "./api";
 
 import "./App.css";
 import Process from "./pages//Process/Process";
@@ -17,6 +18,21 @@ import dayjs from "dayjs";
 import store from "store-js";
 import eventsPlugin from "store-js/plugins/events";
 store.addPlugin(eventsPlugin);
+
+const initialTimeframe = {
+  start: dayjs().subtract(1, "month").format("YYYY-MM-DD"),
+  end: dayjs().format("YYYY-MM-DD"),
+  format: "YYYY-MM-DD",
+  isValid: true,
+}
+const initialWeights = {
+  risk_weight: { label: "Risk Weight", value: 50 },
+  esg_weight: { label: "ESG Weight", value: 40 },
+  setValues: (prevState, key, value) => ({
+    ...prevState,
+    [key]: { ...prevState[key], value: parseInt(value) },
+  }),
+}
 
 const AppWrapper = () => {
   return (
@@ -29,20 +45,16 @@ const AppWrapper = () => {
 function App() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [timeframe, setTimeframe] = useState({
-    start: dayjs().subtract(1, "month").format("YYYY-MM-DD"),
-    end: dayjs().format("YYYY-MM-DD"),
-    format: "YYYY-MM-DD",
-    isValid: true,
-  });
-  const [weights, setWeights] = useState({
-    risk_weight: { label: "Risk Weight", value: 50 },
-    esg_weight: { label: "ESG Weight", value: 40 },
-    setValues: (prevState, key, value) => ({
-      ...prevState,
-      [key]: { ...prevState[key], value: parseInt(value) },
-    }),
-  });
+  const [timeframe, setTimeframe] = useState(initialTimeframe);
+  const [weights, setWeights] = useState(initialWeights);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const resetProcess = () => {
+    setData([]);
+    setTimeframe(initialTimeframe)
+    setWeights(initialWeights)
+  }
 
   useEffect(() => {
     store.set("loading", false);
@@ -107,6 +119,17 @@ function App() {
           borderRadius: "2px",
         }}
       >
+        {location.pathname !== "/" ? <Button
+          size="small"
+          sx={{ marginTop: "20px", }}
+          startIcon={<ArrowBackIcon />}
+          onClick={() => {
+            resetProcess();
+            navigate("/");
+          }}
+        >
+          Restart Process
+        </Button> : null}
         <Box
           sx={{
             textAlign: "center",
