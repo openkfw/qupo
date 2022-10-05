@@ -46,7 +46,7 @@ const ProcessFlow = ({
   };
 
   return (
-    <Grid>
+    <Grid sx={{ px: 2, mb: 1 }}>
       <Stepper activeStep={currentStep} alternativeLabel>
         {steps.map((step) => (
           <Step key={step}>
@@ -54,21 +54,8 @@ const ProcessFlow = ({
           </Step>
         ))}
       </Stepper>
-      <Grid
-        sx={{
-          pt: 3,
-          pb: 2,
-        }}
-      >
-        {getContent()}
-      </Grid>
-      <Grid
-        container
-        sx={{
-          pt: 3,
-          pb: 2,
-        }}
-      >
+      <Grid sx={{ py: 4 }}>{getContent()}</Grid>
+      <Grid container>
         <Grid xs={6} item>
           <Button
             variant="contained"

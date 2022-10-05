@@ -11,11 +11,19 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import PortfolioController from "../components/PortfolioController";
 import PortfolioChart from "../components/PortfolioChart";
 import Performance from "../components/Performance";
+import RestartButton from "../components/RestartButton";
 
 import store from "store-js";
 import dayjs from "dayjs";
 
-const Portfolio = ({ data, setData, timeframe, weights, setWeights }) => {
+const Portfolio = ({
+  data,
+  setData,
+  timeframe,
+  weights,
+  setWeights,
+  resetProcess,
+}) => {
   const [loading, setLoading] = useState(store.get("loading"));
   const dateFormat = "DD MMM YYYY";
 
@@ -31,6 +39,7 @@ const Portfolio = ({ data, setData, timeframe, weights, setWeights }) => {
       alignItems="stretch"
       spacing={1}
     >
+      <RestartButton resetProcess={resetProcess} />
       <PortfolioController
         setData={setData}
         timeframe={timeframe}
@@ -61,7 +70,7 @@ const Portfolio = ({ data, setData, timeframe, weights, setWeights }) => {
                 {dayjs(timeframe.end, timeframe.format).format(dateFormat)}
               </Typography>
             </Grid>
-            <Grid sx={{ px: 1, pb: 3.5 }}>
+            <Grid sx={{ px: 1, pb: 1.3 }}>
               <PortfolioChart data={data} />
             </Grid>
             <Box

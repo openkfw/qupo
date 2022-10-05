@@ -9,22 +9,12 @@ import WeightSlider from "../../components/WeightSlider";
 
 const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
   return (
-    <Box sx={{ p: 2 }}>
-      <Typography
-        variant="h5"
-        sx={{
-          padding: "1 0",
-        }}
-      >
+    <Box>
+      <Typography variant="h5" sx={{ pb: 1 }}>
         Selected Symbols:
       </Typography>
       <StocksCollection />
-      <Typography
-        variant="h5"
-        sx={{
-          padding: "1 0",
-        }}
-      >
+      <Typography variant="h5" sx={{ py: 1 }}>
         Answers:
       </Typography>
       <Typography sx={{ pb: 2 }}>
@@ -42,22 +32,12 @@ const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
           setWeights={setWeights}
         />
       </Grid>
-      <Typography
-        variant="h5"
-        sx={{
-          padding: "1 0",
-        }}
-      >
+      <Typography variant="h5" sx={{ py: "1" }}>
         Models:
       </Typography>
       <SelectModels defaultModels={["osqp", "qio"]} />
       <Grid sx={{ pt: 2 }}>
-        <Typography
-          variant="h5"
-          sx={{
-            padding: "1 0",
-          }}
-        >
+        <Typography variant="h5" sx={{ py: "1" }}>
           Time Period:
         </Typography>
         <Typography>

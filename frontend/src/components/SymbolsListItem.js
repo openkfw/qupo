@@ -26,12 +26,8 @@ const SymbolsListItem = ({ name }) => {
   });
 
   return (
-    <Card>
-      <CardContent
-        sx={{
-          backgroundColor: (theme) => `${theme.palette.grey.light}`,
-        }}
-      >
+    <Card sx={{ my: 1 }}>
+      <CardContent sx={{ bgcolor: "grey.light" }}>
         <CollapsedSection
           heading={
             <Box
