@@ -80,7 +80,7 @@ const Portfolio = ({
                 width: "100%",
                 backgroundColor: (theme) => `${theme.palette.grey.light}`,
                 padding: `1 0`,
-                marginTop: 2,
+                marginTop: 0.9,
               }}
             >
               {data.map(({ Calculation, Result }) => (
