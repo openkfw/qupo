@@ -17,7 +17,7 @@ import store from "store-js";
 
 import CollapsedSection from "./CollapsedSection";
 
-const SymbolsListItem = ({ name }) => {
+const SymbolsListItem = ({ name, filterValue }) => {
   const navigate = useNavigate();
   const [symbols, setSymbols] = useState(store.get(name));
 
@@ -45,13 +45,13 @@ const SymbolsListItem = ({ name }) => {
             symbols.map((symbol, index) => {
               const expression =
                 index === symbols.length - 1
-                  ? symbol.symbol
-                  : `${symbol.symbol}, `;
+                  ? symbol.name
+                  : `${symbol.name}, `;
               return (
-                <Tooltip title={symbol.name} key={symbol.name}>
+                <Tooltip title={symbol.symbol} key={symbol.symbol}>
                   <Typography
                     color="text.secondary"
-                    sx={{ fontSize: 14, display: "inline" }}
+                    sx={{ fontSize: 14, display: "inline", fontWeight: symbol.symbol === filterValue || symbol.name === filterValue ? 'bold' : 'normal' }}
                   >
                     {expression}
                   </Typography>
