@@ -10,7 +10,7 @@ const ValueBox = ({ value, kind, fixed = 0 }) => {
         display: "flex",
         justifyContent: "center",
         width: "100%",
-        padding: `1 0`,
+        py: 1,
       }}
     >
       <Typography
@@ -37,7 +37,7 @@ const Performance = ({ model, modelName }) => {
         flexDirection: "column",
         width: "100%",
         textAlign: "center",
-        paddingTop: 1,
+        py: 0.5,
       }}
     >
       <Typography
@@ -45,7 +45,7 @@ const Performance = ({ model, modelName }) => {
         sx={{
           fontSize: "16px !important",
           fontWeight: "bold !important",
-          paddingBottom: 1,
+          py: 1,
         }}
       >
         {modelName.toUpperCase()}

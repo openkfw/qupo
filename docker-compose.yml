@@ -8,8 +8,8 @@ services:
       - "8000:8000"
     env_file:
       - api.env
-    volumes:
-      - db:/app/qupo_backend/db
+  #  volumes:
+  #    - db:/app/qupo_backend/db
   frontend:
     build:
       context: ./frontend
@@ -20,6 +20,5 @@ services:
       - frontend.env
     links:
       - api
-
-volumes:
-  db: {}
+# volumes:
+#  db: {}

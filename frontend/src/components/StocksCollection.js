@@ -89,17 +89,12 @@ const StocksCollection = ({ size = "medium" }) => {
   const addButtonDisabled = selectedSymbols.length > 9;
 
   return (
-    <Grid
-      sx={{
-        mb: 1,
-        pb: 1,
-      }}
-    >
+    <Grid sx={{ mb: 1, pb: 1 }}>
       <Grid
         sx={{
           border: "1px solid",
           borderRadius: "2px",
-          borderColor: (theme) => `${theme.palette.grey.middle}`,
+          borderColor: "grey.middle",
           padding: 1,
           marginBottom: 2,
         }}
@@ -115,17 +110,10 @@ const StocksCollection = ({ size = "medium" }) => {
         >
           <Grid container>
             {selectedSymbols.map((symbol, index) => (
-              <Grid
-                key={symbol.name}
-                sx={{
-                  pb: 1,
-                  pr: 1,
-                }}
-                item
-              >
-                <Tooltip title={symbol.name}>
+              <Grid key={symbol.name} sx={{ pb: 1, pr: 1 }} item>
+                <Tooltip title={size === "small" ? symbol.name : symbol.symbol}>
                   <Chip
-                    label={symbol.symbol}
+                    label={size === "small" ? symbol.symbol : symbol.name}
                     size="small"
                     onDelete={() => onDeleteSymbol(symbol)}
                     avatar={
@@ -143,14 +131,7 @@ const StocksCollection = ({ size = "medium" }) => {
           </Grid>
         </CollapsedSection>
       </Grid>
-      <Typography
-        sx={{
-          mb: 1,
-          pb: 1,
-        }}
-      >
-        Add symbols:
-      </Typography>
+      <Typography sx={{ mb: 1 }}>Add symbols:</Typography>
       <Stack spacing={2}>
         <Autocomplete
           multiple
@@ -165,13 +146,22 @@ const StocksCollection = ({ size = "medium" }) => {
             <TextField {...params} size="small" label="Symbols" />
           )}
         />
-        <Button
-          disabled={addButtonDisabled}
-          variant="contained"
-          onClick={onAddSymbols}
+        <Tooltip
+          title="There are already 10 or more symbols selected."
+          disableHoverListener={!addButtonDisabled}
         >
-          {addButtonDisabled ? "More than 10 symbols selected" : "Add"}
-        </Button>
+          <Grid>
+            <Button
+              disabled={addButtonDisabled}
+              variant="contained"
+              onClick={onAddSymbols}
+              size={size}
+              sx={{ width: "100%" }}
+            >
+              Add
+            </Button>
+          </Grid>
+        </Tooltip>
       </Stack>
     </Grid>
   );
