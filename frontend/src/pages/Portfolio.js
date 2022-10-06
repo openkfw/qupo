@@ -39,7 +39,9 @@ const Portfolio = ({
       alignItems="stretch"
       spacing={1}
     >
-      <RestartButton resetProcess={resetProcess} />
+      <Grid container sx={{ mt: -5 }}>
+        <RestartButton resetProcess={resetProcess} />
+      </Grid>
       <PortfolioController
         setData={setData}
         timeframe={timeframe}
