@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { getIndices, getCountries, getIndustries } from "./api";
 
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+
+import { getCountries, getIndices, getIndustries } from "./api";
 
 import "./App.css";
 import Process from "./pages//Process/Process";
@@ -20,6 +21,22 @@ import Notifications from "./components/Notifications";
 
 store.addPlugin(eventsPlugin);
 
+const initialTimeframe = {
+  start: dayjs().subtract(1, "month").format("YYYY-MM-DD"),
+  end: dayjs().format("YYYY-MM-DD"),
+  format: "YYYY-MM-DD",
+  isValid: true,
+};
+
+const initialWeights = {
+  risk_weight: { label: "Risk Weight", value: 50 },
+  esg_weight: { label: "ESG Weight", value: 40 },
+  setValues: (prevState, key, value) => ({
+    ...prevState,
+    [key]: { ...prevState[key], value: parseInt(value) },
+  }),
+};
+
 const AppWrapper = () => {
   return (
     <Router>
@@ -31,20 +48,14 @@ const AppWrapper = () => {
 function App() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [timeframe, setTimeframe] = useState({
-    start: dayjs().subtract(1, "month").format("YYYY-MM-DD"),
-    end: dayjs().format("YYYY-MM-DD"),
-    format: "YYYY-MM-DD",
-    isValid: true,
-  });
-  const [weights, setWeights] = useState({
-    risk_weight: { label: "Risk Weight", value: 50 },
-    esg_weight: { label: "ESG Weight", value: 40 },
-    setValues: (prevState, key, value) => ({
-      ...prevState,
-      [key]: { ...prevState[key], value: parseInt(value) },
-    }),
-  });
+  const [timeframe, setTimeframe] = useState(initialTimeframe);
+  const [weights, setWeights] = useState(initialWeights);
+
+  const resetProcess = () => {
+    setData([]);
+    setTimeframe(initialTimeframe);
+    setWeights(initialWeights);
+  };
 
   useEffect(() => {
     store.set("loading", false);
@@ -85,36 +96,20 @@ function App() {
   }, []);
 
   return (
-    <Grid
-      sx={{
-        pb: 5,
-        backgroundColor: (theme) => `${theme.palette.grey.light}`,
-      }}
-    >
-      <Grid
-        sx={{
-          backgroundColor: "primary.dark",
-          height: "25vh",
-          width: "100vW",
-        }}
-      />
+    <Grid sx={{ pb: 5, bgcolor: "grey.light" }}>
+      <Grid sx={{ bgcolor: "primary.dark", height: "25vh", width: "100vW" }} />
       <Container
         maxWidth="md"
         sx={{
           marginTop: "-15vh",
           backgroundColor: "common.white",
-          color: (theme) => `${theme.palette.grey.dark}`,
+          color: "grey.dark",
           boxShadow: "1px 1px 9px #607d8b",
           paddingBottom: 3,
           borderRadius: "2px",
         }}
       >
-        <Box
-          sx={{
-            textAlign: "center",
-            padding: "50px",
-          }}
-        >
+        <Box sx={{ textAlign: "center", p: "50px" }}>
           <Typography variant="h3">Portfolio Management</Typography>
         </Box>
         {!loading ? (
@@ -141,6 +136,7 @@ function App() {
                   timeframe={timeframe}
                   weights={weights}
                   setWeights={setWeights}
+                  resetProcess={resetProcess}
                 />
               }
             />

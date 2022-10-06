@@ -10,9 +10,7 @@ const Search = ({ filter, view, filterValue, setFilterValue }) => {
         <TextField {...params} label={`Filter by ${view}`} />
       )}
       onChange={(_, value) => setFilterValue(value)}
-      sx={{
-        pt: 2,
-      }}
+      sx={{ pt: 2, pb: 1 }}
     />
   );
 };

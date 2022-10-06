@@ -44,19 +44,10 @@ const Stocks = () => {
         filterValue={filterValue}
         setFilterValue={setFilterValue}
       />
-      <Box
-        sx={{
-          padding: `2 0`,
-        }}
-      >
+      <Box>
         <TransitionGroup>
           {filterItems(items).map((item) => (
-            <Collapse
-              key={item}
-              sx={{
-                bp: 2,
-              }}
-            >
+            <Collapse key={item}>
               <SymbolsListItem key={item} name={item} />
             </Collapse>
           ))}

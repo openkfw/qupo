@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from pytickersymbols import PyTickerSymbols
 from sqlalchemy.orm import Session
 
@@ -14,6 +15,12 @@ router = APIRouter(
 )
 
 stock_data = PyTickerSymbols()
+
+
+class Parameters(BaseModel):
+    symbol: str
+    start: str
+    end: str
 
 
 @router.get('/symbols')
@@ -88,9 +95,10 @@ async def get_symbols_of_industry(industry: str, symbols_only: bool = False):
 
 
 @router.post('/stock/', response_model=schemas.Stock)
-def stock(stock: schemas.StockBase, db: Session = Depends(get_db)):
+def stock(params: Parameters, db: Session = Depends(get_db)):
     try:
-        return get_data_of_symbol(stock, db)
+        return get_data_of_symbol(schemas.StockBase(symbol=params.symbol),
+                                  params.start, params.end, db)
     except Exception as e:
         logging.exception(e)
         raise e
