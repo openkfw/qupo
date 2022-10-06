@@ -30,7 +30,7 @@ const Stocks = () => {
       setUniqueSymbols(
         filterUniqueSymbols(symbols).sort((a, b) =>
           a.symbol > b.symbol ? 1 : -1
-        ).map(symbol => symbol.name));
+        ));
       setFilter(store.get(view));
     }
   }, [view]);
@@ -49,11 +49,14 @@ const Stocks = () => {
   };
 
   const itemContainsSymbol = (item, filterValue) => {
-    const symbolsforItem = store.get(item);
-    const includesSymbol = symbolsforItem.find(symbol =>
+    const symbolsForItem = store.get(item);
+    if (symbolsForItem.detail === "Not Found") {
+      return false
+    }
+    const includesSymbol = symbolsForItem.find(symbol =>
       symbol.symbol === filterValue || symbol.name === filterValue
     )
-    return includesSymbol !== undefined
+    return includesSymbol
   }
 
   return (

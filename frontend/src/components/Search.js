@@ -7,20 +7,25 @@ const Search = ({ filter, symbols, view, filterValue, setFilterValue }) => {
       category: view, item
     }
   })
+  const mappedSymbolNames = symbols.map(symbol => {
+    return {
+      category: "company names", item: symbol.name
+    }
+  })
   const mappedSymbols = symbols.map(symbol => {
     return {
-      category: "symbols", item: symbol
+      category: "symbols", item: symbol.symbol
     }
   })
 
   return (
     <Autocomplete
       value={filterValue}
-      options={[...mappedItems, ...mappedSymbols]}
+      options={[...mappedItems, ...mappedSymbolNames, ...mappedSymbols]}
       groupBy={(option => option.category)}
       isOptionEqualToValue={((option, value) => { return option.item === value })}
       getOptionLabel={(option) => {
-        return option.hasOwnProperty("item") ? option.item : option
+        return option?.hasOwnProperty("item") ? option.item : option
       }}
       renderInput={(params) => (
         <TextField {...params} label={`Filter by ${view}`} />

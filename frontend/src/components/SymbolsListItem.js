@@ -40,6 +40,8 @@ const SymbolsListItem = ({ name, filterValue }) => {
               {name}
             </Box>
           }
+          filterValue={filterValue}
+          symbols={symbols}
         >
           {symbols ? (
             symbols.map((symbol, index) => {
@@ -48,7 +50,7 @@ const SymbolsListItem = ({ name, filterValue }) => {
                   ? symbol.name
                   : `${symbol.name}, `;
               return (
-                <Tooltip title={symbol.symbol} key={symbol.symbol}>
+                <Tooltip title={symbol.symbol} key={`${symbol.symbol}-${symbol.name}`}>
                   <Typography
                     color="text.secondary"
                     sx={{ fontSize: 14, display: "inline", fontWeight: symbol.symbol === filterValue || symbol.name === filterValue ? 'bold' : 'normal' }}
