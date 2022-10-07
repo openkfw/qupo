@@ -6,13 +6,16 @@ import { ThemeProvider } from "@mui/material/styles";
 import "./index.css";
 import App from "./App";
 import theme from "./utils/theme";
+import { NotificationContext } from "./components/NotificationContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <NotificationContext>
+        <App />
+      </NotificationContext>
     </ThemeProvider>
   </React.StrictMode>
 );

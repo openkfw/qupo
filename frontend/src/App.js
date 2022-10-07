@@ -16,6 +16,8 @@ import Stocks from "./pages/Stocks";
 import dayjs from "dayjs";
 import store from "store-js";
 import eventsPlugin from "store-js/plugins/events";
+import Notifications from "./components/Notifications";
+
 store.addPlugin(eventsPlugin);
 
 const initialTimeframe = {
@@ -150,6 +152,7 @@ function App() {
           </Grid>
         )}
       </Container>
+      <Notifications />
     </Grid>
   );
 }
