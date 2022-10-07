@@ -62,8 +62,12 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
           });
         }
       }
-
       setData(data);
+
+      const calculations = store.get("calculations")
+        ? store.get("calculations")
+        : [];
+      store.set("calculations", [data, ...calculations]);
     } finally {
       store.set("loading", false);
     }
