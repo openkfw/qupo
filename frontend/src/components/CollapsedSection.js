@@ -1,41 +1,26 @@
 import { useState, useEffect } from "react";
 
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const CollapsedSection = ({
   heading,
   collapsedSize = 38,
   size = "medium",
-  filterValue,
-  symbols,
+  collapse = false,
   ...props
 }) => {
   const [expand, setExpand] = useState(false);
 
-  const symbolFound = () => {
-    if (symbols.detail === "Not Found") {
-      return false
-    }
-    const includesSymbol = symbols.find(symbol =>
-      filterValue !== "" && (symbol.symbol === filterValue || symbol.name === filterValue)
-    )
-    return includesSymbol
-  }
+  useEffect(() => {
+    setExpand(collapse);
+  }, [collapse]);
 
   const toggleExpand = () => {
     setExpand(!expand);
   };
-  useEffect(() => {
-    if (symbolFound()) {
-      expandItem()
-    }
-  });
-  const expandItem = () => {
-    setExpand(true)
-  }
 
   return (
     <>

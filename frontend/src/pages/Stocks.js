@@ -18,7 +18,7 @@ const Stocks = () => {
   const [view, setView] = useState(views[0].value);
   const allItems = store.get(view);
   const [filter, setFilter] = useState([]);
-  const [uniqueSymbols, setUniqueSymbols] = useState([])
+  const [uniqueSymbols, setUniqueSymbols] = useState([]);
   const [filterValue, setFilterValue] = useState(null);
   const [items, setItems] = useState([]);
 
@@ -30,11 +30,11 @@ const Stocks = () => {
       setUniqueSymbols(
         filterUniqueSymbols(symbols).sort((a, b) =>
           a.symbol > b.symbol ? 1 : -1
-        ));
+        )
+      );
       setFilter(store.get(view));
     }
   }, [view]);
-
 
   const filterUniqueSymbols = (symbols) => {
     return [
@@ -44,20 +44,25 @@ const Stocks = () => {
 
   const filterItems = (items) => {
     return filterValue !== null
-      ? allItems.filter((item) => (item === filterValue || itemContainsSymbol(item, filterValue)))
+      ? allItems.filter(
+          (item) =>
+            item === filterValue || itemContainsSymbol(item, filterValue)
+        )
       : items;
   };
 
   const itemContainsSymbol = (item, filterValue) => {
     const symbolsForItem = store.get(item);
     if (symbolsForItem.detail === "Not Found") {
-      return false
+      return false;
     }
-    const includesSymbol = symbolsForItem.find(symbol =>
-      symbol.symbol === filterValue || symbol.name === filterValue
-    )
-    return includesSymbol
-  }
+
+    const includesSymbol = symbolsForItem.find(
+      (symbol) => symbol.symbol === filterValue || symbol.name === filterValue
+    );
+
+    return includesSymbol;
+  };
 
   return (
     <>
@@ -72,10 +77,12 @@ const Stocks = () => {
       <Box>
         <TransitionGroup>
           {filterItems(items).map((item) => (
-            <Collapse
-              key={item}
-            >
-              <SymbolsListItem key={item} name={item} filterValue={filterValue} />
+            <Collapse key={item}>
+              <SymbolsListItem
+                key={item}
+                name={item}
+                filterValue={filterValue}
+              />
             </Collapse>
           ))}
         </TransitionGroup>

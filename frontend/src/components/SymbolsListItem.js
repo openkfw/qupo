@@ -25,10 +25,25 @@ const SymbolsListItem = ({ name, filterValue }) => {
     store.watch(name, () => setSymbols(store.get(name)));
   });
 
+  const symbolFound = () => {
+    if (symbols.detail === "Not Found") {
+      return false;
+    }
+
+    const includesSymbol = symbols.find(
+      (symbol) =>
+        filterValue !== "" &&
+        (symbol.symbol === filterValue || symbol.name === filterValue)
+    );
+
+    return includesSymbol;
+  };
+
   return (
     <Card sx={{ my: 1 }}>
       <CardContent sx={{ bgcolor: "grey.light" }}>
         <CollapsedSection
+          collapse={symbolFound() ? true : false}
           heading={
             <Box
               sx={{
@@ -40,20 +55,27 @@ const SymbolsListItem = ({ name, filterValue }) => {
               {name}
             </Box>
           }
-          filterValue={filterValue}
-          symbols={symbols}
         >
           {symbols ? (
             symbols.map((symbol, index) => {
               const expression =
-                index === symbols.length - 1
-                  ? symbol.name
-                  : `${symbol.name}, `;
+                index === symbols.length - 1 ? symbol.name : `${symbol.name}, `;
               return (
-                <Tooltip title={symbol.symbol} key={`${symbol.symbol}-${symbol.name}`}>
+                <Tooltip
+                  title={symbol.symbol}
+                  key={`${symbol.symbol}-${symbol.name}`}
+                >
                   <Typography
                     color="text.secondary"
-                    sx={{ fontSize: 14, display: "inline", fontWeight: symbol.symbol === filterValue || symbol.name === filterValue ? 'bold' : 'normal' }}
+                    sx={{
+                      fontSize: 14,
+                      display: "inline",
+                      fontWeight:
+                        symbol.symbol === filterValue ||
+                        symbol.name === filterValue
+                          ? "bold"
+                          : "normal",
+                    }}
                   >
                     {expression}
                   </Typography>
