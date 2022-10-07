@@ -4,21 +4,21 @@ import TextField from "@mui/material/TextField";
 const Search = ({ filter, symbols, view, filterValue, setFilterValue }) => {
   const mappedItems = filter.map((item) => {
     return {
-      category: view,
+      category: view.toUpperCase(),
       item,
     };
   });
 
   const mappedSymbolNames = symbols.map((symbol) => {
     return {
-      category: "company names",
+      category: "COMPANIES",
       item: symbol.name,
     };
   });
 
   const mappedSymbols = symbols.map((symbol) => {
     return {
-      category: "symbols",
+      category: "SYMBOLS",
       item: symbol.symbol,
     };
   });
