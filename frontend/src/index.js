@@ -6,7 +6,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import "./index.css";
 import App from "./App";
 import theme from "./utils/theme";
-import { NotificationContext } from "./components/NotificationContext";
+import { NotificationContext } from "./contexts/NotificationContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

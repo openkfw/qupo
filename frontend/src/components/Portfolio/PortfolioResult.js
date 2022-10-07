@@ -3,14 +3,11 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
+import { formatDate } from "../../utils/helpers";
 import PortfolioChart from "./PortfolioChart";
 import Performance from "./Performance";
 
-import dayjs from "dayjs";
-
 const PortfolioResult = ({ data, timeframe }) => {
-  const dateFormat = "DD MMM YYYY";
-
   return (
     <Card variant="outlined">
       <Grid sx={{ p: 2 }} container justifyContent="flex-end">
@@ -20,8 +17,7 @@ const PortfolioResult = ({ data, timeframe }) => {
             color: (theme) => `${theme.palette.grey.main}`,
           }}
         >
-          {dayjs(timeframe.start, timeframe.format).format(dateFormat)} to{" "}
-          {dayjs(timeframe.end, timeframe.format).format(dateFormat)}
+          {formatDate(timeframe.start)} to {formatDate(timeframe.end)}
         </Typography>
       </Grid>
       <Grid sx={{ px: 1, pb: 1.3 }}>

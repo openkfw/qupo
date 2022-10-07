@@ -7,7 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
 import { getModelCalculations } from "../api";
-import { useTriggerNotification } from "./NotificationContext";
+import { useTriggerNotification } from "../contexts/NotificationContext";
 
 // helper function to check the disabled button, but just for the "disabled" state variable
 // based on selected models / symbols
@@ -39,6 +39,7 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
   const calculateModels = async () => {
     navigate("/portfolio");
     store.set("loading", true);
+    setData([]);
     const symbols = store.get("selected_symbols");
     const models = store.get("selected_models");
     const firstTenSymbols = symbols.slice(0, 10).map((symbol) => symbol.symbol);
