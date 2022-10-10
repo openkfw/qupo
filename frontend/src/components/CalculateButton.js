@@ -8,6 +8,7 @@ import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
 import { getModelCalculations } from "../api";
 import { useTriggerNotification } from "../contexts/NotificationContext";
+import dayjs from "dayjs";
 
 // helper function to check the disabled button, but just for the "disabled" state variable
 // based on selected models / symbols
@@ -35,6 +36,20 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
   useEffect(() => {
     store.watch("loading", () => setLoading(store.get("loading")));
   });
+
+  const constructCalculation = (data) => {
+    return {
+      timestamp: dayjs(),
+      models: data.map((model) => model.Calculation.model).join(", "),
+      companies: data[0].Calculation.symbol_names.join(", "),
+      symbols: data[0].Calculation.symbols.join(", "),
+      risk_weight: data[0].Calculation.risk_weight,
+      esg_weight: data[0].Calculation.esg_weight,
+      start: data[0].Calculation.start,
+      end: data[0].Calculation.end,
+      data: data,
+    };
+  };
 
   const calculateModels = async () => {
     navigate("/portfolio");
@@ -68,7 +83,11 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
       const calculations = store.get("calculations")
         ? store.get("calculations")
         : [];
-      store.set("calculations", [data, ...calculations]);
+
+      store.set(
+        "calculations",
+        [constructCalculation(data), ...calculations].slice(0, 30)
+      );
     } finally {
       store.set("loading", false);
     }
