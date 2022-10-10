@@ -11,6 +11,10 @@ const views = [
     label: "Industries",
     value: "industries",
   },
+  {
+    label: "Symbols",
+    value: "symbols",
+  },
 ];
 
 export default views;

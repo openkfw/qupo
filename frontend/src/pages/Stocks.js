@@ -12,6 +12,8 @@ import store from "store-js";
 import Controllers from "../components/Controllers";
 import Search from "../components/Search";
 import SymbolsListItem from "../components/SymbolsListItem";
+import SymbolView from "../components/SymbolView";
+
 import views from "../utils/views";
 
 const Stocks = () => {
@@ -64,7 +66,7 @@ const Stocks = () => {
     return includesSymbol;
   };
 
-  return (
+  return view !== "symbols" ? (
     <>
       <Controllers view={view} setView={setView} />
       <Search
@@ -94,6 +96,11 @@ const Stocks = () => {
           </IconButton>
         </Grid>
       )}
+    </>
+  ) : (
+    <>
+      <Controllers view={view} setView={setView} />
+      <SymbolView />
     </>
   );
 };
