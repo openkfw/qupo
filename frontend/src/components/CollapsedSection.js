@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Collapse from "@mui/material/Collapse";
 import Grid from "@mui/material/Grid";
@@ -9,9 +9,14 @@ const CollapsedSection = ({
   heading,
   collapsedSize = 38,
   size = "medium",
+  collapse = false,
   ...props
 }) => {
   const [expand, setExpand] = useState(false);
+
+  useEffect(() => {
+    setExpand(collapse);
+  }, [collapse]);
 
   const toggleExpand = () => {
     setExpand(!expand);

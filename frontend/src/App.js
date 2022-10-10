@@ -6,8 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-
-import { getCountries, getIndices, getIndustries } from "./api";
+import { getCountries, getIndices, getIndustries, getSymbols } from "./api";
 
 import "./App.css";
 import Process from "./pages//Process/Process";
@@ -87,10 +86,16 @@ function App() {
       });
     };
 
+    const fetchSymbols = async () => {
+      const symbols = await getSymbols();
+      store.set("symbols", symbols);
+    };
+
     if (!store.get("industries")) {
       setLoading(true);
       fetchIndices();
       fetchCountries();
+      fetchSymbols();
       fetchIndustries().then(() => setLoading(false));
     }
   }, []);
