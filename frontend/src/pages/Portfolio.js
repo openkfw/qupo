@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
 
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import BarChartIcon from "@mui/icons-material/BarChart";
 
-import PortfolioController from "../components/PortfolioController";
-import PortfolioChart from "../components/PortfolioChart";
-import Performance from "../components/Performance";
+import PortfolioCalculationsList from "../components/Portfolio/PortfolioCalculationsList";
+import PortfolioController from "../components/Portfolio/PortfolioController";
+import PortfolioResult from "../components/Portfolio/PortfolioResult";
 import RestartButton from "../components/RestartButton";
 
 import store from "store-js";
-import dayjs from "dayjs";
 
 const Portfolio = ({
   data,
@@ -25,7 +22,7 @@ const Portfolio = ({
   resetProcess,
 }) => {
   const [loading, setLoading] = useState(store.get("loading"));
-  const dateFormat = "DD MMM YYYY";
+  const calculations = store.get("calculations");
 
   useEffect(() => {
     store.watch("loading", () => setLoading(store.get("loading")));
@@ -49,7 +46,7 @@ const Portfolio = ({
         setWeights={setWeights}
       />
       <Grid item xs={9}>
-        {loading && !data.length && (
+        {loading && !data && (
           <Grid
             container
             justifyContent="center"
@@ -59,47 +56,12 @@ const Portfolio = ({
             <CircularProgress size="7rem" />
           </Grid>
         )}
-        {data.length ? (
-          <Card variant="outlined">
-            <Grid sx={{ p: 2 }} container justifyContent="flex-end">
-              <Typography
-                variant="caption"
-                sx={{
-                  color: (theme) => `${theme.palette.grey.main}`,
-                }}
-              >
-                {dayjs(timeframe.start, timeframe.format).format(dateFormat)} to{" "}
-                {dayjs(timeframe.end, timeframe.format).format(dateFormat)}
-              </Typography>
-            </Grid>
-            <Grid sx={{ px: 1, pb: 1.3 }}>
-              <PortfolioChart data={data} />
-            </Grid>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
-                backgroundColor: (theme) => `${theme.palette.grey.light}`,
-                padding: `1 0`,
-                marginTop: 0.9,
-              }}
-            >
-              {data.map(({ Calculation, Result }) => (
-                <Performance
-                  key={Calculation.model}
-                  model={Result}
-                  modelName={Calculation.model}
-                />
-              ))}
-            </Box>
-          </Card>
-        ) : null}
-        {!loading && !data.length && (
+        {data ? <PortfolioResult data={data} timeframe={timeframe} /> : null}
+        {!loading && !data && (
           <Stack alignItems="center">
             <BarChartIcon sx={{ fontSize: 300, color: "whitesmoke" }} />
             <Typography sx={{ color: "#42424238", fontSize: 30 }}>
-              No data selected
+              No data
             </Typography>
             <Typography sx={{ color: "#42424238", fontSize: 14, pb: 8 }}>
               Go to the panel and press calculate to see some results.
@@ -107,6 +69,14 @@ const Portfolio = ({
           </Stack>
         )}
       </Grid>
+      {calculations && (
+        <PortfolioCalculationsList
+          key={calculations.length}
+          calculations={calculations}
+          data={data}
+          setData={setData}
+        />
+      )}
     </Grid>
   );
 };

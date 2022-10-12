@@ -1,6 +1,9 @@
-import { Alert, Snackbar } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { useShowNotifications } from "./NotificationContext";
+
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+
+import { useShowNotifications } from "../contexts/NotificationContext";
 
 const Notifications = () => {
   const { notifications, removeNotification } = useShowNotifications();

@@ -3,10 +3,10 @@ import Grid from "@mui/material/Grid";
 
 import store from "store-js";
 
-import CalculateButton from "./CalculateButton";
-import SelectModels from "./SelectModels";
-import StocksCollection from "./StocksCollection";
-import WeightSlider from "./WeightSlider";
+import CalculateButton from "../CalculateButton";
+import SelectModels from "../SelectModels";
+import StocksCollection from "../StocksCollection";
+import WeightSlider from "../WeightSlider";
 
 const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
   return (

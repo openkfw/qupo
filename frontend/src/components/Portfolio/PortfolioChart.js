@@ -10,6 +10,8 @@ import {
 
 import { Bar } from "react-chartjs-2";
 
+import { shortenString } from "../../utils/helpers";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -59,10 +61,6 @@ export const options = {
       },
     },
   },
-};
-
-const shortenString = (word, length) => {
-  return word.length > length ? `${word.slice(0, length)}...` : word;
 };
 
 const processData = (dataToProcess) => {

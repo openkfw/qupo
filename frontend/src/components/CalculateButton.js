@@ -7,7 +7,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 
 import { getModelCalculations } from "../api";
-import { useTriggerNotification } from "./NotificationContext";
+import { useTriggerNotification } from "../contexts/NotificationContext";
+import dayjs from "dayjs";
 
 // helper function to check the disabled button, but just for the "disabled" state variable
 // based on selected models / symbols
@@ -36,12 +37,29 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
     store.watch("loading", () => setLoading(store.get("loading")));
   });
 
+  const constructCalculation = (data) => {
+    return {
+      timestamp: dayjs(),
+      models: data.map((model) => model.Calculation.model).join(", "),
+      companies: data[0].Calculation.symbol_names.join(", "),
+      symbols: data[0].Calculation.symbols.join(", "),
+      risk_weight: data[0].Calculation.risk_weight,
+      esg_weight: data[0].Calculation.esg_weight,
+      start: data[0].Calculation.start,
+      end: data[0].Calculation.end,
+      portfolio: data,
+    };
+  };
+
   const calculateModels = async () => {
     navigate("/portfolio");
     store.set("loading", true);
+    setData(undefined);
+
     const symbols = store.get("selected_symbols");
     const models = store.get("selected_models");
     const firstTenSymbols = symbols.slice(0, 10).map((symbol) => symbol.symbol);
+
     try {
       const data = await getModelCalculations(
         models,
@@ -62,8 +80,13 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
           });
         }
       }
+      const newCalculation = constructCalculation(data);
+      const calculations = store.get("calculations")
+        ? store.get("calculations")
+        : [];
 
-      setData(data);
+      store.set("calculations", [newCalculation, ...calculations].slice(0, 30));
+      setData(newCalculation);
     } finally {
       store.set("loading", false);
     }

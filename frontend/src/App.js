@@ -46,12 +46,12 @@ const AppWrapper = () => {
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(undefined);
   const [timeframe, setTimeframe] = useState(initialTimeframe);
   const [weights, setWeights] = useState(initialWeights);
 
   const resetProcess = () => {
-    setData([]);
+    setData(undefined);
     setTimeframe(initialTimeframe);
     setWeights(initialWeights);
   };
