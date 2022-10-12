@@ -21,7 +21,7 @@ const PortfolioResult = ({ data, timeframe }) => {
         </Typography>
       </Grid>
       <Grid sx={{ px: 1, pb: 1.3 }}>
-        <PortfolioChart data={data} />
+        <PortfolioChart data={data.portfolio} />
       </Grid>
       <Box
         sx={{
@@ -33,7 +33,7 @@ const PortfolioResult = ({ data, timeframe }) => {
           marginTop: 0.9,
         }}
       >
-        {data.map(({ Calculation, Result }) => (
+        {data.portfolio.map(({ Calculation, Result }) => (
           <Performance
             key={Calculation.model}
             model={Result}

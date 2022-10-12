@@ -22,6 +22,7 @@ const Portfolio = ({
   resetProcess,
 }) => {
   const [loading, setLoading] = useState(store.get("loading"));
+  const calculations = store.get("calculations");
 
   useEffect(() => {
     store.watch("loading", () => setLoading(store.get("loading")));
@@ -45,7 +46,7 @@ const Portfolio = ({
         setWeights={setWeights}
       />
       <Grid item xs={9}>
-        {loading && !data.length && (
+        {loading && !data && (
           <Grid
             container
             justifyContent="center"
@@ -55,10 +56,8 @@ const Portfolio = ({
             <CircularProgress size="7rem" />
           </Grid>
         )}
-        {data.length ? (
-          <PortfolioResult data={data} timeframe={timeframe} />
-        ) : null}
-        {!loading && !data.length && (
+        {data ? <PortfolioResult data={data} timeframe={timeframe} /> : null}
+        {!loading && !data && (
           <Stack alignItems="center">
             <BarChartIcon sx={{ fontSize: 300, color: "whitesmoke" }} />
             <Typography sx={{ color: "#42424238", fontSize: 30 }}>
@@ -70,9 +69,11 @@ const Portfolio = ({
           </Stack>
         )}
       </Grid>
-      {store.get("calculations") && (
+      {calculations && (
         <PortfolioCalculationsList
-          calculations={store.get("calculations")}
+          key={calculations.length}
+          calculations={calculations}
+          data={data}
           setData={setData}
         />
       )}

@@ -47,17 +47,19 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
       esg_weight: data[0].Calculation.esg_weight,
       start: data[0].Calculation.start,
       end: data[0].Calculation.end,
-      data: data,
+      portfolio: data,
     };
   };
 
   const calculateModels = async () => {
     navigate("/portfolio");
     store.set("loading", true);
-    setData([]);
+    setData(undefined);
+
     const symbols = store.get("selected_symbols");
     const models = store.get("selected_models");
     const firstTenSymbols = symbols.slice(0, 10).map((symbol) => symbol.symbol);
+
     try {
       const data = await getModelCalculations(
         models,
@@ -78,16 +80,13 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
           });
         }
       }
-      setData(data);
-
+      const newCalculation = constructCalculation(data);
       const calculations = store.get("calculations")
         ? store.get("calculations")
         : [];
 
-      store.set(
-        "calculations",
-        [constructCalculation(data), ...calculations].slice(0, 30)
-      );
+      store.set("calculations", [newCalculation, ...calculations].slice(0, 30));
+      setData(newCalculation);
     } finally {
       store.set("loading", false);
     }
