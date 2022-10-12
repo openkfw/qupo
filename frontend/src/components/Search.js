@@ -40,7 +40,7 @@ const Search = ({ filter, symbols, view, filterValue, setFilterValue }) => {
       onChange={(_, value) =>
         setFilterValue(value?.hasOwnProperty("item") ? value.item : value)
       }
-      sx={{ pt: 2, pb: 1 }}
+      sx={{ pt: 2, pb: 1, mt: 1 }}
     />
   );
 };

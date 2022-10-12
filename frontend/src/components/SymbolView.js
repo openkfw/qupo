@@ -7,14 +7,22 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
 import CircleIcon from "@mui/icons-material/Circle";
 import { useNavigate } from "react-router-dom";
-
+import CollapsedSection from "./CollapsedSection";
+import Chip from "@mui/material/Chip";
+import CheckIcon from "@mui/icons-material/Check";
+import { green } from "@mui/material/colors";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import store from "store-js";
+import Checkbox from "@mui/material/Checkbox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 
 import { getSymbols } from "../api";
 import ForwardIcon from "@mui/icons-material/ArrowForward";
+
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 
 const symbolFilterOptions = createFilterOptions({
   limit: 20,
@@ -55,41 +63,71 @@ const SymbolView = ({ size = "medium" }) => {
     ]);
     setSelectedSymbols(newSymbols);
     store.set("selected_symbols", newSymbols);
-    setSymbolsToAdd([]);
   };
 
-  const renderOption = (props, option) => (
-    <Box component="li" key={option.name} {...props}>
-      {option.symbol}
-      <span style={{ color: "grey" }}>
-        <CircleIcon sx={{ fontSize: 8, pl: 2, pr: "5px", pb: "1px" }} />
-        {option.name}
-      </span>
-    </Box>
-  );
+  const onDeleteAll = () => {
+    store.set("selected_symbols", []);
+    setSelectedSymbols([]);
+  };
 
-  const addButtonDisabled = selectedSymbols.length > 9;
+  const onDeleteSymbol = (symbol) => {
+    const filteredSymbols = selectedSymbols.filter(
+      (s) => s.symbol !== symbol.symbol
+    );
+    setSelectedSymbols(filteredSymbols);
+    store.set("selected_symbols", filteredSymbols);
+  };
+
+  const renderOption = (props, option, { selected }) => (
+    <Tooltip
+      title="There are already 10 symbols selected."
+      disableHoverListener={!maxItemsReached}
+    >
+      <li {...props}>
+        <Checkbox
+          icon={icon}
+          checkedIcon={checkedIcon}
+          style={{ marginRight: 8 }}
+          checked={selected}
+        />
+        <Box key={option.name} {...props}>
+          {option.symbol}
+          <span style={{ color: "grey" }}>
+            <CircleIcon sx={{ fontSize: 8, pl: 2, pr: "5px", pb: "1px" }} />
+            {option.name}
+          </span>
+        </Box>
+      </li>
+    </Tooltip>
+  );
+  const maxItemsReached =
+    selectedSymbols.length > 10 || symbolsToAdd.length > 10;
+  const addButtonDisabled = !symbolsToAdd.length || maxItemsReached;
+  const areSymbolsSelected = selectedSymbols.length > 0;
 
   return (
     <Grid sx={{ mb: 1, pb: 1 }}>
-      <Typography sx={{ mb: 1 }}>Add symbols:</Typography>
       <Stack spacing={2}>
         <Autocomplete
           multiple
+          disableCloseOnSelect
           options={allSymbols}
           getOptionLabel={(option) => option.symbol}
           renderOption={size === "small" ? null : renderOption}
           loading={loading}
-          filterSelectedOptions
           onChange={(_, value) => setSymbolsToAdd(value)}
           filterOptions={symbolFilterOptions}
+          getOptionDisabled={(option) =>
+            !symbolsToAdd.includes(option) && symbolsToAdd.length > 9
+          }
           renderInput={(params) => (
-            <TextField {...params} size="small" label="Symbols" />
+            <TextField {...params} label="Find symbols to add" />
           )}
+          sx={{ pt: 2, pb: 1, mt: 1 }}
         />
         <Tooltip
-          title="There are already 10 or more symbols selected."
-          disableHoverListener={!addButtonDisabled}
+          title="There are already 10 symbols selected."
+          disableHoverListener={!maxItemsReached}
         >
           <Grid>
             <Button
@@ -97,25 +135,71 @@ const SymbolView = ({ size = "medium" }) => {
               variant="contained"
               onClick={onAddSymbols}
               size={size}
-              sx={{ width: "100%" }}
+              sx={{ width: "100%", mb: 3 }}
             >
               Add
             </Button>
           </Grid>
         </Tooltip>
-        <Grid container justifyContent="flex-end">
-          <Button
-            size="small"
-            startIcon={<ForwardIcon />}
-            onClick={() => {
-              store.set("selected_symbols", selectedSymbols);
-              navigate("/process");
-            }}
-          >
-            Continue with these symbols
-          </Button>
-        </Grid>
       </Stack>
+      <Grid
+        sx={{
+          border: "1px solid",
+          borderRadius: "2px",
+          borderColor: "grey.middle",
+          padding: 1,
+          marginBottom: 2,
+        }}
+      >
+        <CollapsedSection
+          heading={
+            <Button
+              size="small"
+              disabled={!areSymbolsSelected}
+              onClick={onDeleteAll}
+            >
+              Delete
+            </Button>
+          }
+          collapsedSize={100}
+          size="small"
+        >
+          <Grid container>
+            {selectedSymbols.map((symbol, index) => (
+              <Grid key={symbol.name} sx={{ pb: 1, pr: 1 }} item>
+                <Tooltip title={size === "small" ? symbol.name : symbol.symbol}>
+                  <Chip
+                    label={size === "small" ? symbol.symbol : symbol.name}
+                    size="small"
+                    onDelete={() => onDeleteSymbol(symbol)}
+                    avatar={
+                      index < 10 ? (
+                        <CheckIcon
+                          color="white"
+                          style={{ color: green[500] }}
+                        />
+                      ) : null
+                    }
+                  />
+                </Tooltip>
+              </Grid>
+            ))}
+          </Grid>
+        </CollapsedSection>
+      </Grid>
+      <Grid container justifyContent="flex-end">
+        <Button
+          size="small"
+          disabled={!areSymbolsSelected}
+          startIcon={<ForwardIcon />}
+          onClick={() => {
+            store.set("selected_symbols", selectedSymbols);
+            navigate("/process");
+          }}
+        >
+          Continue with these symbols
+        </Button>
+      </Grid>
     </Grid>
   );
 };

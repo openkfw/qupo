@@ -44,6 +44,11 @@ const Stocks = () => {
     ];
   };
 
+  const resetView = (view) => {
+    setItems(store.get(view).slice(0, 8));
+    setView(view);
+  };
+
   const filterItems = (items) => {
     return filterValue !== null
       ? allItems.filter(
@@ -68,7 +73,7 @@ const Stocks = () => {
 
   return view !== "symbols" ? (
     <>
-      <Controllers view={view} setView={setView} />
+      <Controllers view={view} setView={resetView} />
       <Search
         view={view}
         filter={filter}
@@ -99,7 +104,7 @@ const Stocks = () => {
     </>
   ) : (
     <>
-      <Controllers view={view} setView={setView} />
+      <Controllers view={view} setView={resetView} />
       <SymbolView />
     </>
   );
