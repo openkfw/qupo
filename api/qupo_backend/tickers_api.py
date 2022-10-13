@@ -95,7 +95,7 @@ async def get_symbols_of_industry(industry: str, symbols_only: bool = False):
 
 
 @router.post('/stock/', response_model=schemas.Stock)
-def stock(params: Parameters, db: Session = Depends(get_db)):
+async def stock(params: Parameters, db: Session = Depends(get_db)):
     try:
         return get_data_of_symbol(schemas.StockBase(symbol=params.symbol),
                                   params.start, params.end, db)
