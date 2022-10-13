@@ -1,20 +1,43 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
+
+import models from "../utils/models.json";
 
 import store from "store-js";
 
+const TooltipTitle = ({ model }) => {
+  return (
+    <Fragment>
+      <Stack spacing={0.5}>
+        <Grid>
+          <b>Type: </b>
+          {model.kind}
+          <br />
+        </Grid>
+        <Grid>
+          <b>Provider: </b>
+          {model.provider}
+          <br />
+        </Grid>
+        <Grid>{model.description}</Grid>
+      </Stack>
+    </Fragment>
+  );
+};
+
 const SelectModels = ({ defaultModels }) => {
   const [selectedModels, setSelectedModels] = useState(defaultModels);
-  const models = ["osqp", "qio", "pypo", "qiskit", "ionq"];
 
   useEffect(() => {
     store.set("selected_models", selectedModels);
   });
 
-  const onSelectModel = (event, selectedModels) => {
-    const model = event.target.name;
+  const onSelectModel = (event, model, selectedModels) => {
     let selectedModelsNew = [model];
 
     if (selectedModels.length) {
@@ -27,21 +50,23 @@ const SelectModels = ({ defaultModels }) => {
   };
 
   return models.map((model) => {
-    const checked = selectedModels.includes(model);
+    const checked = selectedModels.includes(model.key);
 
     return (
-      <FormControlLabel
-        key={model}
-        label={model}
-        control={
-          <Checkbox
-            size="small"
-            name={model}
-            onChange={(event) => onSelectModel(event, selectedModels)}
-            checked={checked}
-          />
-        }
-      />
+      <Tooltip title={<TooltipTitle model={model} />} key={model.name} arrow>
+        <FormControlLabel
+          label={model.name}
+          control={
+            <Checkbox
+              size="small"
+              checked={checked}
+              onChange={(event) =>
+                onSelectModel(event, model.key, selectedModels)
+              }
+            />
+          }
+        />
+      </Tooltip>
     );
   });
 };
