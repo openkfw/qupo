@@ -7,14 +7,54 @@ import store from "store-js";
 
 const SelectModels = ({ defaultModels }) => {
   const [selectedModels, setSelectedModels] = useState(defaultModels);
-  const models = ["osqp", "qio", "pypo", "qiskit", "ionq"];
+  const models = [
+    {
+      key: "osqp",
+      name: "OSQP",
+      kind: "classic",
+      provider: "University of Oxford",
+      description:
+        "The Operator Splitting Quadratic Program (OSQP) solver is an operator for solving convex quadratic programs. Quadratic Programming (QP) is used to optimize mathematical problems that involve quadratic objective functions.",
+    },
+    {
+      key: "qio",
+      name: "QIO",
+      kind: "quantum inspired",
+      provider: "Microsoft Azure Quantum",
+      description:
+        "Quantum-Inspired Optimization algorithms simulate the effects of quantum computing on classical computers, providing a speedup over classical solutions.",
+    },
+    {
+      key: "pypo",
+      name: "PyPo",
+      kind: "classic",
+      provider: "PyPortfolioOpt",
+      description:
+        "PyPortfolioOpt is a library that provides algorithms to implement portfolio optimization methods, like classical efficient frontier techniques.",
+    },
+    {
+      key: "qiskit",
+      name: "Qiskit",
+      kind: "quantum",
+      provider: "IBM",
+      description:
+        "Qiskit is an open source library that provides tools to work with quantum computers. It includes a set of quantum gates and pre-built circuits.",
+    },
+    {
+      key: "ionq",
+      name: "IonQ",
+      kind: "quantum",
+      provider: "IonQ with Microsoft Azure",
+      description:
+        "IonQ's cloud-based implementation of performing calculations on an idealized quantum computer simulator.",
+    },
+  ];
 
   useEffect(() => {
     store.set("selected_models", selectedModels);
   });
 
-  const onSelectModel = (event, selectedModels) => {
-    const model = event.target.name;
+  const onSelectModel = (event, model, selectedModels) => {
     let selectedModelsNew = [model];
 
     if (selectedModels.length) {
@@ -27,18 +67,19 @@ const SelectModels = ({ defaultModels }) => {
   };
 
   return models.map((model) => {
-    const checked = selectedModels.includes(model);
+    const checked = selectedModels.includes(model.key);
 
     return (
       <FormControlLabel
-        key={model}
-        label={model}
+        key={model.name}
+        label={model.name}
         control={
           <Checkbox
             size="small"
-            name={model}
-            onChange={(event) => onSelectModel(event, selectedModels)}
             checked={checked}
+            onChange={(event) =>
+              onSelectModel(event, model.key, selectedModels)
+            }
           />
         }
       />
