@@ -82,6 +82,7 @@ const SymbolView = ({ size = "medium" }) => {
     <Tooltip
       title="There are already 10 symbols selected."
       disableHoverListener={!maxItemsReached}
+      key={option.name}
     >
       <li {...props}>
         <Checkbox
@@ -101,7 +102,7 @@ const SymbolView = ({ size = "medium" }) => {
     </Tooltip>
   );
   const maxItemsReached =
-    selectedSymbols.length > 10 || symbolsToAdd.length > 10;
+    selectedSymbols.length >= 10 || symbolsToAdd.length > 10;
   const addButtonDisabled = !symbolsToAdd.length || maxItemsReached;
   const areSymbolsSelected = selectedSymbols.length > 0;
 
