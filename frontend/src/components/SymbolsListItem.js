@@ -6,14 +6,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import store from 'store-js';
 
 import CollapsedSection from './CollapsedSection';
 import ContinueButton from './ContinueButton';
 
 const SymbolsListItem = ({ name, filterValue }) => {
-  const navigate = useNavigate();
   const [symbols, setSymbols] = useState(store.get(name));
 
   useEffect(() => {
