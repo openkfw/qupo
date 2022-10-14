@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import { useEffect, useState } from 'react';
+import { TransitionGroup } from 'react-transition-group';
+import store from 'store-js';
 
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-
-import { TransitionGroup } from "react-transition-group";
-import store from "store-js";
-
-import Controllers from "../components/Controllers";
-import Search from "../components/Search";
-import SymbolsListItem from "../components/SymbolsListItem";
-import views from "../utils/views";
+import Controllers from '../components/Controllers';
+import Search from '../components/Search';
+import SymbolsListItem from '../components/SymbolsListItem';
+import SymbolView from '../components/SymbolView';
+import { filterUniqueSymbols } from '../utils/helpers';
+import views from '../utils/views';
 
 const Stocks = () => {
   const [view, setView] = useState(views[0].value);
@@ -36,10 +36,9 @@ const Stocks = () => {
     }
   }, [view]);
 
-  const filterUniqueSymbols = (symbols) => {
-    return [
-      ...new Map(symbols.map((symbol) => [symbol["symbol"], symbol])).values(),
-    ];
+  const resetView = (view) => {
+    setItems(store.get(view).slice(0, 8));
+    setView(view);
   };
 
   const filterItems = (items) => {
@@ -66,33 +65,39 @@ const Stocks = () => {
 
   return (
     <>
-      <Controllers view={view} setView={setView} />
-      <Search
-        view={view}
-        filter={filter}
-        symbols={uniqueSymbols}
-        filterValue={filterValue}
-        setFilterValue={setFilterValue}
-      />
-      <Box>
-        <TransitionGroup>
-          {filterItems(items).map((item) => (
-            <Collapse key={item}>
-              <SymbolsListItem
-                key={item}
-                name={item}
-                filterValue={filterValue}
-              />
-            </Collapse>
-          ))}
-        </TransitionGroup>
-      </Box>
-      {filterValue === null && items?.length !== allItems?.length && (
-        <Grid justifyContent="center" container direction="row">
-          <IconButton onClick={() => setItems(allItems)}>
-            <ExpandMoreIcon fontSize="medium" />
-          </IconButton>
-        </Grid>
+      <Controllers view={view} setView={resetView} />
+      {view !== "symbols" ? (
+        <>
+          <Search
+            view={view}
+            filter={filter}
+            symbols={uniqueSymbols}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
+          />
+          <Box>
+            <TransitionGroup>
+              {filterItems(items).map((item) => (
+                <Collapse key={item}>
+                  <SymbolsListItem
+                    key={item}
+                    name={item}
+                    filterValue={filterValue}
+                  />
+                </Collapse>
+              ))}
+            </TransitionGroup>
+          </Box>
+          {filterValue === null && items?.length !== allItems?.length && (
+            <Grid justifyContent="center" container direction="row">
+              <IconButton onClick={() => setItems(allItems)}>
+                <ExpandMoreIcon fontSize="medium" />
+              </IconButton>
+            </Grid>
+          )}
+        </>
+      ) : (
+        <SymbolView />
       )}
     </>
   );
