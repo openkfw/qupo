@@ -22,7 +22,7 @@ const symbolFilterOptions = createFilterOptions({
   stringify: (option) => `${option.symbol} ${option.name}`,
 });
 
-const SymbolSearch = ({
+const SymbolSelection = ({
   size = "medium",
   selectedSymbols,
   setSelectedSymbols,
@@ -31,11 +31,11 @@ const SymbolSearch = ({
   const [allSymbols, setAllSymbols] = useState([]);
   const [loading, setLoading] = useState(true);
   const [symbolsToAdd, setSymbolsToAdd] = useState([]);
-
+  const label = allowMultipleSelection
+    ? "Find symbols to add"
+    : "Search symbols";
   const maxItemsReached =
     selectedSymbols.length >= 10 || symbolsToAdd.length > 10;
-  const addButtonDisabled =
-    (allowMultipleSelection && symbolsToAdd.length < 3) || maxItemsReached;
 
   useEffect(() => {
     async function fetchSymbols() {
@@ -113,10 +113,8 @@ const SymbolSearch = ({
                 !symbolsToAdd.includes(option) && symbolsToAdd.length > 9
             : null
         }
-        renderInput={(params) => (
-          <TextField {...params} label="Find symbols to add" />
-        )}
-        sx={{ pt: 2, pb: 1, mt: 1 }}
+        renderInput={(params) => <TextField {...params} size={size} label={label} />}
+        sx={allowMultipleSelection ? { pt: 2, pb: 1, mt: 1 } : null}
       />
       <Tooltip
         title="There are already 10 symbols selected."
@@ -124,7 +122,7 @@ const SymbolSearch = ({
       >
         <Grid>
           <Button
-            disabled={addButtonDisabled}
+            disabled={maxItemsReached}
             variant="contained"
             onClick={onAddSymbols}
             size={size}
@@ -138,4 +136,4 @@ const SymbolSearch = ({
   );
 };
 
-export default SymbolSearch;
+export default SymbolSelection;

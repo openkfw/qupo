@@ -10,7 +10,7 @@ const ContinueButton = ({ symbols, areSymbolsSelected = true }) => {
     <Grid container justifyContent="flex-end">
       <Button
         size="small"
-        disabled={!areSymbolsSelected}
+        disabled={!areSymbolsSelected || symbols.length < 2}
         startIcon={<ForwardIcon />}
         onClick={() => {
           store.set("selected_symbols", symbols);

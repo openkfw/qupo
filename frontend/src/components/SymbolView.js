@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import ContinueButton from './ContinueButton';
 import SymbolDelete from './SymbolDelete';
-import SymbolSearch from './SymbolSelection';
+import SymbolSelection from './SymbolSelection';
 
 const SymbolView = ({ size = "medium" }) => {
   const [selectedSymbols, setSelectedSymbols] = useState([]);
@@ -12,7 +12,7 @@ const SymbolView = ({ size = "medium" }) => {
 
   return (
     <Grid sx={{ mb: 1, pb: 1 }}>
-      <SymbolSearch
+      <SymbolSelection
         selectedSymbols={selectedSymbols}
         setSelectedSymbols={setSelectedSymbols}
         allowMultipleSelection={true}
