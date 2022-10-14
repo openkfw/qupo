@@ -24,7 +24,7 @@ class Parameters(BaseModel):
 
 
 @router.get('/symbols')
-async def get_symbols(symbols_only: bool = False):
+def get_symbols(symbols_only: bool = False):
     try:
         return get_all_symbols(stock_data, symbols_only)
     except Exception as e:
@@ -33,7 +33,7 @@ async def get_symbols(symbols_only: bool = False):
 
 
 @router.get('/indices')
-async def get_indices():
+def get_indices():
     try:
         return sorted(stock_data.get_all_indices())
     except Exception as e:
@@ -42,7 +42,7 @@ async def get_indices():
 
 
 @router.get('/indices/{index}')
-async def get_symbols_of_index(index: str, symbols_only: bool = False):
+def get_symbols_of_index(index: str, symbols_only: bool = False):
     try:
         if (symbols_only):
             return sum(stock_data.get_yahoo_ticker_symbols_by_index(index), [])
@@ -53,7 +53,7 @@ async def get_symbols_of_index(index: str, symbols_only: bool = False):
 
 
 @router.get('/countries')
-async def get_countries():
+def get_countries():
     try:
         return stock_data.get_all_countries()
     except Exception as e:
@@ -62,7 +62,7 @@ async def get_countries():
 
 
 @router.get('/countries/{country}')
-async def get_symbols_of_country(country: str, symbols_only: bool = False):
+def get_symbols_of_country(country: str, symbols_only: bool = False):
     try:
         stocks = list(stock_data.get_stocks_by_country(country))
         if (symbols_only):
@@ -74,7 +74,7 @@ async def get_symbols_of_country(country: str, symbols_only: bool = False):
 
 
 @router.get('/industries')
-async def get_industries():
+def get_industries():
     try:
         return stock_data.get_all_industries()
     except Exception as e:
@@ -83,7 +83,7 @@ async def get_industries():
 
 
 @router.get('/industries/{industry}')
-async def get_symbols_of_industry(industry: str, symbols_only: bool = False):
+def get_symbols_of_industry(industry: str, symbols_only: bool = False):
     try:
         stocks = list(stock_data.get_stocks_by_industry(industry))
         if (symbols_only):
@@ -95,7 +95,7 @@ async def get_symbols_of_industry(industry: str, symbols_only: bool = False):
 
 
 @router.post('/stock/', response_model=schemas.Stock)
-async def stock(params: Parameters, db: Session = Depends(get_db)):
+def stock(params: Parameters, db: Session = Depends(get_db)):
     try:
         return get_data_of_symbol(schemas.StockBase(symbol=params.symbol),
                                   params.start, params.end, db)
