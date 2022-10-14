@@ -50,17 +50,17 @@ class Calculation(BaseModel):
 
 
 @app.get('/')
-async def root():
+def root():
     return {'message': 'Hello from qupo'}
 
 
 @app.get('/health')
-async def health():
+def health():
     return {'status': 'ok'}
 
 
 @app.post('/models', response_model=List[Calculation])
-async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
+def calculate_models(params: Parameters, db: Session = Depends(get_db)):
     try:
         return get_model_calculations(db, params.models, {'symbols': params.symbols, 'risk_weight': params.risk_weight,
                                                           'esg_weight': params.esg_weight, 'start': params.start,
@@ -68,6 +68,7 @@ async def calculate_models(params: Parameters, db: Session = Depends(get_db)):
     except Exception as e:
         logging.exception(e)
         raise HTTPException(status_code=500, detail='Could not calculate portfolio.')
+
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
