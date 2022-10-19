@@ -1,6 +1,8 @@
 # native packages
 from dataclasses import dataclass
+from dotenv import load_dotenv
 from enum import Enum
+import os
 import warnings
 
 # 3rd party packages
@@ -21,9 +23,10 @@ from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
 # custom packages
-from qupo_backend.config import settings
 from .optimization_classes import Result
 from .model_converter import convert_qubo_to_azureqio_model
+
+load_dotenv()
 
 
 def run_job(job):
@@ -62,20 +65,20 @@ def run_osqp_job(job):
 
 
 def configure_azure_provider(quantum=False):
-    credential = ClientSecretCredential(tenant_id=settings.azure_tenant_id,
-                                        client_id=settings.azure_client_id,
-                                        client_secret=settings.azure_client_secret)
+    credential = ClientSecretCredential(tenant_id=os.getenv('AZURE_TENANT_ID'),
+                                        client_id=os.getenv('AZURE_CLIENT_ID'),
+                                        client_secret=os.getenv('AZURE_CLIENT_SECRET'))
     if quantum:
-        azure_provider = AzureQuantumProvider(subscription_id=settings.azure_subscription_id,
-                                              resource_group=settings.azure_resource_group,
-                                              name=settings.azure_name,
-                                              location=settings.azure_location,
+        azure_provider = AzureQuantumProvider(subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
+                                              resource_group=os.getenv('AZURE_RESOURCE_GROUP'),
+                                              name=os.getenv('AZURE_NAME'),
+                                              location=os.getenv('AZURE_LOCATION'),
                                               credential=credential)
     else:
-        azure_provider = Workspace(subscription_id=settings.azure_subscription_id,
-                                   resource_group=settings.azure_resource_group,
-                                   name=settings.azure_name,
-                                   location=settings.azure_location,
+        azure_provider = Workspace(subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
+                                   resource_group=os.getenv('AZURE_RESOURCE_GROUP'),
+                                   name=os.getenv('AZURE_NAME'),
+                                   location=os.getenv('AZURE_LOCATION'),
                                    credential=credential)
     return azure_provider
 
@@ -119,7 +122,7 @@ def run_qio_job(job):
 
 def configure_qiskit_provider():
     try:
-        IBMQ.enable_account(settings.ibmq_client_secret)
+        IBMQ.enable_account(os.getenv('IBMQ_CLIENT_SECRET'))
     except IBMQAccountError:
         warnings.warn('IBM account not available. Please check ibmq health status and credentials')
         pass

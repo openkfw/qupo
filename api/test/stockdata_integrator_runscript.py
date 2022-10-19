@@ -1,17 +1,20 @@
 import sys
 import os.path
+import os
 import warnings
 import json
 import yfinance
 import quandl
 import numpy as np
+from dotenv import load_dotenv
 from dataclasses import dataclass, InitVar
 from qupo_backend.models.finance_classes import Stock, PortfolioModel
 import qupo_backend.models.finance_utilities as finance_utilities
 from qupo_backend.tickers_utilities import stock_data_to_dataframe
-from qupo_backend.config import settings
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+
+load_dotenv()
 
 
 @dataclass
@@ -43,7 +46,7 @@ class Portfolio:
 
 
 def extract_quandl_data(api_key=None, identifier='UPR/EXT'):
-    quandl.ApiConfig.api_key = settings.nasdaq_api_key
+    quandl.ApiConfig.api_key = os.getenv('NASDAQ_API_KEY')
     return quandl.get_table(identifier, qopts={'columns': ['company_name', 'net_impact_ratio']})
 
 
