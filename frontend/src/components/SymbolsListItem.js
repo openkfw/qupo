@@ -1,15 +1,15 @@
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CircularProgress from '@mui/material/CircularProgress';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
-import store from 'store-js';
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CircularProgress from "@mui/material/CircularProgress";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { useEffect, useState } from "react";
+import store from "store-js";
 
-import CollapsedSection from './CollapsedSection';
-import ContinueButton from './ContinueButton';
+import CollapsedSection from "./CollapsedSection";
+import ContinueButton from "./ContinueButton";
 
 const SymbolsListItem = ({ name, filterValue }) => {
   const [symbols, setSymbols] = useState(store.get(name));
@@ -19,7 +19,7 @@ const SymbolsListItem = ({ name, filterValue }) => {
   });
 
   const symbolFound = () => {
-    if (symbols.detail === "Not Found") {
+    if (symbols?.detail === "Not Found") {
       return false;
     }
 
