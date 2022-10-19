@@ -68,7 +68,7 @@ const Performance = ({ model, modelName }) => {
         }}
       >
         <ValueBox
-          value={model.risk}
+          value={Math.abs(model.risk)}
           kind="Risk"
           description="Overall risk of the portfolio (portfolio volatility/variance)."
         />
