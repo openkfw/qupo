@@ -1,6 +1,4 @@
-import math
 import pandas as pd
-import logging
 
 from .finance_classes import Stock, PortfolioModel
 from .finance_utilities import convert_business_to_osqp_model
@@ -11,8 +9,8 @@ import qupo_backend.db.calculations.schemas as calc_schemas
 import qupo_backend.db.calculations.crud as crud
 import qupo_backend.db.stocks.schemas as stock_schemas
 from qupo_backend.tickers_utilities import get_data_of_symbol, stock_data_to_dataframe
-from pytickersymbols import PyTickerSymbols
 
+from pytickersymbols import PyTickerSymbols
 stock_data = PyTickerSymbols()
 
 
@@ -57,13 +55,9 @@ def calculate_model(db, model, symbols, risk_weight, esg_weight, start, end):
     job = Job(problem, solver)
     run_job(job)
 
-    rate_of_return_value, risk, esg_value = portfolio_model.get_evaluation(job.result.variable_values)
+    rate_of_return_value, risk, esg_value = portfolio_model.get_evaluation(portfolio_model_df,
+                                                                           job.result.variable_values)
 
-    # In some cases the external library for risk calculations gives 0, which results in division by 0
-    # still needs some investigation to get fixed ... this check is here to avoid the service to return an exception
-    if (math.isnan(risk[0])):
-        logging.warn('The risk for portfolio {} is not a number'.format(symbols))
-        risk[0] = -1
     solution_output_percent = dict(zip(list(job.problem.dataframe.index), job.result.variable_values.round(2)))
     portfolio_model_df['RateOfReturn'].update(pd.Series(solution_output_percent))
     data = portfolio_model_df.iloc[:, 0:3]

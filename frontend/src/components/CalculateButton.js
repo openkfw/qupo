@@ -85,7 +85,7 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
         ? store.get("calculations")
         : [];
 
-      store.set("calculations", [newCalculation, ...calculations].slice(0, 30));
+      store.set("calculations", [newCalculation, ...calculations]);
       setData(newCalculation);
     } finally {
       store.set("loading", false);

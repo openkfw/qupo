@@ -59,7 +59,7 @@ class PortfolioModel():
         self.expected_sharpe_ratios = finance_utilities.calc_historic_sharpe_ratio(
             np.array(self.expected_rates_of_return_pa), risk_free_return_pa, np.array(self.expected_volatilities_pa))
 
-    def get_evaluation(self, stock_weights=[]):
+    def get_evaluation(self, portfolio_model_df, stock_weights=[]):
         if (len(stock_weights) == 0):
             weight = 100 / len(self.stocks_tickers)
             stock_weights = np.full(len(self.stocks_tickers), weight)
@@ -67,9 +67,19 @@ class PortfolioModel():
         price_time_series_weightend = np.dot(relative_weights, np.array(
             [stock.price_time_series for stock in self.stocks]))  # sum of weighted stock price time series
         rate_of_return_pa = finance_utilities.calc_historic_rate_of_return_pa(price_time_series_weightend)
-        volatility_pa = finance_utilities.calc_historic_volatility_pa(price_time_series_weightend)
-        sharpe_ratio = finance_utilities.calc_historic_sharpe_ratio(rate_of_return_pa, self.risk_free_return_pa,
-                                                                    volatility_pa)
         esg_value = np.dot(relative_weights, self.expected_esg_ratings)
 
-        return rate_of_return_pa, sharpe_ratio, esg_value
+        # Evaluate Portfolio Risk
+        # volatility_pa = finance_utilities.calc_historic_volatility_pa(price_time_series_weightend)
+        # sharpe_ratio = finance_utilities.calc_historic_sharpe_ratio(rate_of_return_pa, self.risk_free_return_pa,
+        #                                                             volatility_pa)
+        # In some cases the external library for the sharpe ratio calculations gives 0, which results in division by 0
+        # still needs some investigation to get fixed ... this check is here to avoid the service to return an exception
+        # if (math.isnan(sharpe_ratio[0])):
+        #    logging.warn('The sharpe_ratio for portfolio is not a number')
+        #    sharpe_ratio[0] = -1
+        length = len(stock_weights)
+        variance = np.dot(stock_weights, np.diagonal(portfolio_model_df.iloc[:length, -length:].to_numpy()))
+        volatility = np.sqrt(variance * 100)
+
+        return rate_of_return_pa, volatility, esg_value

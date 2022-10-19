@@ -1,18 +1,21 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import { useEffect, useState } from 'react';
-import { TransitionGroup } from 'react-transition-group';
-import store from 'store-js';
+import { useEffect, useState } from "react";
+import { TransitionGroup } from "react-transition-group";
 
-import Controllers from '../components/Controllers';
-import Search from '../components/Search';
-import SymbolsListItem from '../components/SymbolsListItem';
-import SymbolView from '../components/SymbolView';
-import { filterUniqueSymbols } from '../utils/helpers';
-import views from '../utils/views';
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+import Controllers from "../components/Controllers";
+import Search from "../components/Search";
+import SymbolsListItem from "../components/SymbolsListItem";
+import SymbolView from "../components/SymbolView";
+
+import { filterUniqueSymbols } from "../utils/helpers";
+import views from "../utils/views";
+
+import store from "store-js";
 
 const Stocks = () => {
   const [view, setView] = useState(views[0].value);
@@ -27,11 +30,13 @@ const Stocks = () => {
       setItems(store.get(view).slice(0, 8));
       setFilterValue(null);
       const symbols = store.get("symbols");
-      setUniqueSymbols(
-        filterUniqueSymbols(symbols).sort((a, b) =>
-          a.symbol > b.symbol ? 1 : -1
-        )
-      );
+      if (symbols) {
+        setUniqueSymbols(
+          filterUniqueSymbols(symbols).sort((a, b) =>
+            a.symbol > b.symbol ? 1 : -1
+          )
+        );
+      }
       setFilter(store.get(view));
     }
   }, [view]);

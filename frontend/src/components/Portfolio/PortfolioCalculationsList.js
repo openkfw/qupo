@@ -109,7 +109,7 @@ const PortfolioCalculationsList = ({ calculations, data, setData }) => {
                   </Grid>
                   <Grid
                     container
-                    sx={{ minWidth: "51%", alignItems: "center" }}
+                    sx={{ minWidth: "53%", alignItems: "center" }}
                     justifyContent="flex-end"
                   >
                     <DetailsBox
