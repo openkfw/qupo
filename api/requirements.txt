@@ -1,7 +1,6 @@
 azure-quantum[qiskit]==0.25.222597
 click==8.1.3
 dimod==0.11.5
-dotenv==0.20.0
 fastapi==0.75.1
 flake8==4.0.1
 flake8-quotes==3.3.1
