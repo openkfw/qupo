@@ -84,6 +84,11 @@ def configure_azure_provider(quantum=False):
 
 
 def run_qio_job(job):
+    print('INFO --------- ')
+    print(os.environ['AZURE_LOCATION'])
+    print(os.getenv('AZURE_LOCATION'))
+    print(os.environ.get('AZURE_LOCATION'))
+    print('END --------- ')
     provider = configure_azure_provider()
     try:
         if job.solver.algorithm == 'SA':
