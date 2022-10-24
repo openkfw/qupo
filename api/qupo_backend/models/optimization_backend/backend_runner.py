@@ -122,7 +122,7 @@ def run_qio_job(job):
 
 def configure_qiskit_provider():
     try:
-        IBMQ.enable_account(os.getenv('IBMQ_CLIENT_SECRET'))
+        IBMQ.enable_account(os.environ.get('IBMQ_CLIENT_SECRET'))
     except IBMQAccountError:
         warnings.warn('IBM account not available. Please check ibmq health status and credentials')
         pass
