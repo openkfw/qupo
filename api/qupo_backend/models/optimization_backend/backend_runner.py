@@ -84,11 +84,6 @@ def configure_azure_provider(quantum=False):
 
 
 def run_qio_job(job):
-    print('INFO --------- ')
-    print(os.environ['AZURE_LOCATION'])
-    print(os.getenv('AZURE_LOCATION'))
-    print(os.environ.get('AZURE_LOCATION'))
-    print('END --------- ')
     provider = configure_azure_provider()
     try:
         if job.solver.algorithm == 'SA':
@@ -128,6 +123,7 @@ def run_qio_job(job):
 def configure_qiskit_provider():
     try:
         IBMQ.enable_account(os.environ['IBMQ_CLIENT_SECRET'])
+        IBMQ.save_account(os.environ.get('IBMQ_CLIENT_SECRET'))
     except IBMQAccountError:
         warnings.warn('IBM account not available. Please check ibmq health status and credentials')
         pass
