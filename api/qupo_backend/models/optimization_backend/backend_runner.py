@@ -19,7 +19,7 @@ from qiskit import Aer
 from qiskit.algorithms import QAOA
 from qiskit.algorithms.optimizers import COBYLA
 from qiskit.utils import QuantumInstance
-from qiskit.providers.ibmq import IBMQAccountError, IBMQAccountCredentialsNotFound
+from qiskit.providers.ibmq import IBMQAccountError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
 # custom packages
@@ -122,13 +122,15 @@ def run_qio_job(job):
 
 def configure_qiskit_provider():
     try:
-        IBMQ.load_account()
-    except IBMQAccountCredentialsNotFound:
-        IBMQ.save_account(os.getenv('IBMQ_CLIENT_SECRET'))
+        IBMQ.enable_account(os.getenv('IBMQ_CLIENT_SECRET'))
     except IBMQAccountError:
         warnings.warn('IBM account not available. Please check ibmq health status and credentials')
         pass
-    provider = IBMQ.load_account()
+    provider = IBMQ.get_provider(
+        hub='ibm-q',
+        group='open',
+        project='main'
+    )
     return provider
 
 
