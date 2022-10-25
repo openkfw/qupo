@@ -1,14 +1,38 @@
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
+import { useNavigate } from 'react-router-dom';
+import store from 'store-js';
 
-import store from "store-js";
-
-import CalculateButton from "../CalculateButton";
-import SelectModels from "../SelectModels";
-import StocksCollection from "../StocksCollection";
-import WeightSlider from "../WeightSlider";
+import { useTriggerNotification } from '../../contexts/NotificationContext';
+import { calculateModels } from '../../utils/calculation';
+import CalculateButton from '../CalculateButton';
+import SelectModels from '../SelectModels';
+import StocksCollection from '../StocksCollection';
+import WeightSlider from '../WeightSlider';
 
 const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
+  const navigate = useNavigate();
+  const { addNotification } = useTriggerNotification();
+
+  const handleWeightsChanged = async (value) => {
+    setWeights(value)
+    await handleCalculation()
+  }
+
+  const handleCalculation = async () => {
+    navigate("/portfolio");
+    store.set("loading", true);
+    setData(undefined);
+
+    try {
+      const newCalculation = await calculateModels(addNotification, weights, timeframe)
+      setData(newCalculation);
+
+    } finally {
+      store.set("loading", false);
+    }
+  }
+
   return (
     <Grid item xs={3}>
       <Card variant="outlined" sx={{ p: 2, mb: 1 }}>
@@ -16,13 +40,13 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
           <WeightSlider
             keyWeight="risk_weight"
             weights={weights}
-            setWeights={setWeights}
+            setWeights={handleWeightsChanged}
             size="small"
           />
           <WeightSlider
             keyWeight="esg_weight"
             weights={weights}
-            setWeights={setWeights}
+            setWeights={handleWeightsChanged}
             size="small"
           />
         </Grid>

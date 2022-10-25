@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import store from "store-js";
+import ScienceIcon from '@mui/icons-material/ScienceOutlined';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import store from 'store-js';
 
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
-import ScienceIcon from "@mui/icons-material/ScienceOutlined";
-
-import { getModelCalculations } from "../api";
-import { useTriggerNotification } from "../contexts/NotificationContext";
-import dayjs from "dayjs";
+import { useTriggerNotification } from '../contexts/NotificationContext';
+import { calculateModels } from '../utils/calculation';
 
 // helper function to check the disabled button, but just for the "disabled" state variable
 // based on selected models / symbols
@@ -20,9 +18,9 @@ const isCalculateDisabled = () => {
 };
 
 const CalculateButton = ({ timeframe, weights, setData }) => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(store.get("loading"));
   const [disabled, setDisabled] = useState(isCalculateDisabled());
+  const navigate = useNavigate();
   const { addNotification } = useTriggerNotification();
 
   useEffect(() => {
@@ -37,67 +35,27 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
     store.watch("loading", () => setLoading(store.get("loading")));
   });
 
-  const constructCalculation = (data) => {
-    return {
-      timestamp: dayjs(),
-      models: data.map((model) => model.Calculation.model).join(", "),
-      companies: data[0].Calculation.symbol_names.join(", "),
-      symbols: data[0].Calculation.symbols.join(", "),
-      risk_weight: data[0].Calculation.risk_weight,
-      esg_weight: data[0].Calculation.esg_weight,
-      start: data[0].Calculation.start,
-      end: data[0].Calculation.end,
-      portfolio: data,
-    };
-  };
-
-  const calculateModels = async () => {
+  const handleCalculation = async () => {
     navigate("/portfolio");
     store.set("loading", true);
     setData(undefined);
 
-    const symbols = store.get("selected_symbols");
-    const models = store.get("selected_models");
-    const firstTenSymbols = symbols.slice(0, 10).map((symbol) => symbol.symbol);
-
     try {
-      const data = await getModelCalculations(
-        models,
-        firstTenSymbols,
-        weights,
-        timeframe
-      );
-
-      const rates = data[0]?.Result?.rate_of_return;
-      if (rates) {
-        const notReturnedSymbols = firstTenSymbols.filter(
-          (symbol) => rates[symbol] === undefined
-        );
-        if (notReturnedSymbols.length) {
-          addNotification({
-            severity: "warning",
-            message: `Symbols not available: ${notReturnedSymbols.join(", ")}`,
-          });
-        }
-      }
-      const newCalculation = constructCalculation(data);
-      const calculations = store.get("calculations")
-        ? store.get("calculations")
-        : [];
-
-      store.set("calculations", [newCalculation, ...calculations]);
+      const newCalculation = await calculateModels(addNotification, weights, timeframe)
       setData(newCalculation);
+
     } finally {
       store.set("loading", false);
     }
-  };
+  }
+
 
   return (
     <Button
       sx={{ width: "100%" }}
       variant="contained"
       disabled={loading || disabled || !timeframe.isValid}
-      onClick={calculateModels}
+      onClick={handleCalculation}
       startIcon={
         loading ? (
           <CircularProgress color="inherit" size={10} />
