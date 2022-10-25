@@ -113,11 +113,11 @@ const PortfolioCalculationsList = ({ calculations, data, setData }) => {
                     justifyContent="flex-end"
                   >
                     <DetailsBox
-                      value={`${calculation.risk_weight}%`}
+                      value={`${calculation.risk_weight.toFixed(0)}%`}
                       name="Risk"
                     />
                     <DetailsBox
-                      value={`${calculation.esg_weight}%`}
+                      value={`${calculation.esg_weight.toFixed(0)}%`}
                       name="ESG"
                     />
                     <DetailsBox

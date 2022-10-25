@@ -5,6 +5,7 @@ from .finance_utilities import convert_business_to_osqp_model
 from .optimization_backend.backend_runner import Providers, run_job
 from .optimization_backend.optimization_classes import Problem, Job, Solver
 
+from qupo_backend.config import settings
 import qupo_backend.db.calculations.schemas as calc_schemas
 import qupo_backend.db.calculations.crud as crud
 import qupo_backend.db.stocks.schemas as stock_schemas
@@ -83,24 +84,35 @@ def check_weights(metadata):
 def get_model_calculations(db, models, metadata):
     results = []
     metadata = check_weights(metadata)
-    for model in models:
+
+    for index, model in enumerate(models):
         calculation = calc_schemas.CalculationBase(model=model, **metadata)
         # get also the symbol names and store them into the database
         calculation.symbol_names = [stock_data.get_stock_name_by_yahoo_symbol(symbol) for symbol in calculation.symbols]
-        db_calculation = crud.get_calculation(db, calculation)
 
-        if db_calculation is None:
-            result = calculate_model(db, model, **metadata)
+        if(settings.use_db):
+            db_calculation = crud.get_calculation(db, calculation)
 
-            calculation_saved = crud.create_calculation(db, calculation)
-            result_to_save = calc_schemas.ResultCreate(rate_of_return=result['RateOfReturn'], esg_rating=result['ESGRating'],
-                                                       volatility=result['Volatility'], objective_value=result['objective_value'],
-                                                       rate_of_return_value=result['rate_of_return_value'], risk=result['risk'],
-                                                       esg_value=result['esg_value'])
-            crud.create_result(db, result_to_save, calculation_saved.id)
-            db_calc = crud.get_calculation(db, calculation)
-            results.append(db_calc)
+            if db_calculation is None:
+                result = calculate_model(db, model, **metadata)
+
+                calculation_saved = crud.create_calculation(db, calculation)
+                result_to_save = calc_schemas.ResultCreate(rate_of_return=result['RateOfReturn'], esg_rating=result['ESGRating'],
+                                                           volatility=result['Volatility'], objective_value=result['objective_value'],
+                                                           rate_of_return_value=result['rate_of_return_value'], risk=result['risk'],
+                                                           esg_value=result['esg_value'])
+                crud.create_result(db, result_to_save, calculation_saved.id)
+                db_calc = crud.get_calculation(db, calculation)
+                results.append(db_calc)
+            else:
+                results.append(db_calculation)
         else:
-            results.append(db_calculation)
+            result = calculate_model(db, model, **metadata)
+            new_calc = calc_schemas.Calculation(id=index, **calculation.dict())
+            new_result = calc_schemas.Result(id=index, calculation_id=index, rate_of_return=result['RateOfReturn'],
+                                             esg_rating=result['ESGRating'], volatility=result['Volatility'],
+                                             objective_value=result['objective_value'], rate_of_return_value=result['rate_of_return_value'],
+                                             risk=result['risk'], esg_value=result['esg_value'])
+            results.append({'Calculation': new_calc, 'Result': new_result})
 
     return results
