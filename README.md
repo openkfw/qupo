@@ -10,13 +10,13 @@ This raises the question whether the optimization of a stock portfolio with the 
 
 **Proposed solution**
 
-![Screenshot of the application](./docs/arch/screenshot_1.png)
+![Screenshot of the application](./docs/screenshots/screenshot_1.png)
 
 The prototype uses a portfolio of assets that can be chosen arbitrarily. In addition to the dimensions "turnover" and "risk" (variance), the dimension "sustainability" is added. For this, a sustainability score from the ESG database is added for each asset. Thus, there are significantly more options for the composition of an optimal portfolio. The solution includes the following aspects:
 
 - How do quantum solvers from IBM (Qiskit), Microsoft (Azure Quantum) and IonQ perform compared to a classical solver using the PyPortfolio library?
 - How can the result be appealing and interactive in a user interface that invites experimentation?
-Can the prototype be extended as a platform that is made available as open source and can thus be used for co-creation?
+  Can the prototype be extended as a platform that is made available as open source and can thus be used for co-creation?
 
 A platform for portfolio optimization using quantum and non quantum (classical) algorithms. The repository includes an `api` folder which contains the python backend that is responsible for the portfolio calculations. It is connected to a ReactJs frontend.
 
@@ -32,21 +32,22 @@ First we clone the repository and get the API/backend running using python. Afte
 
 ```(bash)
 git clone https://github.com/openkfw/qupo.git
-````
+```
 
 Change to the api folder first, we do frontend later
+
 ```(bash)
 cd qupo/api
-````
+```
 
 Copy the example env file and edit the respective keys if you have them:
 
 ```(bash)
 cp .env_example .env
-````
-
+```
 
 Make sure the python 10 repository is available:
+
 ```(bash)
 sudo add-apt-repository ppa:deadsnakes/ppa
 ```
@@ -68,32 +69,37 @@ sudo apt install python3.10
 ```
 
 Python should be installed now, which you can check with the version flag
+
 ```(bash)
 python3.10 --version
-````
+```
 
 Now install the pip package manager
+
 ```(bash)
 sudo apt install python3-pip
-````
+```
 
 To use a virtual environment (important for python, which is a mess without virtual environments), use this command
 
 ```(bash)
-sudo pip3 install virtualenv 
-````
+sudo pip3 install virtualenv
+```
 
 Create a virtual environment with the respective python version
+
 ```(bash)
 virtualenv --python="/usr/bin/python3.10" "./venv"
-````
+```
 
 Activate the environment
+
 ```(bash)
 source venv/bin/activate
-````
+```
 
 Now install all required packages
+
 ```(bash)
 pip install -r requirements.txt
 ```
@@ -117,6 +123,7 @@ The frontend is a react application which can be compiled into a static web page
 Install the node version manager to be able to use the respective node version:
 
 Change into the frontend folder of the project
+
 ```(bash)
 cd ./frontend
 ```
@@ -130,7 +137,7 @@ cp .env_example .env
 Install the node version manager
 
 ```(bash)
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
+curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 ```
 
 Restart the shell session or reload bashrc.
@@ -139,19 +146,16 @@ Install node server version 17.x
 
 ```(bash)
 nvm install 17.8.0
-````
+```
 
 On initial start-up, first install all required packages from the `package.json` file. Then you can run the app with:
 
-   ```bash
-   npm install
-   npm start
-   ```
+```bash
+npm install
+npm start
+```
 
 In your server visit [http://localhost:3000](http://localhost:3000) to see the app up and running. If the frontend is running on another server, replace the respective server name.
-
-
-
 
 ### Install Python >3.9 and openblas using MacOS
 
