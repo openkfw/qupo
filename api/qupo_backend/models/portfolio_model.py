@@ -90,7 +90,7 @@ def get_model_calculations(db, models, metadata):
         # get also the symbol names and store them into the database
         calculation.symbol_names = [stock_data.get_stock_name_by_yahoo_symbol(symbol) for symbol in calculation.symbols]
 
-        if(settings.use_db):
+        if (settings.use_db):
             db_calculation = crud.get_calculation(db, calculation)
 
             if db_calculation is None:
