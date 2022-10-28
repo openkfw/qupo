@@ -4,8 +4,8 @@ import Grid from "@mui/material/Grid";
 import store from "store-js";
 
 import CalculateButton from "../CalculateButton";
-import SelectModels from "../SelectModels";
-import StocksCollection from "../StocksCollection";
+import ModelsSelection from "../ModelsSelection";
+import StocksSelection from "../Stocks/StocksSelection";
 import WeightSlider from "../WeightSlider";
 
 const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
@@ -26,8 +26,8 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
             size="small"
           />
         </Grid>
-        <StocksCollection size="small" />
-        <SelectModels defaultModels={store.get("selected_models")} />
+        <StocksSelection size="small" />
+        <ModelsSelection defaultModels={store.get("selected_models")} />
       </Card>
       <CalculateButton
         timeframe={timeframe}

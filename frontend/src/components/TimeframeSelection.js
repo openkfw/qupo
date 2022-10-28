@@ -7,7 +7,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-const SelectTimeframe = ({ timeframe, setTimeframe }) => {
+const TimeframeSelection = ({ timeframe, setTimeframe }) => {
   const options = { mask: "__/__/____", inputFormat: "DD/MM/YYYY" };
 
   const inputField = (params) => <TextField {...params} />;
@@ -56,4 +56,4 @@ const SelectTimeframe = ({ timeframe, setTimeframe }) => {
   );
 };
 
-export default SelectTimeframe;
+export default TimeframeSelection;

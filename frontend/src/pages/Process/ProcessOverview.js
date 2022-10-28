@@ -2,9 +2,9 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-import SelectModels from "../../components/SelectModels";
-import StocksCollection from "../../components/StocksCollection";
-import SelectTimeframe from "../../components/SelectTimeframe";
+import ModelsSelection from "../../components/ModelsSelection";
+import StocksSelection from "../../components/Stocks/StocksSelection";
+import TimeframeSelection from "../../components/TimeframeSelection";
 import WeightSlider from "../../components/WeightSlider";
 
 const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
@@ -13,7 +13,7 @@ const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
       <Typography variant="h5" sx={{ pb: 1 }}>
         Selected Symbols:
       </Typography>
-      <StocksCollection />
+      <StocksSelection />
       <Typography variant="h5" sx={{ py: 1 }}>
         Answers:
       </Typography>
@@ -35,7 +35,7 @@ const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
       <Typography variant="h5" sx={{ py: "1" }}>
         Models:
       </Typography>
-      <SelectModels defaultModels={["osqp", "qio"]} />
+      <ModelsSelection defaultModels={["osqp", "qio"]} />
       <Grid sx={{ pt: 2 }}>
         <Typography variant="h5" sx={{ py: "1" }}>
           Time Period:
@@ -44,7 +44,7 @@ const ProcessOverview = ({ timeframe, setTimeframe, weights, setWeights }) => {
           Select the timeframe in which the stock prices should be taken in
           consideration:
         </Typography>
-        <SelectTimeframe timeframe={timeframe} setTimeframe={setTimeframe} />
+        <TimeframeSelection timeframe={timeframe} setTimeframe={setTimeframe} />
       </Grid>
     </Box>
   );

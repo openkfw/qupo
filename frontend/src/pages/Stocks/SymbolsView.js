@@ -1,24 +1,25 @@
-import Grid from '@mui/material/Grid';
-import { useState } from 'react';
+import { useState } from "react";
 
-import ContinueButton from './ContinueButton';
-import SymbolDelete from './SymbolDelete';
-import SymbolSelection from './SymbolSelection';
+import Grid from "@mui/material/Grid";
 
-const SymbolView = ({ size = "medium" }) => {
+import ContinueButton from "../../components/ContinueButton";
+import SelectedSymbolsBox from "../../components/Stocks/SelectedSymbolsBox";
+import SymbolsSearch from "../../components/Stocks/SymbolsSearch";
+
+const SymbolsView = ({ size = "medium" }) => {
   const [selectedSymbols, setSelectedSymbols] = useState([]);
 
   const areSymbolsSelected = selectedSymbols.length > 0;
 
   return (
     <Grid sx={{ mb: 1, pb: 1 }}>
-      <SymbolSelection
+      <SymbolsSearch
         selectedSymbols={selectedSymbols}
         setSelectedSymbols={setSelectedSymbols}
         allowMultipleSelection={true}
         size={size}
       />
-      <SymbolDelete
+      <SelectedSymbolsBox
         selectedSymbols={selectedSymbols}
         setSelectedSymbols={setSelectedSymbols}
         areSymbolsSelected={areSymbolsSelected}
@@ -32,4 +33,4 @@ const SymbolView = ({ size = "medium" }) => {
   );
 };
 
-export default SymbolView;
+export default SymbolsView;

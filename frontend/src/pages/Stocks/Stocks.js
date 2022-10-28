@@ -7,13 +7,14 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import Controllers from "../components/Controllers";
-import Search from "../components/Search";
-import SymbolsListItem from "../components/SymbolsListItem";
-import SymbolView from "../components/SymbolView";
+import Controllers from "../../components/Controllers";
+import Search from "../../components/Search";
+import SymbolsCard from "../../components/Stocks/SymbolsCard";
 
-import { filterUniqueSymbols } from "../utils/helpers";
-import views from "../utils/views";
+import { filterUniqueSymbols } from "../../utils/helpers";
+import views from "../../utils/views";
+
+import SymbolsView from "./SymbolsView";
 
 import store from "store-js";
 
@@ -84,7 +85,7 @@ const Stocks = () => {
             <TransitionGroup>
               {filterItems(items).map((item) => (
                 <Collapse key={item}>
-                  <SymbolsListItem
+                  <SymbolsCard
                     key={item}
                     name={item}
                     filterValue={filterValue}
@@ -102,7 +103,7 @@ const Stocks = () => {
           )}
         </>
       ) : (
-        <SymbolView />
+        <SymbolsView />
       )}
     </>
   );

@@ -30,7 +30,7 @@ const TooltipTitle = ({ model }) => {
   );
 };
 
-const SelectModels = ({ defaultModels }) => {
+const ModelsSelection = ({ defaultModels }) => {
   const [selectedModels, setSelectedModels] = useState(defaultModels);
 
   useEffect(() => {
@@ -71,4 +71,4 @@ const SelectModels = ({ defaultModels }) => {
   });
 };
 
-export default SelectModels;
+export default ModelsSelection;
