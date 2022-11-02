@@ -1,16 +1,21 @@
-import ForwardIcon from '@mui/icons-material/ArrowForward';
-import { Button, Grid } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import store from 'store-js';
+import { useNavigate } from "react-router-dom";
 
-const ContinueButton = ({ symbols, areSymbolsSelected = true }) => {
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import ForwardIcon from "@mui/icons-material/ArrowForward";
+
+import store from "store-js";
+
+const ContinueButton = ({ symbols, areSymbolsSelected = true, view = "" }) => {
   const navigate = useNavigate();
+
+  const isDisabled = symbols.length < 2 && view === "symbols";
 
   return (
     <Grid container justifyContent="flex-end">
       <Button
         size="small"
-        disabled={!areSymbolsSelected || symbols.length < 2}
+        disabled={!areSymbolsSelected || isDisabled}
         startIcon={<ForwardIcon />}
         onClick={() => {
           store.set("selected_symbols", symbols);

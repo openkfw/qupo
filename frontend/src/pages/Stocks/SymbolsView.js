@@ -28,6 +28,7 @@ const SymbolsView = ({ size = "medium" }) => {
       <ContinueButton
         symbols={selectedSymbols}
         areSymbolsSelected={areSymbolsSelected}
+        view="symbols"
       />
     </Grid>
   );
