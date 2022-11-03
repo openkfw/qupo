@@ -17,6 +17,13 @@ export const constructCalculation = (data) => {
     };
 };
 
+export const combineCalculations = (classicalCalculation, quantumCalculation) => {
+    return {
+        ...classicalCalculation,
+        models: [classicalCalculation.models, quantumCalculation.models],
+        portfolio: [...classicalCalculation.portfolio, ...quantumCalculation.portfolio],
+    }
+}
 export const calculateModels = async (addNotification, weights, timeframe) => {
     const symbols = store.get("selected_symbols");
     const models = store.get("selected_models");

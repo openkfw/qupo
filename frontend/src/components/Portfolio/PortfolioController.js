@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import store from 'store-js';
 
 import { useTriggerNotification } from '../../contexts/NotificationContext';
-import { calculateModels } from '../../utils/calculation';
+import { calculateModels, combineCalculations } from '../../utils/calculation';
 import CalculateButton from '../CalculateButton';
 import SelectModels from '../SelectModels';
 import StocksCollection from '../StocksCollection';
@@ -20,8 +20,25 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
     setData(undefined);
 
     try {
-      const newCalculation = await calculateModels(addNotification, weights, timeframe)
-      setData(newCalculation);
+      const models = store.get("selected_models");
+      const quantumModels = [];
+      const classicalModels = [];
+      let classicalCalculation
+      models.forEach((model) => {
+        if (model === "qiskit" || model === "ionq") {
+          quantumModels.push(model);
+        } else {
+          classicalModels.push(model);
+        }
+      });
+      if (classicalModels.length) {
+        classicalCalculation = await calculateModels(addNotification, weights, timeframe, classicalModels)
+        setData(classicalCalculation)
+      }
+      if (quantumModels.length) {
+        const quantumCalculation = await calculateModels(addNotification, weights, timeframe, quantumModels)
+        classicalCalculation ? setData(combineCalculations(classicalCalculation, quantumCalculation)) : setData(quantumCalculation);
+      }
 
     } finally {
       store.set("loading", false);
@@ -54,6 +71,7 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
         timeframe={timeframe}
         weights={weights}
         setData={setData}
+        handleSeparateCalculation={handleCalculation}
       />
     </Grid>
   );

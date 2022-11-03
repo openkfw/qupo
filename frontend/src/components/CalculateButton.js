@@ -17,7 +17,7 @@ const isCalculateDisabled = () => {
     : false;
 };
 
-const CalculateButton = ({ timeframe, weights, setData }) => {
+const CalculateButton = ({ timeframe, weights, setData, handleSeparateCalculation }) => {
   const [loading, setLoading] = useState(store.get("loading"));
   const [disabled, setDisabled] = useState(isCalculateDisabled());
   const navigate = useNavigate();
@@ -36,9 +36,12 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
   });
 
   const handleCalculation = async () => {
-    navigate("/portfolio");
-    store.set("loading", true);
-    setData(undefined);
+    if (handleSeparateCalculation) {
+      handleSeparateCalculation();
+    } else {
+      navigate("/portfolio");
+      store.set("loading", true);
+      setData(undefined);
 
     try {
       const newCalculation = await calculateModels(addNotification, weights, timeframe)
@@ -47,6 +50,7 @@ const CalculateButton = ({ timeframe, weights, setData }) => {
     } finally {
       store.set("loading", false);
     }
+  }
   }
 
 
