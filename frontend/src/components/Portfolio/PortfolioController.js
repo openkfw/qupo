@@ -14,11 +14,6 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
   const navigate = useNavigate();
   const { addNotification } = useTriggerNotification();
 
-  const handleWeightsChanged = async (value) => {
-    setWeights(value)
-    await handleCalculation()
-  }
-
   const handleCalculation = async () => {
     navigate("/portfolio");
     store.set("loading", true);
@@ -40,13 +35,15 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
           <WeightSlider
             keyWeight="risk_weight"
             weights={weights}
-            setWeights={handleWeightsChanged}
+            setWeights={setWeights}
+            recalculateModels={handleCalculation}
             size="small"
           />
           <WeightSlider
             keyWeight="esg_weight"
             weights={weights}
-            setWeights={handleWeightsChanged}
+            setWeights={setWeights}
+            recalculateModels={handleCalculation}
             size="small"
           />
         </Grid>
