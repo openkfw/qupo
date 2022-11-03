@@ -1,6 +1,6 @@
 # Quantum Sustainable Portfolio Optimization
 
-> **What is Porfolio Optimization?**
+> **What is Portfolio Optimization?**
 >
 > Portfolio Optimization is the process of finding the best solution from a set of possible options, given its desired outcome and constraints.
 
@@ -20,7 +20,7 @@ These non-financial factors become increasingly important when making investment
 
 ## Algorithms
 
-In the scope of this project there are five algorithms of which each calculates the portfolio. The results can be compared with each other in the user interface. Two algorithms are classical well-known approaches for portfolio optimization. The other three are quantum based. So, they use quantum computing simulators to solve the problem.Therefore they either call the API of Azure Quantum or IBM Qiskit.
+In the scope of this project there are five algorithms of which each calculates the portfolio. The results can be compared with each other in the user interface. Two algorithms are classical well-known approaches for portfolio optimization. The other three are quantum based. So, they use quantum computing simulators to solve the problem. Therefore they either call the API of Azure Quantum or IBM Qiskit.
 
 ### Classic Algorithms
 
@@ -38,7 +38,7 @@ PyPortfolioOpt is a library that provides algorithms to implement portfolio opti
 
 ### Quantum or Quantum-based Algorithms
 
-Following are short descriptions of the three quantom solvers.
+Following are short descriptions of the three quantum solvers.
 
 **QIO**
 
@@ -48,7 +48,7 @@ Quantum-Inspired Optimization algorithms simulate the effects of quantum computi
 **Qiskit**
 
 Provider: IBM;
-Qiskit is an open source library that provides tools to work with quantum computers. It includes a set of quantum gates and pre-built circuits. By obtaining a key for the IBM Qiskit API, requests are made.
+Qiskit is an open-source library that provides tools to work with quantum computers. It includes a set of quantum gates and pre-built circuits. By obtaining a key for the IBM Qiskit API, requests are made.
 
 **IonQ**
 
@@ -57,7 +57,7 @@ IonQ's cloud-based implementation of performing calculations on an idealized qua
 
 ## Result
 
-To evaluate the results of each algorithm with each other, certain
+To evaluate the results of each algorithm with each other, certain metrices are calculated:
 
 - **Rate of Return**: Portfolio result; list of stocks and their portfolio weights.
 - **ESG Rating**: ESG values of each stock in the portfolio.
@@ -68,7 +68,7 @@ To evaluate the results of each algorithm with each other, certain
   esg_value = np.dot(relative_weights, stocks_esg_data)
   ```
 
-- **Risk**: Overall risk of the portfolio. After evaluating the portfolio variance, its square root represents the volatility and therefore taken as risk metrix:
+- **Risk**: Overall risk of the portfolio. After evaluating the portfolio variance, its square root represents the volatility and therefore taken as risk metrics:
 
   ```python
   length = len(stock_weights)
