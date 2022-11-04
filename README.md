@@ -2,7 +2,7 @@
 
 This prototype addresses two questions:
 
-- Quantum computers are often described as a more efficient way to solve complex problems. But are they really capable of doing so or is this still a dream of the future?
+- Quantum computers are often described as a more efficient way to solve complex problems. But are they actually capable of doing so or is this still a dream of the future?
 
 - Optimizing the composition of a stock portfolio according to parameters like turnover or risk is a non-linear problem and usually can only be solved by approximation methods ("Monte Carlo"). The reason is the combinatorial explosion of the many possibilities how the portfolio could be composed, so that a classical computer would have to calculate all possibilities for the optimal solution - the number of possibilities is so huge that this is not possible in a manageable time. This is comparable to calculating all possible chess positions with a computer opponent - strategies and approximate solutions are also used there. Quantum computers promise to evaluate the numerous possible solutions in a fraction of the time.
 
@@ -22,11 +22,63 @@ A platform for portfolio optimization using quantum and non quantum (classical) 
 
 ## Getting started
 
-The application is composed of two parts which are required to be started separately. Before starting, please make sure you have at least Python 3.9 installed and your `python3` command points to the version 3.9 or higher:
+The application is composed of two parts which are required to be started separately. Before starting, please make sure you have at least Python 3.9 installed and your `python3` command points to the version 3.9 or higher.
+
+### Quick Start
+
+Try the quick start guide to run the application. For an installation from scratch on Ubuntu see [below](#install-from-scratch-on-an-empty-ubuntu-os). The application can also be started with docker or docker compose, navigate to the respective [installation guide](#start-app-with-docker-files) to the end of the page.
+
+#### API / Backend
+
+1. Create and activate virtual environment:
+
+   ```(bash)
+   cd ./api
+   python3.10 -m venv ./venv
+   source ./venv/bin/activate
+   ```
+
+1. Install the requirements:
+
+   ```(bash)
+   pip install -r requirements.txt
+   ```
+
+1. Create the `.env` file and set the environment variables (further information on the env variables in the [README](./api/README.md#environment-variables) of the backend):
+
+   ```(bash)
+   cp .env_example .env
+   ```
+
+1. Start the backend service:
+
+   ```(bash)
+   ./start_dev.sh
+   ```
+
+To verify that the backend is running, the following URL can be used: <http://localhost:8000/health>.
+
+#### Frontend
+
+1. Navigate to the frontend folder and create the `.env` file:
+
+   ```(bash)
+   cd ./frontend
+   cp .env_example .env
+   ```
+
+1. Install the npm scripts and start the app:
+
+   ```bash
+   npm install
+   npm start
+   ```
+
+The application should now be running on <http://localhost:3000>.
 
 ### Install from scratch on an empty Ubuntu OS
 
-First we clone the repository and get the API/backend running using python. Afterwards, we take care about the frontend. Make sure that the server is accessible and port 8000 open in the firewall.
+First, we clone the repository and get the API/backend running using python. Afterwards, we take care about the frontend. Make sure that the server is accessible and port 8000 open in the firewall.
 
 #### Installation of the API / Backend
 
@@ -184,7 +236,7 @@ The repository includes docker files for the api service as well as for the fron
 
 1. Set environment variables:
 
-   For the frontend:
+   **For the frontend:**
 
    ```(bash)
    cp ./frontend/.env_example frontend.env
@@ -192,13 +244,13 @@ The repository includes docker files for the api service as well as for the fron
 
    For running the application within docker container set the `REACT_APP_API_URL` environment variable to `http://api:8000`.
 
-   For the backend:
+   **For the backend:**
 
    ```(bash)
    cp ./api/.env_example api.env
    ```
 
-   The environemt variables for the backend are the same as for the local deployment.
+   The environment variables for the backend are the same as for the local deployment.
 
 1. In your bash run the docker containers with:
 
