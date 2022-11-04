@@ -1,4 +1,4 @@
-# Quantum Sustainable Portfolio Optimization
+# Sustainable Quantum Portfolio Optimization
 
 > **What is Portfolio Optimization?**
 >

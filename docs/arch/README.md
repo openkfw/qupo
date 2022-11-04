@@ -1,14 +1,14 @@
-# QuPo Architecture
+# QuPO Architecture
 
 The application exists of a ReactJS Frontend which is connected to a python backend. The backend exposes two api endpoints: `tickers` and `main`. While the tickers api endpoint handles all requests regarding the stocks, its symbols and company names, the models api endpoint accepts the requested problem with all its input parameters, formulates the job which is calculated by the optimization backend and then returned to the user as the optimal result of the portfolio.
 
 ![QuPO Technology Architecture](Qupo_Technology_Architecture.png)
 
-The data for calculating the portfolio is fetched from the Yahoo Finance API. Therefore, the QuPO application can obtain historical data for various stocks as shown on Yahoo Finance: [https://finance.yahoo.com/](https://finance.yahoo.com/). Once downloaded, the data is saved to the database, see the [Documentation of the Database Model](../db/README.md) for further information.
+The data for calculating the portfolio is fetched from the Yahoo Finance API. Therefore, the QuPO application can obtain historical data for various stocks as shown on Yahoo Finance: <https://finance.yahoo.com/>. Once downloaded, the data is saved to the database, see the [Documentation of the Database Model](../db/README.md) for further information.
 
 ## The Frontend
 
-The frontend is a simple service initiated by [Create React App](https://github.com/facebook/create-react-app). It provides the User Interface to calculate various portfolios with five different algorithms taking constraints in consideration like the risk that we are willing to take and the sustainability factor that we want to support.
+The frontend is a simple service initiated by [Create React App](https://github.com/facebook/create-react-app). It provides the User Interface to calculate various portfolios with five different algorithms taking constraints in consideration like the risk that we are willing to take and the sustainability factor that we want to include.
 
 Therefore, the user first chooses a set of symbols, then defines how important the constraints are for themselves by answering questions and after setting a view more parameters like the timeframe of the stock prices and the models, the portfolio is calculated with the algorithms that the user chose for the models by making an api request. The backend calculates the portfolio and sends back the results to the frontend.
 
@@ -25,7 +25,7 @@ The python service is called `qupo_backend` which exposes two api endpoints:
 - `tickers:` It uses the python package `pytickersymbols` to retrieve symbols of companies grouped either according to their index, their country or their industry. The option parameter `symbols_only` hereby defines if only the plain symbols in a List or the symbols together with information like the company name, the currency or some other metadata as objects in a List should be returned.
 
 - `main:`
-  Here the request to calculate the portfolio with all its input parameters are send to. A request may look like the following example:
+  The requests to calculate the portfolio with all its input parameters are send here. A request may look like the following example:
 
 ```bash
 curl --location --request POST 'http://localhost:8000/models' \
