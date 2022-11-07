@@ -18,7 +18,10 @@ export const constructCalculation = (data) => {
 };
 
 export const combineCalculations = (classicalCalculation, quantumCalculation) => {
-    const combinedModels = [...classicalCalculation.models.split(", "), ...quantumCalculation.models.split(", ")].join(", ");
+    const combinedModels = [
+        ...classicalCalculation.models.split(", "),
+        ...quantumCalculation.models.split(", ")
+    ].join(", ");
     return {
         ...classicalCalculation,
         models: combinedModels,
