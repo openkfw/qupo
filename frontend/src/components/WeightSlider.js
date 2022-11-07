@@ -1,10 +1,10 @@
-import Grid from "@mui/material/Grid";
-import Slider from "@mui/material/Slider";
-import Typography from "@mui/material/Typography";
+import Grid from '@mui/material/Grid';
+import Slider from '@mui/material/Slider';
+import Typography from '@mui/material/Typography';
 
-import questions from "../utils/questions.json";
+import questions from '../utils/questions.json';
 
-const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium" }) => {
+const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium", recalculateModels }) => {
   const styles = {
     "& .MuiSlider-markLabel": {
       fontSize: "0.7rem",
@@ -25,6 +25,12 @@ const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium" }) => {
 
   const handleChange = (value) => {
     setWeights((prevState) => weights.setValues(prevState, keyWeight, value));
+  };
+
+  const handleChangeCommited = async () => {
+    if (recalculateModels) {
+      await recalculateModels();
+    }
   };
 
   const formatLabel = (value) => {
@@ -49,6 +55,7 @@ const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium" }) => {
         size={size}
         value={weights[keyWeight].value}
         onChange={(_, newValue) => handleChange(newValue)}
+        onChangeCommitted={() => handleChangeCommited()}
         valueLabelDisplay="auto"
         valueLabelFormat={formatLabel}
         sx={size === "small" ? styles : null}
