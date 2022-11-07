@@ -44,6 +44,6 @@ Once the calculations are started, it may take some time to show the results. If
 
 The chart shows the suggested weights of stocks in the portfolio based on the results of each algorithm which can vary more or less.
 
-With the panel on the left, the input parameters can be adjusted and the portfolio can be calculated again. Beneath the chart the results of each model are evaluated and made comparable with each other. The `PERFORMANCE` hereby is the objective value, the `RISK` shows the overall vulnerability of the portfolio, the `SUSTAINABILITY` value shows how sustainable the overall portfolio is and the `RETURN` value is the expected return over time (please also refer to the [docs](./portfolio_optimization/README.md#result) for better understanding).
+With the panel on the left, the input parameters can be adjusted and the portfolio can be calculated again. Beneath the chart the results of each model are evaluated and made comparable with each other. The `PERFORMANCE` hereby is the objective value, the `RISK` shows the overall vulnerability of the portfolio, the `SUSTAINABILITY` value shows how sustainable the overall portfolio is and the `RETURN` value is the expected return over time (for better understanding refer to the [docs](./portfolio_optimization/README.md#result)).
 
 Last, different portfolios can be compared with each other or the process can be restarted again.

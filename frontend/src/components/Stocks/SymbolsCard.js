@@ -5,6 +5,7 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CircularProgress from "@mui/material/CircularProgress";
+import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
@@ -13,7 +14,7 @@ import store from "store-js";
 import CollapsedSection from "../CollapsedSection";
 import ContinueButton from "../ContinueButton";
 
-const SymbolsCard = ({ name, filterValue }) => {
+const SymbolsCard = ({ name, filterValue, setInfo }) => {
   const [symbols, setSymbols] = useState(store.get(name));
 
   useEffect(() => {
@@ -52,31 +53,48 @@ const SymbolsCard = ({ name, filterValue }) => {
           }
         >
           {symbols ? (
-            symbols.map((symbol, index) => {
-              const expression =
-                index === symbols.length - 1 ? symbol.name : `${symbol.name}, `;
-              return (
-                <Tooltip
-                  title={symbol.symbol}
+            <Grid container>
+              {symbols.map((symbol, index) => (
+                <Grid
                   key={`${symbol.symbol}-${symbol.name}`}
+                  item
+                  sx={{ pr: 0.5 }}
                 >
-                  <Typography
-                    color="text.secondary"
-                    sx={{
-                      fontSize: 14,
-                      display: "inline",
-                      fontWeight:
-                        symbol.symbol === filterValue ||
-                        symbol.name === filterValue
-                          ? "bold"
-                          : "normal",
-                    }}
-                  >
-                    {expression}
-                  </Typography>
-                </Tooltip>
-              );
-            })
+                  <Tooltip title={symbol.symbol} arrow>
+                    <Typography
+                      color="text.secondary"
+                      onClick={() => setInfo(symbol)}
+                      sx={{
+                        fontSize: 14,
+                        display: "inline",
+                        "&:hover": {
+                          textShadow: "0 0 0.01px black",
+                          cursor: "pointer",
+                        },
+                        fontWeight:
+                          symbol.symbol === filterValue ||
+                          symbol.name === filterValue
+                            ? "bold"
+                            : "normal",
+                      }}
+                    >
+                      {symbol.name}
+                    </Typography>
+                  </Tooltip>
+                  {!(index === symbols.length - 1) ? (
+                    <Typography
+                      color="text.secondary"
+                      sx={{
+                        fontSize: 14,
+                        display: "inline",
+                      }}
+                    >
+                      ,
+                    </Typography>
+                  ) : null}
+                </Grid>
+              ))}
+            </Grid>
           ) : (
             <CircularProgress size="2rem" />
           )}
