@@ -25,28 +25,29 @@ export const combineCalculations = (classicalCalculation, quantumCalculation) =>
         portfolio: [...classicalCalculation.portfolio, ...quantumCalculation.portfolio],
     }
 }
+
 export const calculateModels = async (addNotification, weights, timeframe, models) => {
     const symbols = store.get("selected_symbols");
     const firstTenSymbols = symbols.slice(0, 10).map((symbol) => symbol.symbol);
 
-        const data = await getModelCalculations(
-            models,
-            firstTenSymbols,
-            weights,
-            timeframe
-        );
+    const data = await getModelCalculations(
+        models,
+        firstTenSymbols,
+        weights,
+        timeframe
+    );
 
-        const rates = data[0]?.Result?.rate_of_return;
-        if (rates) {
-            const notReturnedSymbols = firstTenSymbols.filter(
-                (symbol) => rates[symbol] === undefined
-            );
-            if (notReturnedSymbols.length) {
-                addNotification({
-                    severity: "warning",
-                    message: `Symbols not available: ${notReturnedSymbols.join(", ")}`,
-                });
-            }
+    const rates = data[0]?.Result?.rate_of_return;
+    if (rates) {
+        const notReturnedSymbols = firstTenSymbols.filter(
+            (symbol) => rates[symbol] === undefined
+        );
+        if (notReturnedSymbols.length) {
+            addNotification({
+                severity: "warning",
+                message: `Symbols not available: ${notReturnedSymbols.join(", ")}`,
+            });
         }
-        return constructCalculation(data);
+    }
+    return constructCalculation(data);
 };
