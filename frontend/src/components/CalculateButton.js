@@ -44,7 +44,14 @@ const CalculateButton = ({ timeframe, weights, setData, handleSeparateCalculatio
       setData(undefined);
 
     try {
-      const newCalculation = await calculateModels(addNotification, weights, timeframe)
+      const models = store.get("selected_models");
+
+      const newCalculation = await calculateModels(addNotification, weights, timeframe, models)
+      const calculations = store.get("calculations")
+        ? store.get("calculations")
+        : [];
+
+      store.set("calculations", [newCalculation, ...calculations]);
       setData(newCalculation);
 
     } finally {

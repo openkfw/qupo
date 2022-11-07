@@ -18,15 +18,15 @@ export const constructCalculation = (data) => {
 };
 
 export const combineCalculations = (classicalCalculation, quantumCalculation) => {
+    const combinedModels = [...classicalCalculation.models.split(", "), ...quantumCalculation.models.split(", ")].join(", ");
     return {
         ...classicalCalculation,
-        models: [classicalCalculation.models, quantumCalculation.models],
+        models: combinedModels,
         portfolio: [...classicalCalculation.portfolio, ...quantumCalculation.portfolio],
     }
 }
-export const calculateModels = async (addNotification, weights, timeframe) => {
+export const calculateModels = async (addNotification, weights, timeframe, models) => {
     const symbols = store.get("selected_symbols");
-    const models = store.get("selected_models");
     const firstTenSymbols = symbols.slice(0, 10).map((symbol) => symbol.symbol);
 
         const data = await getModelCalculations(
@@ -48,11 +48,5 @@ export const calculateModels = async (addNotification, weights, timeframe) => {
                 });
             }
         }
-        const newCalculation = constructCalculation(data);
-        const calculations = store.get("calculations")
-            ? store.get("calculations")
-            : [];
-
-        store.set("calculations", [newCalculation, ...calculations]);
-        return newCalculation;
+        return constructCalculation(data);
 };

@@ -23,22 +23,31 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
       const models = store.get("selected_models");
       const quantumModels = [];
       const classicalModels = [];
-      let classicalCalculation
+      let newCalculation;
       models.forEach((model) => {
-        if (model === "qiskit" || model === "ionq") {
+        if (model === "qiskit" || model === "ionq" || model === "qio") {
           quantumModels.push(model);
         } else {
           classicalModels.push(model);
         }
       });
       if (classicalModels.length) {
-        classicalCalculation = await calculateModels(addNotification, weights, timeframe, classicalModels)
+        const classicalCalculation = await calculateModels(addNotification, weights, timeframe, classicalModels)
         setData(classicalCalculation)
+        newCalculation = classicalCalculation;
       }
       if (quantumModels.length) {
-        const quantumCalculation = await calculateModels(addNotification, weights, timeframe, quantumModels)
-        classicalCalculation ? setData(combineCalculations(classicalCalculation, quantumCalculation)) : setData(quantumCalculation);
+        for (const model of quantumModels) {
+          const quantumCalculation = await calculateModels(addNotification, weights, timeframe, [model]);
+          newCalculation = combineCalculations(newCalculation, quantumCalculation);
+          setData(newCalculation);
+        }
       }
+      const calculations = store.get("calculations")
+        ? store.get("calculations")
+        : [];
+
+      store.set("calculations", [newCalculation, ...calculations]);
 
     } finally {
       store.set("loading", false);
