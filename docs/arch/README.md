@@ -1,6 +1,6 @@
 # QuPO Architecture
 
-The application exists of a ReactJS Frontend which is connected to a python backend. The backend exposes two api endpoints: `tickers` and `main`. While the tickers api endpoint handles all requests regarding the stocks, its symbols and company names, the models api endpoint accepts the requested problem with all its input parameters, formulates the job which is calculated by the optimization backend and then returned to the user as the optimal result of the portfolio.
+The application consists of a ReactJS frontend which is connected to a Python backend. The backend exposes two types of api endpoints: `tickers` and `models`. While the tickers api endpoint handles all requests regarding the stocks, its symbols and company names, the models endpoint accepts the requested problem with all its input parameters, formulates the job which is calculated by the optimization backend and then returned to the user as the optimal result of the portfolio.
 
 ![QuPO Technology Architecture](Qupo_Technology_Architecture.png)
 
@@ -20,11 +20,11 @@ The following architectural component diagram shows the backend in its detailed 
 
 ![QuPO Component Architecture](component_arch.png)
 
-The python service is called `qupo_backend` which exposes two api endpoints:
+The python service is called `qupo_backend` which exposes two types of api endpoints:
 
-- `tickers:` It uses the python package `pytickersymbols` to retrieve symbols of companies grouped either according to their index, their country or their industry. The option parameter `symbols_only` hereby defines if only the plain symbols in a List or the symbols together with information like the company name, the currency or some other metadata as objects in a List should be returned.
+- `tickers` (including `/symbols`, `/indices` and `/industries`): It uses the python package `pytickersymbols` to retrieve symbols of companies grouped either according to their index, their country or their industry. The option parameter `symbols_only` hereby defines if only the plain symbols in a List or the symbols together with information like the company name, the currency or some other metadata as objects in a List should be returned.
 
-- `main:`
+- `models` (calculation of all classical and quantum models):
   The requests to calculate the portfolio with all its input parameters are send here. A request may look like the following example:
 
 ```bash
