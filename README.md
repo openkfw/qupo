@@ -16,7 +16,7 @@ The prototype uses a portfolio of assets that can be chosen arbitrarily. In addi
 
 - How do quantum solvers from IBM (Qiskit), Microsoft (Azure Quantum) and IonQ perform compared to a classical solver using the PyPortfolio library?
 - How can the result be appealing and interactive in a user interface that invites experimentation?
-  Can the prototype be extended as a platform that is made available as open source and can thus be used for co-creation?
+- Can the prototype be extended as a platform that is made available as open source and can thus be used for co-creation?
 
 A platform for portfolio optimization using quantum and non quantum (classical) algorithms. The repository includes an `api` folder which contains the python backend that is responsible for the portfolio calculations. It is connected to a ReactJs frontend.
 

@@ -10,7 +10,7 @@ The data for calculating the portfolio is fetched from the Yahoo Finance API. Th
 
 The frontend is a simple service initiated by [Create React App](https://github.com/facebook/create-react-app). It provides the User Interface to calculate various portfolios with five different algorithms taking constraints in consideration like the risk that we are willing to take and the sustainability factor that we want to include.
 
-Therefore, the user first chooses a set of symbols, then defines how important the constraints are for themselves by answering questions and after setting a view more parameters like the timeframe of the stock prices and the models, the portfolio is calculated with the algorithms that the user chose for the models by making an api request. The backend calculates the portfolio and sends back the results to the frontend.
+Therefore, the user first chooses a set of symbols, then defines how important the constraints are for themselves by answering questions and after setting a view more parameters like the timeframe of the stock prices and the models, the portfolio is calculated with the algorithms that the user chose for the models by making a request to the api. The backend calculates the portfolio and sends back the results to the frontend.
 
 ![QuPO Flow Chart](Qupo_Flow_Chart.png)
 
