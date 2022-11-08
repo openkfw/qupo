@@ -7,13 +7,14 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import Controllers from "../components/Controllers";
-import Search from "../components/Search";
-import SymbolsListItem from "../components/SymbolsListItem";
-import SymbolView from "../components/SymbolView";
+import { filterUniqueSymbols } from "../../utils/helpers";
+import views from "../../utils/views";
 
-import { filterUniqueSymbols } from "../utils/helpers";
-import views from "../utils/views";
+import Controllers from "../../components/Controllers";
+import Search from "../../components/Search";
+import InfoDialog from "../../components/Stocks/InfoDialog";
+import SymbolsCard from "../../components/Stocks/SymbolsCard";
+import SymbolsView from "./SymbolsView";
 
 import store from "store-js";
 
@@ -24,6 +25,7 @@ const Stocks = () => {
   const [uniqueSymbols, setUniqueSymbols] = useState([]);
   const [filterValue, setFilterValue] = useState(null);
   const [items, setItems] = useState([]);
+  const [info, setInfo] = useState(undefined);
 
   useEffect(() => {
     if (store.get(view)) {
@@ -84,14 +86,16 @@ const Stocks = () => {
             <TransitionGroup>
               {filterItems(items).map((item) => (
                 <Collapse key={item}>
-                  <SymbolsListItem
+                  <SymbolsCard
                     key={item}
                     name={item}
                     filterValue={filterValue}
+                    setInfo={setInfo}
                   />
                 </Collapse>
               ))}
             </TransitionGroup>
+            {info && <InfoDialog info={info} setInfo={setInfo} />}
           </Box>
           {filterValue === null && items?.length !== allItems?.length && (
             <Grid justifyContent="center" container direction="row">
@@ -102,7 +106,7 @@ const Stocks = () => {
           )}
         </>
       ) : (
-        <SymbolView />
+        <SymbolsView />
       )}
     </>
   );

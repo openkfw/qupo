@@ -1,26 +1,27 @@
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import { useState } from 'react';
-import store from 'store-js';
+import { useState } from "react";
 
-import SymbolDelete from './SymbolDelete';
-import SymbolSearch from './SymbolSelection';
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
-const StocksCollection = ({ size = "medium" }) => {
+import SelectedSymbolsBox from "./SelectedSymbolsBox";
+import SymbolsSearch from "./SymbolsSearch";
+
+import store from "store-js";
+
+const StocksSelection = ({ size = "medium" }) => {
   const [selectedSymbols, setSelectedSymbols] = useState(
     store.get("selected_symbols")
   );
 
   return (
     <Grid sx={{ mb: 1, pb: 1 }}>
-      <SymbolDelete
+      <SelectedSymbolsBox
         selectedSymbols={selectedSymbols}
         setSelectedSymbols={setSelectedSymbols}
         size={size}
       />
-
       <Typography sx={{ mb: 1 }}>Add symbols:</Typography>
-      <SymbolSearch
+      <SymbolsSearch
         selectedSymbols={selectedSymbols}
         setSelectedSymbols={setSelectedSymbols}
         size={size}
@@ -29,4 +30,4 @@ const StocksCollection = ({ size = "medium" }) => {
   );
 };
 
-export default StocksCollection;
+export default StocksSelection;

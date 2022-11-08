@@ -1,12 +1,14 @@
-import ScienceIcon from '@mui/icons-material/ScienceOutlined';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import store from 'store-js';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { useTriggerNotification } from '../contexts/NotificationContext';
-import { calculateModels } from '../utils/calculation';
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import ScienceIcon from "@mui/icons-material/ScienceOutlined";
+
+import { useTriggerNotification } from "../contexts/NotificationContext";
+import { calculateModels } from "../utils/calculation";
+
+import store from "store-js";
 
 // helper function to check the disabled button, but just for the "disabled" state variable
 // based on selected models / symbols
@@ -17,11 +19,16 @@ const isCalculateDisabled = () => {
     : false;
 };
 
-const CalculateButton = ({ timeframe, weights, setData, handleSeparateCalculation }) => {
-  const [loading, setLoading] = useState(store.get("loading"));
-  const [disabled, setDisabled] = useState(isCalculateDisabled());
+const CalculateButton = ({
+  timeframe,
+  weights,
+  setData,
+  handleSeparateCalculation,
+}) => {
   const navigate = useNavigate();
   const { addNotification } = useTriggerNotification();
+  const [loading, setLoading] = useState(store.get("loading"));
+  const [disabled, setDisabled] = useState(isCalculateDisabled());
 
   useEffect(() => {
     ["selected_symbols", "selected_models"].map((key) =>
@@ -45,20 +52,23 @@ const CalculateButton = ({ timeframe, weights, setData, handleSeparateCalculatio
 
       try {
         const models = store.get("selected_models");
+        const newCalculation = await calculateModels(
+          addNotification,
+          weights,
+          timeframe,
+          models
+        );
 
-        const newCalculation = await calculateModels(addNotification, weights, timeframe, models)
         const calculations = store.get("calculations")
           ? store.get("calculations")
           : [];
-
         store.set("calculations", [newCalculation, ...calculations]);
         setData(newCalculation);
-
       } finally {
         store.set("loading", false);
       }
     }
-  }
+  };
 
   return (
     <Button

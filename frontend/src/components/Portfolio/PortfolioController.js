@@ -1,14 +1,17 @@
-import Card from '@mui/material/Card';
-import Grid from '@mui/material/Grid';
-import { useNavigate } from 'react-router-dom';
-import store from 'store-js';
+import { useNavigate } from "react-router-dom";
 
-import { useTriggerNotification } from '../../contexts/NotificationContext';
-import { calculateModels, combineCalculations } from '../../utils/calculation';
-import CalculateButton from '../CalculateButton';
-import SelectModels from '../SelectModels';
-import StocksCollection from '../StocksCollection';
-import WeightSlider from '../WeightSlider';
+import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+
+import { useTriggerNotification } from "../../contexts/NotificationContext";
+import { calculateModels, combineCalculations } from "../../utils/calculation";
+
+import CalculateButton from "../CalculateButton";
+import ModelsSelection from "../ModelsSelection";
+import StocksSelection from "../Stocks/StocksSelection";
+import WeightSlider from "../WeightSlider";
+
+import store from "store-js";
 
 const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
   const navigate = useNavigate();
@@ -32,14 +35,27 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
         }
       });
       if (classicalModels.length) {
-        const classicalCalculation = await calculateModels(addNotification, weights, timeframe, classicalModels)
-        setData(classicalCalculation)
+        const classicalCalculation = await calculateModels(
+          addNotification,
+          weights,
+          timeframe,
+          classicalModels
+        );
+        setData(classicalCalculation);
         newCalculation = classicalCalculation;
       }
       if (quantumModels.length) {
         for (const model of quantumModels) {
-          const quantumCalculation = await calculateModels(addNotification, weights, timeframe, [model]);
-          newCalculation = combineCalculations(newCalculation, quantumCalculation);
+          const quantumCalculation = await calculateModels(
+            addNotification,
+            weights,
+            timeframe,
+            [model]
+          );
+          newCalculation = combineCalculations(
+            newCalculation,
+            quantumCalculation
+          );
           setData(newCalculation);
         }
       }
@@ -48,11 +64,10 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
         : [];
 
       store.set("calculations", [newCalculation, ...calculations]);
-
     } finally {
       store.set("loading", false);
     }
-  }
+  };
 
   return (
     <Grid item xs={3}>
@@ -73,8 +88,8 @@ const PortfolioController = ({ setData, timeframe, weights, setWeights }) => {
             size="small"
           />
         </Grid>
-        <StocksCollection size="small" />
-        <SelectModels defaultModels={store.get("selected_models")} />
+        <StocksSelection size="small" />
+        <ModelsSelection defaultModels={store.get("selected_models")} />
       </Card>
       <CalculateButton
         timeframe={timeframe}

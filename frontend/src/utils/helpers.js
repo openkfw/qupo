@@ -1,6 +1,6 @@
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
-import { getSymbols } from '../api';
+import { getSymbols } from "../api";
 
 export const shortenString = (word, length) => {
   return word.length > length ? `${word.slice(0, length)}...` : word;

@@ -1,18 +1,21 @@
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CircleIcon from '@mui/icons-material/Circle';
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
-import { useEffect, useState } from 'react';
-import store from 'store-js';
+import { useEffect, useState } from "react";
 
-import { fetchAllSymbols, filterUniqueSymbols } from '../utils/helpers';
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
+
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CircleIcon from "@mui/icons-material/Circle";
+
+import store from "store-js";
+
+import { fetchAllSymbols, filterUniqueSymbols } from "../../utils/helpers";
 
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -22,7 +25,7 @@ const symbolFilterOptions = createFilterOptions({
   stringify: (option) => `${option.symbol} ${option.name}`,
 });
 
-const SymbolSelection = ({
+const SymbolsSearch = ({
   size = "medium",
   selectedSymbols,
   setSelectedSymbols,
@@ -113,7 +116,9 @@ const SymbolSelection = ({
                 !symbolsToAdd.includes(option) && symbolsToAdd.length > 9
             : null
         }
-        renderInput={(params) => <TextField {...params} size={size} label={label} />}
+        renderInput={(params) => (
+          <TextField {...params} size={size} label={label} />
+        )}
         sx={allowMultipleSelection ? { pt: 2, pb: 1, mt: 1 } : null}
       />
       <Tooltip
@@ -136,4 +141,4 @@ const SymbolSelection = ({
   );
 };
 
-export default SymbolSelection;
+export default SymbolsSearch;

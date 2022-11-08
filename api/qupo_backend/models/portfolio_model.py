@@ -11,9 +11,6 @@ import qupo_backend.db.calculations.crud as crud
 import qupo_backend.db.stocks.schemas as stock_schemas
 from qupo_backend.tickers_utilities import get_data_of_symbol, stock_data_to_dataframe
 
-from pytickersymbols import PyTickerSymbols
-stock_data = PyTickerSymbols()
-
 
 def portfolio_df_from_stock_data(db, symbols, start, end):
     # create stock and portfolio objects for frontend
@@ -65,7 +62,7 @@ def calculate_model(db, model, symbols, risk_weight, esg_weight, start, end):
 
     return {
         **data,
-        'stock_names': portfolio_model.stocks_full_names,
+        'symbol_names': portfolio_model.stocks_full_names,
         'objective_value': job.result.objective_value,
         'rate_of_return_value': rate_of_return_value,
         'risk': risk,
@@ -87,8 +84,6 @@ def get_model_calculations(db, models, metadata):
 
     for index, model in enumerate(models):
         calculation = calc_schemas.CalculationBase(model=model, **metadata)
-        # get also the symbol names and store them into the database
-        calculation.symbol_names = [stock_data.get_stock_name_by_yahoo_symbol(symbol) for symbol in calculation.symbols]
 
         if (settings.use_db):
             db_calculation = crud.get_calculation(db, calculation)
@@ -96,6 +91,7 @@ def get_model_calculations(db, models, metadata):
             if db_calculation is None:
                 result = calculate_model(db, model, **metadata)
 
+                calculation.symbol_names = result['symbol_names']
                 calculation_saved = crud.create_calculation(db, calculation)
                 result_to_save = calc_schemas.ResultCreate(rate_of_return=result['RateOfReturn'], esg_rating=result['ESGRating'],
                                                            volatility=result['Volatility'], objective_value=result['objective_value'],

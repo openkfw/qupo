@@ -1,18 +1,20 @@
-import CheckIcon from '@mui/icons-material/Check';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import { green } from '@mui/material/colors';
-import Grid from '@mui/material/Grid';
-import Tooltip from '@mui/material/Tooltip';
-import store from 'store-js';
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import Tooltip from "@mui/material/Tooltip";
 
-import CollapsedSection from './CollapsedSection';
+import CheckIcon from "@mui/icons-material/Check";
+import { green } from "@mui/material/colors";
 
-const SymbolDelete = ({
+import store from "store-js";
+
+import CollapsedSection from "../CollapsedSection";
+
+const SelectedSymbolsBox = ({
   size = "medium",
   selectedSymbols,
   setSelectedSymbols,
-  areSymbolsSelected = true
+  areSymbolsSelected = true,
 }) => {
   const onDeleteAll = () => {
     store.set("selected_symbols", []);
@@ -73,4 +75,4 @@ const SymbolDelete = ({
   );
 };
 
-export default SymbolDelete;
+export default SelectedSymbolsBox;

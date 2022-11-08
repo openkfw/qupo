@@ -11,7 +11,7 @@ import { getCountries, getIndices, getIndustries, getSymbols } from "./api";
 import "./App.css";
 import Process from "./pages//Process/Process";
 import Portfolio from "./pages/Portfolio";
-import Stocks from "./pages/Stocks";
+import Stocks from "./pages/Stocks/Stocks";
 
 import dayjs from "dayjs";
 import store from "store-js";

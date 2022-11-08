@@ -1,10 +1,16 @@
-import Grid from '@mui/material/Grid';
-import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
+import Grid from "@mui/material/Grid";
+import Slider from "@mui/material/Slider";
+import Typography from "@mui/material/Typography";
 
-import questions from '../utils/questions.json';
+import questions from "../utils/questions.json";
 
-const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium", recalculateModels }) => {
+const WeightSlider = ({
+  keyWeight,
+  weights,
+  setWeights,
+  size = "medium",
+  recalculateModels,
+}) => {
   const styles = {
     "& .MuiSlider-markLabel": {
       fontSize: "0.7rem",
@@ -13,14 +19,8 @@ const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium", recalcu
   };
 
   const marks = [
-    {
-      value: 0,
-      label: "0%",
-    },
-    {
-      value: 100,
-      label: "100%",
-    },
+    { value: 0, label: "0%" },
+    { value: 100, label: "100%" },
   ];
 
   const handleChange = (value) => {
@@ -37,6 +37,7 @@ const WeightSlider = ({ keyWeight, weights, setWeights, size = "medium", recalcu
     const characteristic = questions
       .find((question) => question.name === keyWeight)
       ?.options.find((scenario) => scenario.value === value)?.characteristic;
+
     return characteristic && size !== "small"
       ? `${characteristic}: ${value}%`
       : `${value}%`;

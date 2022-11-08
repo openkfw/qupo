@@ -6,6 +6,9 @@ from sqlalchemy.orm import Session
 
 from . import crud, schemas
 
+from pytickersymbols import PyTickerSymbols
+stock_data = PyTickerSymbols()
+
 
 def get_data_in_timeframe(db: Session, stock: schemas.StockBase, start, end):
     info = crud.get_info(db, stock)
@@ -50,11 +53,13 @@ def save_finance_data(db: Session, stock: schemas.StockBase, start, end):
     if (len(yhistory['data']) > 0):
         history = deconstruct_yhistory(yhistory)
         sustainability = get_sustainability(data)
+        stock_full_name = stock_data.get_stock_name_by_yahoo_symbol(stock.symbol)
         # for some of the stocks, not all values are returned, e.g. country is not returned for 04Q.F stock, that's why here are unknown values
-        info = schemas.InfoCreate(name=data.info.get('shortName', 'unknown'),
+        info = schemas.InfoCreate(name=stock_full_name,
                                   type=data.info.get('quoteType', 'unknown'),
                                   country=data.info.get('country', 'unknown'),
-                                  currency=data.info.get('currency', 'unknown'), sustainability=sustainability)
+                                  currency=data.info.get('currency', 'unknown'),
+                                  sustainability=sustainability)
 
         crud.create_stock(db, stock)
         crud.create_stock_info(db, info, stock.symbol)
