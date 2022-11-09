@@ -21,7 +21,7 @@ const PortfolioResult = ({ data, timeframe }) => {
         </Typography>
       </Grid>
       <Grid sx={{ px: 1, pb: 1.3 }}>
-        <PortfolioChart data={data.portfolio} />
+        <PortfolioChart data={data} />
       </Grid>
       <Box
         sx={{

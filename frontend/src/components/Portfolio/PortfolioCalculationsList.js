@@ -42,7 +42,7 @@ const DetailsBox = ({ value, name }) => {
   );
 };
 
-const PortfolioCalculationsList = ({ calculations, data, setData }) => {
+const PortfolioCalculationsList = ({ calculations, data, updateChart }) => {
   const [items, setItems] = useState(calculations.slice(0, 5));
 
   const isSameCalculation = (calculation1, calculation2) => {
@@ -60,7 +60,7 @@ const PortfolioCalculationsList = ({ calculations, data, setData }) => {
           return (
             <Card
               key={index}
-              onClick={() => setData(calculation)}
+              onClick={() => updateChart(calculation)}
               sx={{
                 cursor: "pointer",
                 "&:hover": { bgcolor: "grey.light" },
@@ -84,7 +84,9 @@ const PortfolioCalculationsList = ({ calculations, data, setData }) => {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Typography variant="h5">{calculation.models}</Typography>
+                <Typography variant="h5">
+                  {calculation.models.join(", ")}
+                </Typography>
               </CardContent>
               <CardContent
                 sx={{
@@ -101,9 +103,9 @@ const PortfolioCalculationsList = ({ calculations, data, setData }) => {
                     container
                     sx={{ maxWidth: "46%", alignItems: "center" }}
                   >
-                    <Tooltip title={calculation.symbols}>
+                    <Tooltip title={calculation.symbols.join(", ")}>
                       <Typography variant="body2">
-                        {shortenString(calculation.companies, 180)}
+                        {shortenString(calculation.companies.join(", "), 180)}
                       </Typography>
                     </Tooltip>
                   </Grid>

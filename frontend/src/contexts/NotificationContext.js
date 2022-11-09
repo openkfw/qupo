@@ -82,16 +82,10 @@ export const NotificationContext = ({ children }) => {
         return response;
       },
       function (error) {
-        const { message } = error.response.data;
-        if (message) {
+        if (error.response.status === 500) {
           addNotification({
             severity: "error",
-            message,
-          });
-        } else {
-          addNotification({
-            severity: "error",
-            message: JSON.stringify(error.response.data),
+            message: error.response.data.detail,
           });
         }
         return error;
