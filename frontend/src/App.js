@@ -139,6 +139,7 @@ function App() {
                   data={data}
                   setData={setData}
                   timeframe={timeframe}
+                  setTimeframe={setTimeframe}
                   weights={weights}
                   setWeights={setWeights}
                   resetProcess={resetProcess}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -18,8 +18,12 @@ const ProcessFlow = ({
   weights,
   setWeights,
 }) => {
+  const location = useLocation();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(
+    location?.state?.step ? location.state.step : 1
+  );
+
   const steps = [
     "Choose stock symbols",
     "Answer questions for calculation",

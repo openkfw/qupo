@@ -72,9 +72,9 @@ def calculate_model(db, model, symbols, risk_weight, esg_weight, start, end):
 
 def check_weights(metadata):
     if (metadata['risk_weight'] == 0):
-        metadata['risk_weight'] = 1E-6
+        metadata['risk_weight'] = 0.1
     if (metadata['esg_weight'] == 0):
-        metadata['esg_weight'] = 1E-6
+        metadata['esg_weight'] = 0.1
     return metadata
 
 

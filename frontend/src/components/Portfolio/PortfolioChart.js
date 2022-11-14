@@ -65,20 +65,19 @@ export const options = {
 
 const processData = (dataToProcess) => {
   const datasets = [];
-  const symbolNames = dataToProcess[0]?.Calculation?.symbol_names;
-  const labels = symbolNames.map((name) => shortenString(name, 16));
+  const labels = dataToProcess.companies.map((name) => shortenString(name, 16));
   const colors = ["#c6e6f5", "#87bbd0", "#417670", "#336a7e", "#002d3c"];
 
-  dataToProcess.forEach(({ Calculation, Result }, index) => {
+  dataToProcess.portfolio.forEach(({ Calculation, Result }, index) => {
     const dataset = {
       label: `${Calculation.model}`,
       data: [],
-      symbols: Calculation.symbols,
+      symbols: dataToProcess.symbols,
       backgroundColor: colors[index],
     };
 
     // used iteration over list of symbols to have a predefined order
-    Calculation.symbols.forEach((symbol) => {
+    dataToProcess.symbols.forEach((symbol) => {
       dataset.data.push(Result.rate_of_return[symbol]);
     });
 

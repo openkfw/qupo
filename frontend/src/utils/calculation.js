@@ -6,9 +6,9 @@ import { getModelCalculations } from "../api";
 export const constructCalculation = (data) => {
   return {
     timestamp: dayjs(),
-    models: data.map((model) => model.Calculation.model).join(", "),
-    companies: data[0].Calculation.symbol_names.join(", "),
-    symbols: data[0].Calculation.symbols.join(", "),
+    models: data.map((model) => model.Calculation.model),
+    companies: data[0].Calculation.symbol_names,
+    symbols: data[0].Calculation.symbols,
     risk_weight: data[0].Calculation.risk_weight,
     esg_weight: data[0].Calculation.esg_weight,
     start: data[0].Calculation.start,
@@ -22,9 +22,9 @@ export const combineCalculations = (
   quantumCalculation
 ) => {
   const combinedModels = [
-    ...classicalCalculation.models.split(", "),
-    ...quantumCalculation.models.split(", "),
-  ].join(", ");
+    ...classicalCalculation.models,
+    ...quantumCalculation.models,
+  ];
 
   return {
     ...classicalCalculation,
@@ -60,6 +60,9 @@ export const calculateModels = async (
     );
 
     if (notReturnedSymbols.length) {
+      data[0].Calculation.symbols = data[0].Calculation.symbols.filter(
+        (symbol) => !notReturnedSymbols.includes(symbol)
+      );
       addNotification({
         severity: "warning",
         message: `Symbols not available: ${notReturnedSymbols.join(", ")}`,
