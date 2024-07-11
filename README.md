@@ -1,3 +1,7 @@
+# Archived Repository
+
+The Qiskit APIs have changed a lot in the last years, therefore the existing repository might not build and integrated with the Quantum Hardware anymore. Therefore the repository was archived.
+
 # Quantum Portfolio Optimization (QUPO)
 
 This prototype addresses two questions:
